@@ -7,9 +7,12 @@
     "require": {
         "php": ">=5.5.9",
         "laravel/framework": "5.2.*",
-		"laravelcollective/html": "^5.2.0",
-		"fzaninotto/faker": "^1.7",
-		"barryvdh/laravel-dompdf": "^0.8.1"
+	"laravelcollective/html": "^5.2.0",
+	"fzaninotto/faker": "^1.7",
+	"maatwebsite/excel": "~2.1.0",
+	"phpoffice/phpword": "dev-master",
+	"laurentbrieu/tcpdf": "dev-master",
+	"barryvdh/laravel-dompdf": "^0.8.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
