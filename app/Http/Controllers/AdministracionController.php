@@ -85,7 +85,7 @@ class AdministracionController extends Controller
                 //sentencia para agregar la foto
                 //$persona->foto = $request->get("foto");
 
-                if ($request->hasFile('foto')){
+                if ($request->hasFile('foto')) {
                     /*$foto = $request->get("foto");
                     $filename = time() . '.'.$foto->getClientOriginalExtension();
                     Image::make($foto)->rezise(300,300)->save(public_path('storage/fotos/'.$filename));
@@ -93,13 +93,12 @@ class AdministracionController extends Controller
                     $file = $request->files->get('foto');
                     $ext = $file->guessExtension();
                     if ($ext == "jpeg" || $ext == "jpg" || $ext == "png" || $ext == "gif") {
-                        $nombreArchivo = time() . '' . rand(1,9999) . '.' .$file->getClientOriginalExtension();
+                        $nombreArchivo = time() . '' . rand(1, 9999) . '.' . $file->getClientOriginalExtension();
                         $persona->foto = $nombreArchivo;
                         $archivo = $file->move($disco, $nombreArchivo);
                     }
 
                 }
-
 
 
                 $persona->afp = $request->get("afp");
@@ -1014,43 +1013,43 @@ class AdministracionController extends Controller
             ->with('getRangeYear', $getRangeYear)
             ->with('asambleistas_plenaria', $asambleistas_plenaria);
     }
-	
-	    public function busqueda_dietas_asambleista(Request $request)
-    {   
+
+    public function busqueda_dietas_asambleista(Request $request)
+    {
         //dd($request->all());
         $todos = 0;
         $periodo = Periodo::latest()->first();
-        $start    = $periodo->inicio;//'2010-12-02';
-        $end      = $periodo->fin;//'2016-05-06';
-        
-        $getRangeYear   = range(gmdate('Y', strtotime($start)), gmdate('Y', strtotime($end)));
+        $start = $periodo->inicio;//'2010-12-02';
+        $end = $periodo->fin;//'2016-05-06';
+
+        $getRangeYear = range(gmdate('Y', strtotime($start)), gmdate('Y', strtotime($end)));
 
 
         $mes = $request->meses;
         $year = $getRangeYear[$request->getRangeYear];
         $asambleista_id = $request->asambleista_id;
         //dd($year);
-        
-                if ($asambleista_id == "") {
-                    $dietas = Dieta::join("asambleistas","dietas.asambleista_id", "=","asambleistas.id")
-                            ->where("asambleistas.activo","=", 1)
-                            //->where("asambleistas.id","=", $asambleista_id)
-                            ->where("dietas.mes","=", $mes)
-                            ->where("dietas.anio","=", $year)
-                            ->select('dietas.*')
-                            ->get();    
-                    $todos = 1;
-                }else{
-                    $dietas = Dieta::join("asambleistas","dietas.asambleista_id", "=","asambleistas.id")
-                            ->where("asambleistas.activo","=", 1)
-                            ->where("asambleistas.id","=", $asambleista_id)
-                            ->where("dietas.mes","=", $mes)
-                            ->where("dietas.anio","=", $year)
-                            ->select('dietas.*')
-                            ->get();
-                    $todos = 0;
-                }
-                
+
+        if ($asambleista_id == "") {
+            $dietas = Dieta::join("asambleistas", "dietas.asambleista_id", "=", "asambleistas.id")
+                ->where("asambleistas.activo", "=", 1)
+                //->where("asambleistas.id","=", $asambleista_id)
+                ->where("dietas.mes", "=", $mes)
+                ->where("dietas.anio", "=", $year)
+                ->select('dietas.*')
+                ->get();
+            $todos = 1;
+        } else {
+            $dietas = Dieta::join("asambleistas", "dietas.asambleista_id", "=", "asambleistas.id")
+                ->where("asambleistas.activo", "=", 1)
+                ->where("asambleistas.id", "=", $asambleista_id)
+                ->where("dietas.mes", "=", $mes)
+                ->where("dietas.anio", "=", $year)
+                ->select('dietas.*')
+                ->get();
+            $todos = 0;
+        }
+
         //dd($dietas);
         $asambleistas_activos = Asambleista::where('id', '!=', '0')->where('activo', '=', '1')->get();
         $asambleistas_plenaria[] = array();
@@ -1061,17 +1060,16 @@ class AdministracionController extends Controller
                 . ' ' . $asambleista->user->persona->segundo_apellido;
         }
         unset($asambleistas_plenaria[0]);
-        
+
         $meses = $this->getMeses();
 
 
-        
         return view('Administracion.dietas_asambleista')
-        ->with('todos', $todos)
-        ->with('meses', $meses)
-        ->with('dietas', $dietas)
-        ->with('getRangeYear', $getRangeYear)
-        ->with('asambleistas_plenaria', $asambleistas_plenaria);
+            ->with('todos', $todos)
+            ->with('meses', $meses)
+            ->with('dietas', $dietas)
+            ->with('getRangeYear', $getRangeYear)
+            ->with('asambleistas_plenaria', $asambleistas_plenaria);
     }
 
 
