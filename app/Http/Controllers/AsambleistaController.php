@@ -26,7 +26,7 @@ class AsambleistaController extends Controller
                         ->where("asambleistas.activo","=",1)
                         ->get();
         //dd($asambleistas);
-        $fotos = "../storage/fotos/";
+        $fotos = "../storagea/fotos/";
         $disco = "../storage/documentos/";
 
         return view("Asambleistas.ListadoAsambleistaFacultad",["facultades"=>$facultades,"asambleistas"=>$asambleistas,"fotos"=>$fotos,"disco"=>$disco]);
