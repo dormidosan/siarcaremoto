@@ -26,7 +26,7 @@
         </div>
 
         <div class="box-body">
-            <form id="convocatoria" method="post" action="{{ url('mailing_jd') }}">
+            <form id="convocatoria" method="post" action="{{ route('mailing_jd') }}">
              {{ csrf_field() }}
               {{ Form::hidden('id_comision', '1') }}
                 <div class="row">

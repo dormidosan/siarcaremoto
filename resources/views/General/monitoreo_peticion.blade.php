@@ -173,8 +173,8 @@
                 responsive: true,
                 searching: false,
                 paging: false,
-                columnDefs: [{orderable: false, targets: [0, 6]}],
-                order: [[1, 'asc']]
+                columnDefs: [{orderable: false, targets: [1,2,3,4,5,6]}],
+                order: [[0, 'asc']]
             });
 
             $('#monitorearPeticion').formValidation({

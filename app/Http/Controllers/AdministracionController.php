@@ -82,14 +82,8 @@ class AdministracionController extends Controller
                 $persona->nit = $request->get("nit");
                 $persona->nacimiento = $request->get("fecha1");
                 $persona->nacimiento = (DateTime::createFromFormat('d-m-Y', $request->fecha1))->format('Y-m-d');
-                //sentencia para agregar la foto
-                //$persona->foto = $request->get("foto");
 
                 if ($request->hasFile('foto')) {
-                    /*$foto = $request->get("foto");
-                    $filename = time() . '.'.$foto->getClientOriginalExtension();
-                    Image::make($foto)->rezise(300,300)->save(public_path('storage/fotos/'.$filename));
-                    $persona->foto = $filename;*/
                     $file = $request->files->get('foto');
                     $ext = $file->guessExtension();
                     if ($ext == "jpeg" || $ext == "jpg" || $ext == "png" || $ext == "gif") {
@@ -99,7 +93,6 @@ class AdministracionController extends Controller
                     }
 
                 }
-
 
                 $persona->afp = $request->get("afp");
                 $persona->cuenta = $request->get("cuenta");
@@ -137,8 +130,6 @@ class AdministracionController extends Controller
                     $asambleista->save();
                 }
 
-                /*$request->session()->flash("success", "Usuario agregado con exito");
-                return redirect()->route("mostrar_formulario_registrar_usuario");*/
                 $respuesta = new \stdClass();
                 $respuesta->error = false;
                 $respuesta->mensaje = (new Mensaje("Exito", "Usuario agregado con exito", "success"))->toArray();
@@ -1072,7 +1063,6 @@ class AdministracionController extends Controller
             ->with('asambleistas_plenaria', $asambleistas_plenaria);
     }
 
-
     public function almacenar_dieta_asambleista(Request $request)
     {
         //dd($request->all());
@@ -1148,6 +1138,5 @@ class AdministracionController extends Controller
         ];
         return $varMeses;
     }
-
 
 }

@@ -27,7 +27,7 @@
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Junta Directiva</a></li>
             <li><a href="{{ route("trabajo_junta_directiva") }}">Trabajo Junta Directiva</a></li>
-            <li><a href="{{ url("listado_reuniones_jd") }}">Listado de Reuniones</a></li>
+            <li><a href="{{ route("listado_reuniones_jd") }}">Listado de Reuniones</a></li>
             <li class="active">Subir Bitacora</li>
         </ol>
     </section>
@@ -40,7 +40,7 @@
         </div>
         <div class="box-body">
             <form class="form-group" id="guardar_bitacora_jd" name="guardar_bitacora_jd" method="post"
-                  action="{{ url('guardar_bitacora_jd') }}" enctype="multipart/form-data">
+                  action="{{ route('guardar_bitacora_jd') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <input type="hidden" name="id_comision" id="id_comision" value="{{$comision->id}}">
                 <input type="hidden" name="id_reunion" id="id_reunion" value="{{$reunion->id}}">

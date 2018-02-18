@@ -48,7 +48,7 @@
         </div>
         <div class="box-body">
 
-            <form id="convocatoria" method="post" action="{{ url('busqueda_dietas_asambleista') }}">
+            <form id="convocatoria" method="post" action="{{ route('busqueda_dietas_asambleista') }}">
                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-lg-4 col-sm-12 col-md-12">

@@ -67,6 +67,8 @@ return [
 		'fotos' => [
             'driver' => 'local',
             'root' => storage_path('fotos'),
+            'url' => env('APP_URL').'/storage/fotos',
+            'visibility' => 'public',
         ],
 
         's3' => [

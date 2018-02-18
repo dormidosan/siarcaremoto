@@ -35,7 +35,7 @@
         </div>
         <div class="box-body">
 
-            <form id="buscarDocs" action="{{ url('buscar_documentos')}}" method="post">
+            <form id="buscarDocs" action="{{ route('buscar_documentos')}}" method="post">
                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-lg-6 col-sm-12 col-md-6">

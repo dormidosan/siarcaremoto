@@ -8,7 +8,7 @@
                     @if(Auth::guest())
                         <img src="{{ asset('images/default-user.png') }}" class="img-circle" alt="User Image">
                     @else
-                        <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="img-circle" alt="User Image" >
+                        <img width="100" height="100" src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="img-circle" alt="User Image" onerror="this.onerror=null;this.src='../../storage/fotos/{!!Auth::user()->persona->foto!!}'">
                     @endif
                 </div>
                 <div class="pull-left info">
@@ -21,6 +21,7 @@
                     @endif
                 </div>
             </div>
+
             <ul class="sidebar-menu tree" data-widget="tree">
                 <li class="header">Menu de Opciones</li>
 
@@ -37,14 +38,14 @@
                             </span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="{{url("/listado_asambleistas_facultad")}}"><i class="fa fa-dot-circle-o"></i>Listado
+                            <li><a href="{{ route("listado_asambleistas_facultad")}}"><i class="fa fa-dot-circle-o"></i>Listado
                                     de
                                     asambleistas</a>
                             </li>
-                            <li><a href="{{url("/listado_asambleistas_comision")}}"><i class="fa fa-dot-circle-o"></i>Asambleistas
+                            <li><a href="{{route("listado_asambleistas_comision")}}"><i class="fa fa-dot-circle-o"></i>Asambleistas
                                     por
                                     comision</a></li>
-                            <li><a href="{{url("/listado_asambleistas_junta")}}"><i class="fa fa-dot-circle-o"></i>
+                            <li><a href="{{route("listado_asambleistas_junta")}}"><i class="fa fa-dot-circle-o"></i>
                                     Asambleistas de JD</a></li>
                         </ul>
                     </li>
@@ -67,7 +68,7 @@
                             <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>
                         </a>
                         <ul class="treeview-menu">
-                            <li><a href="{{ url("/monitoreo_peticion") }}"><i class="fa fa-dot-circle-o"></i>Monitorear
+                            <li><a href="{{ route("monitoreo_peticion") }}"><i class="fa fa-dot-circle-o"></i>Monitorear
                                     Peticion</a>
                             </li>
                         </ul>
@@ -142,3 +143,7 @@
         <div class="slimScrollRail"></div>
     </div>
 </aside>
+
+
+
+

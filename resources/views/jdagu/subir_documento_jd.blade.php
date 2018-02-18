@@ -26,7 +26,7 @@
         </div>
         <div class="box-body">
 
-            <form class="form-group" id="guardar_documento_jd" name="guardar_documento_jd" method="post" action="{{ url('guardar_documento_jd') }}" enctype="multipart/form-data">
+            <form class="form-group" id="guardar_documento_jd" name="guardar_documento_jd" method="post" action="{{ route('guardar_documento_jd') }}" enctype="multipart/form-data">
             {{ csrf_field() }} 
             <input type="hidden" name="id_peticion" id="id_peticion" value="{{$peticion->id}}">
             <input type="hidden" name="id_comision" id="id_comision" value="{{$comision->id}}">

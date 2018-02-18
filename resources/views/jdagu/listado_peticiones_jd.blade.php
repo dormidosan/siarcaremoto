@@ -6,6 +6,12 @@
             margin-right: 0;
             margin-left: 0;
         }
+
+        table.dataTable thead > tr > th {
+            padding-right: 0 !important;
+        }
+
+
     </style>
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
     <link rel="stylesheet"
@@ -32,7 +38,7 @@
 
         <div class="box-body">
             <div class="table-responsive">
-                <table class="table text-center table-bordered table-stripped table-hover" id="tabla">
+                <table id="tabla" class="table text-center table-striped table-bordered table-hover table-condensed">
                     <thead>
                     <tr>
                         <th>#</th>
@@ -90,8 +96,8 @@
                                 @endforeach
                                 {!! $i !!}
                             </td>
-                            <td colspan="row">
-                                <div class="col-lg-4">
+                            <td class="row">
+                                <div class="col-lg-3 col-sm-12">
                                     {!! Form::open(['route'=>['seguimiento_peticion_jd'],'method'=> 'POST','id'=>$peticion->id.'1']) !!}
                                     <input type="hidden" name="id_peticion" id="id_peticion" value="{{$peticion->id}}">
                                     <input type="hidden" name="es_reunion" id="es_reunion" value="0">
@@ -100,8 +106,7 @@
                                     </button>
                                     {!! Form::close() !!}
                                 </div>
-                                <div class="col-lg-1">
-
+                                <div class="col-lg-1 col-sm-12">
                                     {!! Form::open(['route'=>['subir_documento_jd'],'method'=> 'POST','id'=>$peticion->id.'2']) !!}
                                     <input type="hidden" name="id_comision" id="id_comision" value="1">
                                     <input type="hidden" name="id_peticion" id="id_peticion" value="{{$peticion->id}}">
@@ -156,11 +161,12 @@
                         "sSortDescending": ": Activar para ordenar la columna de manera descendente"
                     }
                 },
+                'rowsGroup': [7],
                 responsive: true,
                 /*searching: false,
                 paging: false,*/
-                columnDefs: [{orderable: false, targets: [0,7]}],
-                order: [[1, 'asc']]
+                columnDefs: [{orderable: false, targets: [1,2,3,4,5,6,7]}],
+                order: [[0, 'asc']]
             });
         });
     </script>

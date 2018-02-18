@@ -43,7 +43,7 @@
             <h3 class="box-title">Generar Agenda Plenaria</h3>
         </div>
         <div class="box-body">
-            <form id="convocatoria" method="post" action="{{ url('generar_agenda_plenaria_jd') }}">
+            <form id="convocatoria" method="post" action="{{ route('generar_agenda_plenaria_jd') }}">
                 {{ csrf_field() }}
                 {{ Form::hidden('id_comision', '1') }}
                 <div class="row">
@@ -115,6 +115,7 @@
             <div class="table-responsive">
                 <table id="agendas" class="table text-center table-striped table-bordered table-hover table-condensed">
                     <thead>
+
                     <tr>
                         <th>Numero</th>
                         <th>Codigo</th>
@@ -123,7 +124,8 @@
                         <th>Trascendental</th>
                         <th>Vigente</th>
                         <th>Activa</th>
-                        <th>Accion</th>
+                        <th>Eliminar</th>
+                        <th>Subir Documento</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -311,7 +313,7 @@
                 },
                 "order": [[0, 'asc']],
                 "columnDefs": [
-                    { "orderable": false, "targets": [0,5,6,7] }
+                    { "orderable": false, "targets": [0,5,6,7,8] }
                 ]
             });
         });

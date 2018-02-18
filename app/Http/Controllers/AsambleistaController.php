@@ -26,7 +26,7 @@ class AsambleistaController extends Controller
                         ->where("asambleistas.activo","=",1)
                         ->get();
         //dd($asambleistas);
-        $fotos = "../storage/fotos/";
+        $fotos = "../../storage/fotos/";
         $disco = "../storage/documentos/";
 
         return view("Asambleistas.ListadoAsambleistaFacultad",["facultades"=>$facultades,"asambleistas"=>$asambleistas,"fotos"=>$fotos,"disco"=>$disco]);
@@ -49,7 +49,7 @@ class AsambleistaController extends Controller
             ->where("periodos.activo", "=", 1)
             ->get();
 
-        $fotos = "../storage/fotos/";
+        $fotos = "../../storage/fotos/";
         $disco = "../storage/documentos/";
 
         return view("Asambleistas.ListadoAsambleistasComision", ['comisiones' => $comisiones, 'cargos' => $cargos,"fotos"=>$fotos,"disco"=>$disco]);
@@ -80,7 +80,7 @@ class AsambleistaController extends Controller
             ->get();
         //dd($asambleistas);
         //dd($asambleistas);
-        $fotos = "../storage/fotos/";
+        $fotos = "../../storage/fotos/";
         $disco = "../storage/documentos/";
 
         return view("Asambleistas.ListadoAsambleistasJunta",["cargos"=>$cargos,"fotos"=>$fotos,"disco"=>$disco]);

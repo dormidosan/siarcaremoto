@@ -166,7 +166,7 @@ class ModulosTableSeeder extends Seeder
         //16
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Listado de Asambleistas',
-            'url' => 'listado_asambleistas_facultad',
+            'url' => 'asambleistas/listado_asambleistas_facultad',
             'modulo_padre' => '4',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -177,7 +177,7 @@ class ModulosTableSeeder extends Seeder
         //17
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Asambleistas por Comision',
-            'url' => 'listado_asambleistas_comision',
+            'url' => 'asambleistas/listado_asambleistas_comision',
             'modulo_padre' => '4',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -188,7 +188,7 @@ class ModulosTableSeeder extends Seeder
         //18
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Asambleistas de JD',
-            'url' => 'listado_asambleistas_junta',
+            'url' => 'asambleistas/listado_asambleistas_junta',
             'modulo_padre' => '4',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -199,7 +199,7 @@ class ModulosTableSeeder extends Seeder
         //19
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Registrar Peticiones',
-            'url' => 'registrar_peticion',
+            'url' => 'peticiones/registrar_peticion',
             'modulo_padre' => '8',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -210,7 +210,7 @@ class ModulosTableSeeder extends Seeder
         //20
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Monitoreo Peticion',
-            'url' => 'monitoreo_peticion',
+            'url' => 'peticiones/monitoreo_peticion',
             'modulo_padre' => '8',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -221,7 +221,7 @@ class ModulosTableSeeder extends Seeder
         //21
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Listado de Peticiones',
-            'url' => 'listado_peticiones',
+            'url' => 'peticiones/listado_peticiones',
             'modulo_padre' => '8',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -232,7 +232,7 @@ class ModulosTableSeeder extends Seeder
         //22
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Trabajo JD',
-            'url' => 'trabajo_junta_directiva',
+            'url' => 'juntadirectiva/trabajo_junta_directiva',
             'modulo_padre' => '9',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -243,7 +243,7 @@ class ModulosTableSeeder extends Seeder
         //23
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Parametros',
-            'url' => 'parametros',
+            'url' => 'administracion/parametros',
             'modulo_padre' => '10',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -254,7 +254,7 @@ class ModulosTableSeeder extends Seeder
         //24
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Plantillas',
-            'url' => 'gestionar_plantillas',
+            'url' => 'administracion/gestionar_plantillas',
             'modulo_padre' => '10',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -265,7 +265,7 @@ class ModulosTableSeeder extends Seeder
         //25
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Administracion Usuarios',
-            'url' => 'GestionarUsuarios',
+            'url' => 'administracion/gestionar_usuarios',
             'modulo_padre' => '11',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -286,7 +286,7 @@ class ModulosTableSeeder extends Seeder
         //26
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Gestionar Perfiles',
-            'url' => 'gestionar_perfiles',
+            'url' => 'administracion/gestionar_perfiles',
             'modulo_padre' => '11',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -297,7 +297,7 @@ class ModulosTableSeeder extends Seeder
         //27
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Permisos Temporales',
-            'url' => 'registro_permisos_temporales',
+            'url' => 'administracion/registro_permisos_temporales',
             'modulo_padre' => '10',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -308,7 +308,7 @@ class ModulosTableSeeder extends Seeder
         //28
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Periodo AGU',
-            'url' => 'periodos_agu',
+            'url' => 'administracion/periodos_agu',
             'modulo_padre' => '10',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,
@@ -319,7 +319,7 @@ class ModulosTableSeeder extends Seeder
         //29
         \DB::table('modulos')->insert(array (
             'nombre_modulo'  => 'Dietas Asambleistas',
-            'url' => 'dietas_asambleista',
+            'url' => 'administracion/dietas_asambleista',
             'modulo_padre' => '10',
             'icono'  => 'fa fa-dot-circle-o',
             'tiene_hijos' => false,

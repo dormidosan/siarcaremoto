@@ -7,7 +7,7 @@
     </div>
     <div class="box-body">
        
-        <form class="form-group" id="enlazar_comision" name="enlazar_comision" method="post" action="{{ url('enlazar_comision') }}" enctype="multipart/form-data">
+        <form class="form-group" id="enlazar_comision" name="enlazar_comision" method="post" action="{{ route('enlazar_comision') }}" enctype="multipart/form-data">
             {{ csrf_field() }} 
             <input type="hidden" name="id_peticion" id="id_peticion" value="{{$peticion->id}}">
             <input type="hidden" name="id_reunion" id="id_reunion" value="{{$reunion->id}}">

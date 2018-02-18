@@ -66,7 +66,8 @@
                                 <img src="{{ asset('images/default-user.png') }}" class="user-image" alt="User Image">
                                 <span class="hidden-xs">Usuario Invitado</span>
                             @else
-                                <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="user-image" alt="User Image">
+                                <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="user-image" alt="User Image" onerror="this.onerror=null;this.src='../../storage/fotos/{!!Auth::user()->persona->foto!!}'">
+
                                 <span class="hidden-xs">{{ Auth::user()->name }}</span>
                             @endif
                         </a>
@@ -81,7 +82,7 @@
                                         <!--<small>ROL</small>-->
                                     </p>
                                 @else
-                                    <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="img-circle" alt="User Image" >
+                                    <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="user-image" alt="User Image" onerror="this.onerror=null;this.src='../../storage/fotos/{!!Auth::user()->persona->foto!!}'">
                                     <p>                                    
                                     <!-- <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="img-circle" alt="User Image" width="70%"> -->
                                         {{ Auth::user()->name }}
@@ -99,7 +100,7 @@
                                     </div>
                                 @else
                                     <div class="pull-left">
-                                        <a href="#" class="btn btn-default btn-flat">Datos de Usuario</a>
+                                        <a href="{{ route("mostrar_datos_usuario") }}" class="btn btn-default btn-flat">Datos de Usuario</a>
                                     </div>
                                     <div class="pull-right">
                                         <a href="{{ url("logout") }}" class="btn btn-default btn-flat">Cerrar Sesion</a>

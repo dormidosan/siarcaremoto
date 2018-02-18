@@ -19,7 +19,7 @@
 
         <div class="box-body">
             <div class="table-responsive">
-                <table class="table text-center table-bordered hover">
+                <table class="table text-center table-striped table-bordered table-hover table-condensed">
                     <thead>
                     <tr>
                         <th>#</th>

@@ -6,7 +6,7 @@
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Junta Directiva</a></li>
             <li><a href="{{ route("trabajo_junta_directiva") }}">Trabajo Junta Directiva</a></li>
-            <li><a href="{{url('listado_peticiones_jd')}}">Listado de Peticiones JD</a></li>
+            <li><a href="{{route('listado_peticiones_jd')}}">Listado de Peticiones JD</a></li>
             <li class="active">Peticion {{ $peticion->codigo }}</li>
         </ol>
     </section>

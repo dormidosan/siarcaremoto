@@ -22,13 +22,13 @@
 @section("content")
     <div class="box box-danger">
         <div class="box-header">
-            <h3 class="box-title">Listado de Reuniones</h3>
+            <h3 class="box-title">Generar Reuniones</h3>
 
         </div>
 
         <div class="box-body">
 
-            <form id="convocatoria" method="post" action="{{ url('crear_reunion_jd') }}">
+            <form id="convocatoria" method="post" action="{{ route('crear_reunion_jd') }}">
                 {{ csrf_field() }}
                 {{ Form::hidden('id_comision', '1') }}
                 <div class="row">
@@ -42,7 +42,9 @@
                         <div class="form-group">
                             <label for="fecha">Fecha</label>
                             <div class="input-group date fecha" id="fechaReunion">
-                                <input name="fecha" id="fecha" type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th" required="required"></i></span>
+                                <input name="fecha" id="fecha" type="text" class="form-control"><span
+                                        class="input-group-addon"><i class="glyphicon glyphicon-th"
+                                                                     required="required"></i></span>
                             </div>
                         </div>
 
@@ -52,7 +54,8 @@
                         <div class="form-group">
                             <div class='input-group date'>
 
-                                <input name="hora" type='text' id="hora" class="form-control" required="required" placeholder="h:i AM">
+                                <input name="hora" type='text' id="hora" class="form-control" required="required"
+                                       placeholder="h:i AM">
 
                                 <span class="input-group-addon">
                         <span class="glyphicon glyphicon-time"></span>
@@ -69,7 +72,7 @@
             </form>
             <br>
             <div class="table-responsive">
-                <table class="table text-center table-bordered table-hover table-condensed">
+                <table id="agendas" class="table text-center table-striped table-bordered table-hover table-condensed">
                     <thead>
                     <tr>
                         <th>#</th>
@@ -107,7 +110,6 @@
                                 </td>
 
                                 @if($reunion->activa == 0)
-
                                     <td>
                                         {!! Form::open(['route'=>['eliminar_reunion_jd'],'method'=> 'POST','id'=>"d".$reunion->id]) !!}
                                         <input type="hidden" name="id_comision" id="id_comision"
@@ -119,6 +121,8 @@
                                         {!! Form::close() !!}
                                     </td>
                                 @endif
+                            @else
+                                <td></td>
                             @endif
                         </tr>
                     @empty
@@ -196,7 +200,7 @@
                             date: {
                                 format: 'DD-MM-YYYY',
                                 min: "{{ \Carbon\Carbon::now()->format("d-m-Y") }}",
-                                message: 'La fecha debe ser igual o mayor que '+ "{{ \Carbon\Carbon::now()->format("d-m-Y") }}"
+                                message: 'La fecha debe ser igual o mayor que ' + "{{ \Carbon\Carbon::now()->format("d-m-Y") }}"
                             },
                             notEmpty: {
                                 message: 'La fecha de la sesion es requerida'

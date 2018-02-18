@@ -25,7 +25,7 @@
             <h3 class="box-title">Definir Periodo AGU</h3>
         </div>
         <div class="box-body">
-            <form id="periodo_agu" name="periodo_agu" method="post" action="{{ url("guardar_periodo") }}"
+            <form id="periodo_agu" name="periodo_agu" method="post" action="{{ route("guardar_periodo") }}"
                   enctype="multipart/form-data">
                 {{ csrf_field() }}
                 <div class="row">
