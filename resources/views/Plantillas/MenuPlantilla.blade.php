@@ -26,24 +26,14 @@
                             <div class="text-center">
                                 <i class="fa fa-file-text-o fa-4x text-info"></i>
                             </div>
-                            <h3 class="profile-username text-center">ACUERDOS</h3>
-                            <a href="{{url('Plantilla_Acuerdos')}}"
+                            <h3 class="profile-username text-center">ACTAS</h3>
+                            <a href="{{url('Plantilla_Actas')}}"
                                class="btn btn-info btn-block btn-sm"><b>Acceder</b></a>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-4 col-sm-12 col-lg-offset-2">
-                    <div class="box box-danger">
-                        <div class="box-body">
-                            <div class="text-center">
-                                <i class="fa fa-book fa-4x text-red"></i>
-                            </div>
-                            <h3 class="profile-username text-center">ACTAS</h3>
-                            <a href="{{ url('Plantilla_Actas') }}" class="btn btn-danger btn-block btn-sm"><b>Acceder</b></a>
-                        </div>
-                    </div>
-                </div>
+              
             </div>
 
          

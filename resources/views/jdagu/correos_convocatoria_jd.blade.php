@@ -28,7 +28,11 @@
         <div class="box-body">
             <form id="convocatoria" method="post" action="{{ route('mailing_jd') }}">
              {{ csrf_field() }}
-              {{ Form::hidden('id_comision', '1') }}
+              <input type="hidden" name="id_comision" id="id_comision" value="{{$reunion->comision_id}}">
+              <input type="hidden" name="id_reunion" id="id_reunion" value="">
+              <input type="hidden" name="id_agenda" id="id_agenda" value="">
+
+
                 <div class="row">
                     <div class="col-lg-4 col-sm-12 col-md-12">
                         <div class="form-group">

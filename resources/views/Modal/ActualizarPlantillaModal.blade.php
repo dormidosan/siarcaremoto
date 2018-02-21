@@ -10,6 +10,7 @@
         El tamaño maximo del archivo a subir, no debe exceder de 10 MB.
     </div>
 
+
     <form id="actualizar_plantilla" name="actualizar_plantilla" method="post"
           action="{{ route("almacenar_plantilla") }}" enctype="multipart/form-data">
         {{ csrf_field() }}
@@ -34,7 +35,7 @@
         </div>
 
         <!-- /.box-body -->
-        <div class="box-footer text-center">
+        <div class="text-center">
             <div class="row">
                 <div class="col-lg-12">
                     <button type="submit" class="btn btn-success">Actualizar Plantilla</button>
@@ -43,7 +44,10 @@
             </div>
         </div>
     </form>
+
 @endsection
+
+
 
 @section("footerModal")
 

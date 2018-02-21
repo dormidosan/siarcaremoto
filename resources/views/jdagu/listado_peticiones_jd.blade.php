@@ -49,7 +49,7 @@
                         <th>Peticionario</th>
                         <th>Ultima asignacion</th>
                         <th>Visto anteriormente por</th>
-                        <th>Acción</th>
+                        <th colspan="2">Acción</th>
                     </tr>
                     </thead>
                     <tbody id="cuerpoTabla" class="table-hover">
@@ -96,8 +96,7 @@
                                 @endforeach
                                 {!! $i !!}
                             </td>
-                            <td class="row">
-                                <div class="col-lg-3 col-sm-12">
+                            <td >
                                     {!! Form::open(['route'=>['seguimiento_peticion_jd'],'method'=> 'POST','id'=>$peticion->id.'1']) !!}
                                     <input type="hidden" name="id_peticion" id="id_peticion" value="{{$peticion->id}}">
                                     <input type="hidden" name="es_reunion" id="es_reunion" value="0">
@@ -105,8 +104,8 @@
                                         <i class="fa fa-eye"></i> Ver
                                     </button>
                                     {!! Form::close() !!}
-                                </div>
-                                <div class="col-lg-1 col-sm-12">
+                            </td>
+                            <td>
                                     {!! Form::open(['route'=>['subir_documento_jd'],'method'=> 'POST','id'=>$peticion->id.'2']) !!}
                                     <input type="hidden" name="id_comision" id="id_comision" value="1">
                                     <input type="hidden" name="id_peticion" id="id_peticion" value="{{$peticion->id}}">
@@ -114,7 +113,7 @@
                                         <i class="fa fa-upload"></i> Subir documentacion
                                     </button>
                                     {!! Form::close() !!}
-                                </div>
+                                
                             </td>
                         </tr>
 

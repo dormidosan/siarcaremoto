@@ -4,10 +4,12 @@
     <link rel="stylesheet" href="{{ asset('libs/datepicker/css/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/datetimepicker/css/bootstrap-datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset("libs/pretty-checkbox/pretty-checkbox.min.css") }}">
-    <link href="{{ asset("libs/MaterialDesign/css/materialdesignicons.css") }}" media="all" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset("libs/MaterialDesign/css/materialdesignicons.css") }}" media="all" rel="stylesheet"
+          type="text/css"/>
     <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
+    <link rel="stylesheet"
+          href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
 
     <style>
@@ -68,7 +70,8 @@
                         <div class="form-group">
                             <label class="control-label">Fecha</label>
                             <div class="input-group input-append date" id="fechaSesion">
-                                <input type="text" class="form-control" id="fecha" name="fecha" placeholder="dd-mm-yyyy"/>
+                                <input type="text" class="form-control" id="fecha" name="fecha"
+                                       placeholder="dd-mm-yyyy"/>
                                 <span class="input-group-addon add-on"><span
                                             class="glyphicon glyphicon-calendar"></span></span>
                             </div>
@@ -109,7 +112,7 @@
 
     <div class="box box-default">
         <div class="box-header">
-            <h3 class="box-title">Listado Sesiones Plenarias</h3>
+            <h3 class="box-title">Listado Agendas Plenarias</h3>
         </div>
         <div class="box-body">
             <div class="table-responsive">
@@ -131,46 +134,55 @@
                     <tbody>
                     @php $contador=1 @endphp
                     @forelse($agendas as $agenda)
-                        
+
                         <tr>
                             <td>{!! $contador !!}</td>
                             <td>{!! $agenda->codigo !!}</td>
-                            <td>{!! $agenda->fecha !!}</td>
+                            <td>{{ date("d-m-Y",strtotime($agenda->fecha)) }}</td>
                             <td>{!! $agenda->lugar !!}</td>
                             <td>{!! $agenda->trascendental?'Si':'No' !!}</td>
                             <td>{!!  $agenda->vigente?'Si':'No' !!}</td>
                             <td>{!! $agenda->activa?'Si':'No' !!}</td>
                             <td>
-                            {!! Form::open(['route'=>['eliminar_agenda_creada_jd'],'method'=> 'POST','id'=>'eliminar_agenda_creada_jd'.$contador]) !!}
-                            <input type="hidden" name="id_agenda" id="id_agenda" value="{{$agenda->id}}">
+                                
+                            @if( $agenda->vigente == 1)
                                 @php $puntos=0 @endphp
                                 @forelse($agenda->puntos as $punto)
                                     @php $puntos++ @endphp
                                 @empty
                                 @endforelse
                                 @if($puntos == 0)
-                                <!--                                                        USA EL ID DE LA AGENDA, NO EL CONTADOR       -->
-                                <!--                                                        USA EL ID DE LA AGENDA, NO EL CONTADOR       -->
-                                <!--                                                        USA EL ID DE LA AGENDA, NO EL CONTADOR       -->
-                                <!--                                                        USA EL ID DE LA AGENDA, NO EL CONTADOR       -->                                
-                                    <button type="button" class="btn btn-danger btn-xs" onclick="eliminar({{$contador}})"><i class="fa fa-trash-o"></i>
-                                        Eliminar
+                                    {!! Form::open(['route'=>['eliminar_agenda_creada_jd'],'method'=> 'POST','id'=>'eliminar_agenda_creada_jd'.$contador]) !!}
+                                    <input type="hidden" name="id_agenda" id="id_agenda" value="{{$agenda->id}}">
+                                        <button type="button" class="btn btn-danger btn-xs" onclick="mostrar_modal_eliminar({{$agenda->id}})">
+                                        <i class="fa fa-trash-o"></i>
+                                            Eliminar
+                                        </button>
+                                    {!! Form::close() !!}
+                                @else
+                                    {!! Form::open(['route'=>['envio_convocatoria'],'method'=> 'POST','id'=>"c".$agenda->id]) !!}
+                                    <input type="hidden" name="id_agenda" id="id_agenda" value="{{$agenda->id}}">
+                                    <button type="submit" class="btn btn-info btn-xs btn-block">
+                                        <i class="fa fa-eye"></i> Enviar convocatoria
                                     </button>
+                                    {!! Form::close() !!}
                                 @endif
-                            {!! Form::close() !!}
+                            @endif
+
+                                
                             </td>
                             <td>
                                 @if($agenda->vigente ==0 )
                                     {!! Form::open(['route'=>['subir_acta_plenaria'],'method'=> 'POST']) !!}
                                     <input type="hidden" name="id_agenda" id="id_agenda" value="{{$agenda->id}}">
-                                        <button type="submit" class="btn btn-info btn-xs btn-block" ><i
-                                                    class="fa fa-upload"></i> Subir Acta Plenaria
-                                        </button>
+                                    <button type="submit" class="btn btn-info btn-xs"><i
+                                                class="fa fa-upload"></i> Subir Acta Plenaria
+                                    </button>
                                     {!! Form::close() !!}
                                 @endif
                             </td>
                         </tr>
-                        
+
                         @php $contador++ @endphp
                     @empty
                         <p style="color: red ;">No hay criterios de busqueda</p>
@@ -183,7 +195,10 @@
         </div>
     </div>
 
-@endsection @section("js")
+    @include("Modal.EliminarSesionPlenariaJD")
+@endsection
+
+@section("js")
     <script src="{{ asset('libs/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('libs/datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
     <script src="{{ asset('libs/datetimepicker/js/moment.min.js') }}"></script>
@@ -216,7 +231,7 @@
                 }).on('changeDate', function (e) {
                 // Revalidate the start date field
                 $('#convocatoria').formValidation('revalidateField', 'fecha');
-                });
+            });
 
             $('#hora').datetimepicker({
                 format: 'LT'
@@ -253,7 +268,7 @@
                             date: {
                                 format: 'DD-MM-YYYY',
                                 min: "{{ \Carbon\Carbon::now()->format("d-m-Y") }}",
-                                message: 'La fecha debe ser igual o mayor que '+ "{{ \Carbon\Carbon::now()->format("d-m-Y") }}"
+                                message: 'La fecha debe ser igual o mayor que ' + "{{ \Carbon\Carbon::now()->format("d-m-Y") }}"
                             },
                             notEmpty: {
                                 message: 'La fecha de la sesion es requerida'
@@ -268,7 +283,7 @@
                         }
                     }
                 }
-            }).on('success.form.fv', function(e) {
+            }).on('success.form.fv', function (e) {
                 // Prevent form submission
                 e.preventDefault();
 
@@ -313,22 +328,34 @@
                 },
                 "order": [[0, 'asc']],
                 "columnDefs": [
-                    { "orderable": false, "targets": [0,5,6,7,8] }
+                    {"orderable": false, "targets": [0, 5, 6, 7, 8]}
                 ]
             });
         });
 
-        function eliminar(i) {
-            var form = $("#eliminar_agenda_creada_jd"+i).serialize();
+
+        function mostrar_modal_eliminar(id_agenda) {
+            $("#id_agenda_eliminar").attr("value",id_agenda);
+            $("#eliminarSesionPlenariaJD").modal('show');
+        }
+
+
+        function eliminar() {
+            //var form = $("#eliminar_agenda_creada_jd" + i).serialize();
+            var id_agenda = $("#id_agenda_eliminar").val();
             $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
                 type: 'POST',
                 url: "{{ route('eliminar_agenda_creada_jd') }}",
-                data: form,
+                data: {id_agenda: id_agenda},
                 success: function (response) {
+                    $("#eliminarSesionPlenariaJD").modal('hide');
                     notificacion(response.mensaje.titulo, response.mensaje.contenido, response.mensaje.tipo);
                     setTimeout(function () {
                         window.location.href = '{{ route("listado_agenda_plenaria_jd") }}';
-                    }, 400);
+                    }, 500);
                 }
             });
 

@@ -170,7 +170,7 @@ Por el pago de dietas de Junta Directiva de la AGU. del año {{$anio}}. son los 
  </div> 
 
 <div id="cp5" style="text-align: left;">
- Y para los efectos de su declaración de impuestos sobre la Renta, se extiende la presente a los veintiséis días del mes de mayo de dos mil diecisiete.
+ Y para los efectos de su declaración de impuestos sobre la Renta, se extiende la presente.
  </div> 
 
 <div id="footer" style="text-align: center;">

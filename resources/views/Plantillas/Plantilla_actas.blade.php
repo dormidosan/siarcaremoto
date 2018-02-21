@@ -71,6 +71,7 @@
 
 
                     <th>Descargar</th>
+                    <th>Acuerdos</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -105,6 +106,12 @@
 
                     <td>de {{$result->inicio}} al {{$result->fin}}</td>
                     <td><a href="{{url("/desc_Plantilla_actas/$result->id.$result->periodo_id.$result->codigo.$result->fecha.$result->lugar")}}" class="btn btn-block btn-success btn-xs">DESCARGAR</a>
+                    </td>
+
+                      <td>
+                      
+                        <a href="{{url("/buscar_propuesta/$result->id.$result->periodo_id.$result->codigo.$result->fecha.$result->lugar")}}" class="btn btn-block btn-success btn-xs">VER ACUERDOS</a>
+
                     </td>
 
                 </tr>

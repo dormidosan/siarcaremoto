@@ -6,7 +6,8 @@
     <link rel="stylesheet" href="{{ asset('libs/select2/css/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
+    <link rel="stylesheet"
+          href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
 @endsection
 
@@ -92,7 +93,8 @@
                     </tr>
                     </thead>
                     <tbody id="cuerpoTabla">
-                    @php $contador =1 @endphp @forelse($reuniones as $reunion)
+                    @php $contador =1 @endphp
+                    @forelse($reuniones as $reunion)
 
                         <tr>
                             <td>
@@ -100,12 +102,12 @@
                             </td>
                             <td>{!! $reunion->codigo !!}</td>
                             <td>{!! $reunion->lugar !!}</td>
-                            <td>{!! $reunion->convocatoria !!}</td>
-                            <td>{{ date("m-d-Y h:i A",strtotime($reunion->inicio)) }}</td>
-                            <td>{{ date("m-d-Y h:i A",strtotime($reunion->fin)) }}</td>
+                            <td>{{ \Carbon\Carbon::parse($reunion->convocatoria)->format('d-m-Y h:i A') }}</td>
+                            <td>{{ ($reunion->inicio) ? \Carbon\Carbon::parse($reunion->inicio)->format('h:i A') : "No Iniciada" }}</td>
+                            <td>{{ ($reunion->fin) ? \Carbon\Carbon::parse($reunion->fin)->format('h:i A') : "No Finalizada" }}</td>
                             @if($reunion->vigente == 1)
                                 <td>
-                                    {!! Form::open(['route'=>['enviar_convocatoria_comision'],'method'=> 'POST','id'=>"c".$reunion->id]) !!}
+                                    {!! Form::open(['route'=>['envio_convocatoria'],'method'=> 'POST','id'=>"c".$reunion->id]) !!}
                                     <input type="hidden" name="id_comision" id="id_comision"
                                            value="{{$reunion->comision_id}}">
                                     <input type="hidden" name="id_reunion" id="id_reunion" value="{{$reunion->id}}">
@@ -116,18 +118,14 @@
                                 </td>
                                 @if($reunion->activa == 0)
                                     <td>
-                                        {!! Form::open(['route'=>['eliminar_reunion_comision'],'method'=> 'POST','id'=>"d".$reunion->id]) !!}
-                                        <input type="hidden" name="id_comision" id="id_comision"
-                                               value="{{$reunion->comision_id}}">
-                                        <input type="hidden" name="id_reunion" id="id_reunion" value="{{$reunion->id}}">
-                                        <button type="submit" class="btn btn-danger btn-xs btn-block">
-                                            <i class="fa fa-eye"></i> Eliminar reunion
-                                        </button>
-                                        {!! Form::close() !!}
+                                        <button type="button" id="btn_eliminar" class="btn btn-danger btn-xs btn-block" onclick="mostrar_modal_eliminar({{$reunion->comision_id}},{{$reunion->id}})"><i class="fa fa-trash"></i> Eliminar reunion</button>
                                     </td>
                                 @else
                                     <td></td>
                                 @endif
+                            @else
+                                <td></td>
+                                <td></td>
                             @endif
                         </tr>
                     @empty
@@ -140,6 +138,8 @@
             </div>
         </div>
     </div>
+
+    @include("Modal.EliminarReunionComision")
 @endsection
 
 @section("js")
@@ -215,7 +215,7 @@
                             date: {
                                 format: 'DD-MM-YYYY',
                                 min: "{{ \Carbon\Carbon::now()->format("d-m-Y") }}",
-                                message: 'La fecha no es una fecha valida, debe ser mayor o igual que '+ "{{ \Carbon\Carbon::now()->format("d-m-Y") }}"
+                                message: 'La fecha no es una fecha valida, debe ser mayor o igual que ' + "{{ \Carbon\Carbon::now()->format("d-m-Y") }}"
                             },
                             notEmpty: {
                                 message: 'La fecha de la sesion es requerida'
@@ -230,11 +230,55 @@
                         }
                     }
                 }
+            }).on('success.form.fv', function (e) {
+                // Prevent form submission
+                e.preventDefault();
+
+                var form = $("#convocatoria").serialize();
+                $.ajax({
+                    type: 'POST',
+                    url: "{{ route('crear_reunion_comision') }}",
+                    data: form,
+                    success: function (response) {
+                        document.getElementById("convocatoria").reset();
+                        $("#convocatoria").data('formValidation').resetForm();
+                        $("#cuerpoTabla").html(response.html);
+                        notificacion(response.mensaje.titulo, response.mensaje.contenido, response.mensaje.tipo);
+                    }
+                });
             });
 
         });
+
+        function mostrar_modal_eliminar(id_comision,id_reunion) {
+            $("#id_comision_eliminar").attr("value",id_comision);
+            $("#id_reunion_eliminar").attr("value",id_reunion);
+            $("#eliminarReunionComision").modal('show');
+        }
+
+
+        function eliminar() {
+            //var form = $("#eliminar_agenda_creada_jd" + i).serialize();
+            var id_comision = $("#id_comision_eliminar").val();
+            var id_reunion = $("#id_reunion_eliminar").val();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                type: 'POST',
+                url: "{{ route('eliminar_reunion_comision') }}",
+                data: {id_comision: id_comision, id_reunion: id_reunion},
+                success: function (response) {
+                    $("#eliminarReunionComision").modal('hide');
+                    $("#cuerpoTabla").html(response.html);
+                    notificacion(response.mensaje.titulo, response.mensaje.contenido, response.mensaje.tipo);
+                }
+            });
+
+        }
     </script>
 @endsection
+
 @section("lobibox")
 
     @if(Session::has('success'))

@@ -25,7 +25,7 @@ Carlos Alberto Noyola Sanchez
 Mienbro de Consejo Superior Universitario
 	
 </pre>
-<img src="{!! $message->embed(public_path() . '/images/logo_agu.jpg') !!}" />
+<img src="{!! $message->embed(public_path().'/images/logo_agu.jpg') !!}" />
 </body>
 </html>
 

@@ -1,4 +1,3 @@
-
 <div class="modal fade" id="@yield("idModal")" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog @yield("size")" role="document">
         <div class="modal-content">
