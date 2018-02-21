@@ -27,7 +27,7 @@ class AsambleistaController extends Controller
                         ->get();
         //dd($asambleistas);
         $fotos = "../../storage/fotos/";
-        $disco = "../storage/documentos/";
+        $disco = "../../storage/documentos/";
 
         return view("Asambleistas.ListadoAsambleistaFacultad",["facultades"=>$facultades,"asambleistas"=>$asambleistas,"fotos"=>$fotos,"disco"=>$disco]);
     }
@@ -50,7 +50,7 @@ class AsambleistaController extends Controller
             ->get();
 
         $fotos = "../../storage/fotos/";
-        $disco = "../storage/documentos/";
+        $disco = "../../storage/documentos/";
 
         return view("Asambleistas.ListadoAsambleistasComision", ['comisiones' => $comisiones, 'cargos' => $cargos,"fotos"=>$fotos,"disco"=>$disco]);
 
@@ -81,7 +81,7 @@ class AsambleistaController extends Controller
         //dd($asambleistas);
         //dd($asambleistas);
         $fotos = "../../storage/fotos/";
-        $disco = "../storage/documentos/";
+        $disco = "../../storage/documentos/";
 
         return view("Asambleistas.ListadoAsambleistasJunta",["cargos"=>$cargos,"fotos"=>$fotos,"disco"=>$disco]);
 

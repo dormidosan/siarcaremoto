@@ -1,4 +1,8 @@
 @extends('layouts.app')
+@section('styles')
+    <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
+
+@endsection
 
 @section('breadcrumb')
     <section>
@@ -98,6 +102,15 @@
                                 </button>
                             </td>
                             {!! Form::close() !!}
+                            {!! Form::open(['route'=>['retirar_peticion_comision'],'method'=> 'POST','id'=>$peticion->id.'2']) !!}
+                            <input type="hidden" name="id_comision" id="id_comision" value="{{ $comision->id }}">
+                            <input type="hidden" name="id_peticion" id="id_peticion"  value="{{$peticion->id}}">
+                            <td>
+                                <button type="submit" class="btn btn-danger btn-xs btn-block" onclick="return confirm('¿Esta seguro de eliminar peticion de la comision?');">
+                                    <i class="fa fa-unlink"></i> Retirar peticion
+                                </button>
+                            </td>
+                            {!! Form::close() !!}
                             @php $contador++ @endphp
                         </tr>
                     @endforeach
@@ -106,4 +119,20 @@
             </div>
         </div>
     </div>
+@endsection
+
+@section("js")
+    <script src="{{ asset('libs/utils/utils.js') }}"></script>
+    <script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
+@endsection
+
+@section("lobibox")
+
+    @if(Session::has('success'))
+        <script>
+            notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
+        </script>
+    @endif
+
 @endsection

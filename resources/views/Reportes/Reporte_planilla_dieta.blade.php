@@ -46,7 +46,7 @@
                             </div>-->
 
                             <select required="true" class="form-control" id="fecha1" name="fecha1">
-                                <option value="{{old("fecha1")}}">Seleccione un mes</option>
+                                <option value="0">Seleccione un mes</option>
                                 <option value="1">Enero</option>
                                 <option value="2">Febrero</option>
                                 <option value="3">Marzo</option>

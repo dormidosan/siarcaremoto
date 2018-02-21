@@ -87,7 +87,44 @@ class ComisionController extends Controller
             ->orderBy('peticiones.created_at', 'asc')
             ->get();
 
- 
+
+        return view("Comisiones.listado_peticiones_comision", ["comision" => $comision, "peticiones" => $peticiones]);
+    }
+
+    public function retirar_peticion_comision(Request $request)
+    {
+        $peticion = Peticion::where('id', '=', $request->id_peticion)->first();
+        //dd($seguimiento);
+        //dd($peticion->comisiones());
+        //$peticion->comisiones()->attach('5');
+
+        //$peticion->comisiones()->attach($id_comision);
+        //obtengo una comision
+        //dd($request->all());
+        $comision = Comision::where('id', '=', $request->id_comision)->first();
+
+        $seguimiento = Seguimiento::where('estado_seguimiento_id', '=', 2)
+            ->where('peticion_id', '=', $peticion->id)
+            ->where('comision_id', '=', $comision->id)
+            ->where('activo', '=', 1)
+            ->first();
+
+        // estado seguimiento 2 es el metodo de control para decir que esta en transito en esta comision, y no debe cambiar
+        //hay que consultar los seguimientos de esta peticion en esta comision que esten activos, y proceder a inactivarlo por que ya paso por esta comision
+        $seguimiento->activo = 0;
+        $seguimiento->fin = Carbon::now();
+        $seguimiento->save();
+
+        //dd($comision);
+        $comision->peticiones()->detach($peticion->id);
+        //dd($seguimiento);
+        //dd($comision->peticiones());
+        $request->session()->flash("success", "Peticion: " . $peticion->codigo . " retirada de la comision: ");
+        $peticiones = $comision->peticiones()
+            ->orderBy('peticiones.created_at', 'asc')
+            ->get();
+
+
         return view("Comisiones.listado_peticiones_comision", ["comision" => $comision, "peticiones" => $peticiones]);
     }
 
@@ -210,7 +247,7 @@ class ComisionController extends Controller
         $reunion->activa = '1';
         $reunion->inicio = Carbon::now()->format('Y-m-d H:i:s');
         $reunion->save();
-        
+
 
         $todos_puntos = 1;
 
@@ -270,12 +307,13 @@ class ComisionController extends Controller
         $peticion = Peticion::find($request->get("id_peticion"));
         $comision = Comision::find($request->get("id_comision"));
 
+
         if ($request->get("id_reunion") == "") {
             return view('Comisiones.seguimiento_peticion_comision', array("disco" => $disco, "comision" => $comision, "peticion" => $peticion));
         } else {
             $reunion = Reunion::find($request->get("id_reunion"));
             //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-            $seguimiento_exist = $this->existeSeguimiento($peticion->id,$comision->id,EstadoSeguimiento::where('estado', '=', "ds")->first()->id);
+            $seguimiento_exist = $this->existeSeguimiento($peticion->id, $comision->id, EstadoSeguimiento::where('estado', '=', "ds")->first()->id);
 
             if ($seguimiento_exist == 0) {
                 $seguimiento = new Seguimiento();
@@ -292,18 +330,15 @@ class ComisionController extends Controller
                 $seguimiento->activo = '0';
                 $seguimiento->agendado = '0';
 
-                $seguimiento->descripcion = 'Peticion discutida en '.$comision->nombre; //COLOCAR FECHA DESPUES
+                $seguimiento->descripcion = 'Peticion discutida en ' . $comision->nombre; //COLOCAR FECHA DESPUES
                 $seguimiento->save();
             }
 
             //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
 
 
-
-            
             return view('Comisiones.seguimiento_peticion_comision', array("disco" => $disco, "comision" => $comision, "reunion" => $reunion, "peticion" => $peticion));
         }
-
 
     }
 
@@ -344,9 +379,9 @@ class ComisionController extends Controller
         $reuniones = Reunion::where('comision_id', '=', $comision->id)->where('periodo_id', '=', $periodo->id)->orderBy('created_at', 'DESC')->get();
         $disco = "../storage/documentos/";
 
-        $seguimientos = Seguimiento::where('comision_id','=',$comision->id)
-        ->where('documento_id','!=',NULL)
-        ->get();
+        $seguimientos = Seguimiento::where('comision_id', '=', $comision->id)
+            ->where('documento_id', '!=', NULL)
+            ->get();
 
         //dd($seguimientos);
 
@@ -410,7 +445,7 @@ class ComisionController extends Controller
 
 
             //$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
-            $seguimiento_exist = $this->existeSeguimiento($peticion->id,$comision->id,EstadoSeguimiento::where('estado', '=', "ds")->first()->id);
+            $seguimiento_exist = $this->existeSeguimiento($peticion->id, $comision->id, EstadoSeguimiento::where('estado', '=', "ds")->first()->id);
 
             if ($seguimiento_exist == 0) {
                 $seguimiento = new Seguimiento();
@@ -427,7 +462,7 @@ class ComisionController extends Controller
                 $seguimiento->activo = '0';
                 $seguimiento->agendado = '0';
 
-                $seguimiento->descripcion = 'Peticion discutida en '.$comision->nombre; //COLOCAR FECHA DESPUES
+                $seguimiento->descripcion = 'Peticion discutida en ' . $comision->nombre; //COLOCAR FECHA DESPUES
                 $seguimiento->save();
             }
 
@@ -482,56 +517,44 @@ class ComisionController extends Controller
 
     public function crear_reunion_comision(Request $request, Redirector $redirect)
     {
-        $comision = Comision::where('id', '=', $request->id_comision)->first();
-        $reunion = new Reunion();
-        $reunion->comision_id = $comision->id;
-        $reunion->periodo_id = Periodo::latest()->first()->id;
-        $reunion->codigo = $comision->codigo . " " . \DateTime::createFromFormat('d-m-Y', $request->fecha)->format('d-m-y');
-        $reunion->lugar = $request->lugar;
-        $reunion->convocatoria = DateTime::createFromFormat('d-m-Y h:i A', $request->fecha . ' ' . date('h:i A', strtotime($request->hora)))->format('Y-m-d H:i:s');
-        $reunion->vigente = '1';
-        $reunion->activa = '0';
-        $reunion->save();
+        if ($request->ajax()) {
 
-        $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', $request->id_comision)->orderBy('created_at', 'DESC')->get();
+            $comision = Comision::where('id', '=', $request->id_comision)->first();
+            $reunion = new Reunion();
+            $reunion->comision_id = $comision->id;
+            $reunion->periodo_id = Periodo::latest()->first()->id;
+            $reunion->codigo = $comision->codigo . " " . \DateTime::createFromFormat('d-m-Y', $request->fecha)->format('d-m-y');
+            $reunion->lugar = $request->lugar;
+            $reunion->convocatoria = DateTime::createFromFormat('d-m-Y h:i A', $request->fecha . ' ' . date('h:i A', strtotime($request->hora)))->format('Y-m-d H:i:s');
+            $reunion->vigente = '1';
+            $reunion->activa = '0';
+            $reunion->save();
 
-        return view('Comisiones.convocatoria_comision')
-            ->with('reuniones', $reuniones)
-            ->with('comision', $comision);
+            $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', $request->id_comision)->orderBy('created_at', 'DESC')->get();
+
+            $respuesta = new \stdClass();
+            $respuesta->html = $this->generar_table_body($request->id_comision);
+            $respuesta->mensaje = (new Mensaje("Exito", "Reunion creada con exito", "success"))->toArray();
+            return new JsonResponse($respuesta);
+
+        }
     }
 
     public function eliminar_reunion_comision(Request $request, Redirector $redirect)
     {
-        $comision = Comision::where('id', '=', $request->id_comision)->first();
-        $reunion = Reunion::where('id', '=', $request->id_reunion)->first();
-        $reunion->delete();
-        $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', $request->id_comision)->orderBy('created_at', 'DESC')->get();
-        $request->session()->flash("error", 'Reunion eliminada con exito');
-        return view('Comisiones.convocatoria_comision')
-            ->with('reuniones', $reuniones)
-            ->with('comision', $comision);
-    }
-
-    public function enviar_convocatoria_comision(Request $request, Redirector $redirect)
-    {
-        $comision = Comision::where('id', '=', $request->id_comision)->first();
-        $reunion = Reunion::where('id', '=', $request->id_reunion)->first();
-        $cargos = $comision->cargos;
-        foreach ($cargos as $cargo) {
-            $destinatario = $cargo->asambleista->user->email;
-            $nombre = $cargo->asambleista->user->persona->primer_nombre . " " . $cargo->asambleista->user->persona->segundo_nombre;
-            Mail::queue('correo.contact', $request->all(), function ($message) use ($destinatario, $nombre, $comision) {
-                $message->from('from@example.com');
-                $message->subject("Convocatoria " . $comision->nombre . " para: " . $nombre);
-                $message->to($destinatario, $nombre);
-            });
+        if ($request->ajax()){
+            $comision = Comision::where('id', '=', $request->id_comision)->first();
+            $reunion = Reunion::where('id', '=', $request->id_reunion)->first();
+            $reunion->delete();
+            $respuesta = new \stdClass();
+            $respuesta->html = $this->generar_table_body($request->id_comision);
+            $respuesta->mensaje = (new Mensaje("Exito", "Reunion eliminada con exito", "error"))->toArray();
+            return new JsonResponse($respuesta);
         }
 
-        $request->session()->flash("success", 'Correos electronicos enviados');
-        $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', $request->id_comision)->orderBy('created_at', 'DESC')->get();
-        return view('Comisiones.convocatoria_comision')
-            ->with('reuniones', $reuniones);
     }
+
+
 
     public function subir_bitacora_comision(Request $request)
     {
@@ -583,20 +606,21 @@ class ComisionController extends Controller
 
     public function listado_agenda_comision(Request $request, Redirector $redirect)
     {
-        $agendas = Agenda::where('id','!=',0)->orderBy('updated_at','DESC')->get();
+        $agendas = Agenda::where('id', '!=', 0)->orderBy('updated_at', 'DESC')->get();
         return view('jdagu.listado_agenda_plenaria_jd')
             ->with('agendas', $agendas);
 
     }
 
-    public function existeSeguimiento($peticion_id,$comision_id,$estado_seguimiento_id) {
+    public function existeSeguimiento($peticion_id, $comision_id, $estado_seguimiento_id)
+    {
         //dd($comision_id);
-         
-        $seguimiento_exist = Seguimiento::where('peticion_id','=',$peticion_id)
-        ->where('comision_id','=',$comision_id)
-        ->where('estado_seguimiento_id','=',$estado_seguimiento_id)
-        ->where('inicio','=',Carbon::now()->toDateString())
-        ->first();
+
+        $seguimiento_exist = Seguimiento::where('peticion_id', '=', $peticion_id)
+            ->where('comision_id', '=', $comision_id)
+            ->where('estado_seguimiento_id', '=', $estado_seguimiento_id)
+            ->where('inicio', '=', Carbon::now()->toDateString())
+            ->first();
 
         //dd($seguimiento_exist);
         if ($seguimiento_exist) {
@@ -604,10 +628,64 @@ class ComisionController extends Controller
         } else {
             return '0';
         }
-    
+    }
 
-    
+    private function generar_table_body($comision_id)
+    {
+        $comision = Comision::where("id", $comision_id)->first();
+        $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', $comision_id)->orderBy('created_at', 'DESC')->get();
+        $contador = 1;
+        $table_body = "";
+
+        foreach ($reuniones as $reunion) {
+            $table_body .= "<tr>
+                                <td>" . $contador++ . "</td>
+                                <td>" . $reunion->codigo . "</td>
+                                <td>" . $reunion->lugar . "</td>
+                                <td>" . Carbon::parse($reunion->convocatoria)->format('d-m-Y h:i A') . "</td>";
+
+            if ($reunion->inicio)
+                $table_body .= "<td>" . Carbon::parse($reunion->inicio)->format('h:i A') . "</td>";
+            else
+                $table_body .= "<td>No iniciada</td>";
+
+            if ($reunion->fin)
+                $table_body .= "<td>" . Carbon::parse($reunion->fin)->format('h:i A') . "</td>";
+            else
+                $table_body .= "<td>No finalizada</td>";
+
+            if ($reunion->vigente == 1){
+                $id = 'c'.$reunion->id;
+                $table_body .= "<td>
+                                    <form id='$id' method='POST' route='". route('correo')."'>". csrf_field()."
+                                        <input type='hidden' name='id_comision' id='id_comision' value='$reunion->comision_id'>
+                                        <input type='hidden' name='id_reunion' id='id_reunion' value='$reunion->id'>
+                                        <button type='submit' class='btn btn-info btn-xs btn-block'><i class='fa fa-eye'></i> Enviar Convocatoria</button>
+                                    </form>
+                                </td>";
+
+                if ($reunion->activa == 0){
+                    $id2 = 'd'.$reunion->id;
+                    $table_body .= "<td>
+                                    <button type='button' id='btn_eliminar' class='btn btn-danger btn-xs btn-block' onclick='mostrar_modal_eliminar(". $reunion->comision->id.",". $reunion->id.")'><i class='fa fa-trash'></i> Eliminar Reunion</button>
+                                </td>";
+                }else{
+                    $table_body .= "<td></td>";
+                }
+            }else{
+                $table_body .= "<td></td><td></td>";
+            }
+
+            $table_body .= "</tr>";
+        }
+
+        return $table_body;
+
+
     }
 
 
 }
+
+
+

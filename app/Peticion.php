@@ -8,6 +8,7 @@ class Peticion extends Model
 {
     //
 	protected $table = 'peticiones';
+    public $timestamps = true;
 
 	public function seguimientos()
     {

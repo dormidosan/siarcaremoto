@@ -43,9 +43,10 @@ Route::group(['prefix' => 'comisiones'], function () {
     Route::post('subir_atestado_comision', 'ComisionController@subir_atestado_comision')->name('subir_atestado_comision');
     Route::post('crear_reunion_comision', array('as' => 'crear_reunion_comision', 'uses' => 'ComisionController@crear_reunion_comision'));
     Route::post('eliminar_reunion_comision', array('as' => 'eliminar_reunion_comision', 'uses' => 'ComisionController@eliminar_reunion_comision'));
-    Route::post('enviar_convocatoria_comision', array('as' => 'enviar_convocatoria_comision', 'uses' => 'ComisionController@enviar_convocatoria_comision'));
+    
     Route::post('subir_bitacora_comision', array('as' => 'subir_bitacora_comision', 'uses' => 'ComisionController@subir_bitacora_comision'));
     Route::post('guardar_bitacora_comision', array('as' => 'guardar_bitacora_comision', 'uses' => 'ComisionController@guardar_bitacora_comision'));
+    Route::post('retirar_peticion_comision', array('as' => 'retirar_peticion_comision', 'uses' => 'ComisionController@retirar_peticion_comision'));
 });
 
 
@@ -196,7 +197,6 @@ Route::get('/Reporte_Convocatorias', function () {
 });
 
 
-
 Route::group(['prefix' => 'plenarias'], function () {
     Route::get('descargar_documento/{id}', 'DocumentoController@descargar_documento')->name("descargar_documento");
     Route::post('sala_sesion_plenaria', array('as' => 'sala_sesion_plenaria', 'uses' => 'AgendaController@sala_sesion_plenaria'));
@@ -303,7 +303,7 @@ Route::group(['prefix' => 'juntadirectiva'], function () {
     Route::post('generar_agenda_plenaria_jd', 'JuntaDirectivaController@generar_agenda_plenaria_jd')->name("generar_agenda_plenaria_jd");
     Route::post('crear_reunion_jd', array('as' => 'crear_reunion_jd', 'uses' => 'JuntaDirectivaController@crear_reunion_jd'));
     Route::post('eliminar_reunion_jd', array('as' => 'eliminar_reunion_jd', 'uses' => 'JuntaDirectivaController@eliminar_reunion_jd'));
-    Route::post('enviar_convocatoria_jd', array('as' => 'enviar_convocatoria_jd', 'uses' => 'JuntaDirectivaController@enviar_convocatoria_jd'));
+    
     Route::post('subir_documento_jd', array('as' => 'subir_documento_jd', 'uses' => 'JuntaDirectivaController@subir_documento_jd'));
     Route::post('guardar_documento_jd', array('as' => 'guardar_documento_jd', 'uses' => 'JuntaDirectivaController@guardar_documento_jd'));
     Route::post('subir_bitacora_jd', array('as' => 'subir_bitacora_jd', 'uses' => 'JuntaDirectivaController@subir_bitacora_jd'));
@@ -315,9 +315,6 @@ Route::group(['prefix' => 'juntadirectiva'], function () {
     Route::post('registrar_asistencia', 'JuntaDirectivaController@registrar_asistencia')->name('registrar_asistencia');
 });
 
-Route::get('convocatoria_jd', array('as' => 'convocatoria_jd', 'uses' => 'MailController@convocatoria_jd'));
-Route::get('crear_convocatoria', array('as' => 'crear_convocatoria', 'uses' => 'MailController@crear_convocatoria'));
-Route::post('mailing_jd', array('as' => 'mailing_jd', 'uses' => 'MailController@mailing_jd'));
 
 /* Routes generales */
 Route::get('busqueda', 'DocumentoController@busqueda')->name('busqueda');
@@ -332,3 +329,13 @@ Route::get('/home', 'HomeController@index');
 Route::get('mostrar_datos_usuario','UsuarioController@mostrar_datos_usuario')->name('mostrar_datos_usuario');
 Route::post('actualizar_contraseña','UsuarioController@actualizar_contraseña')->name('actualizar_contraseña');
 Route::post('actualizar_imagen','UsuarioController@actualizar_imagen')->name('actualizar_imagen');
+
+/*
+Route::post('/correo', function () {
+    dd('entro al display');
+    return view('welcome');
+})->name("correo");
+*/
+Route::post('envio_convocatoria', array('as' => 'envio_convocatoria', 'uses' => 'MailController@envio_convocatoria'));
+Route::post('enviar_correo', array('as' => 'enviar_correo', 'uses' => 'MailController@enviar_correo'));
+

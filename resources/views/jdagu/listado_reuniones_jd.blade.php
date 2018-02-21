@@ -42,8 +42,8 @@
                             <td>{!! $reunion->codigo !!}</td>
                             <td>{!! $reunion->lugar !!}</td>
                             <td>{{ \Carbon\Carbon::parse($reunion->convocatoria)->format('d-m-Y h:i A') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reunion->inicio)->format('d-m-Y') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($reunion->fin)->format('d-m-Y') }}</td>
+                            <td>{{ ($reunion->inicio) ? \Carbon\Carbon::parse($reunion->inicio)->format('h:i A') : "No Iniciada" }}</td>
+                            <td>{{ ($reunion->fin) ? \Carbon\Carbon::parse($reunion->fin)->format('h:i A') : "No Finalizada" }}</td>
                             @if($reunion->vigente == 1)
                                 {!! Form::open(['route'=>['iniciar_reunion_jd'],'method'=> 'POST']) !!}
                                 <input type="hidden" name="id_comision" id="id_comision"

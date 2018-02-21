@@ -116,33 +116,6 @@ class JuntaDirectivaController extends Controller
             ->with('reuniones', $reuniones);
     }
 
-    public function enviar_convocatoria_jd(Request $request, Redirector $redirect)
-    {
-        $comision = Comision::where('id', '=', $request->id_comision)->first();
-        $reunion = Reunion::where('id', '=', $request->id_reunion)->first();
-        $cargos = $comision->cargos;
-        //$contador = 0;
-        foreach ($cargos as $cargo) {
-            $destinatario = $cargo->asambleista->user->email;
-            $nombre = $cargo->asambleista->user->persona->primer_nombre . " " . $cargo->asambleista->user->persona->segundo_nombre;
-            Mail::queue('correo.contact', $request->all(), function ($message) use ($destinatario, $nombre, $comision) {
-                $message->from('from@example.com');
-                $message->subject("Convocatoria " . $comision->nombre . " para: " . $nombre);
-                $message->to($destinatario, $nombre);
-            });
-            //$contador++;
-        }
-
-        //dd($contador);
-        $request->session()->flash("success", 'Correos electronicos enviados');
-
-        //$peticiones = Peticion::where('id','!=',0)->get(); //->paginate(10); para obtener todos los resultados  o null
-        $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', '1')->orderBy('created_at', 'DESC')->get();
-
-        return view('jdagu.generar_reuniones_jd')
-            ->with('reuniones', $reuniones);
-    }
-
     public function seguimiento_peticion_jd(Request $request, Redirector $redirect)
     {
 
@@ -208,8 +181,7 @@ class JuntaDirectivaController extends Controller
     }
 
     public function eliminar_agenda_creada_jd(Request $request, Redirector $redirect)
-    {   //dd($request->all());
-
+    {
         if ($request->ajax()) {
             $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
             $agenda->delete();
@@ -749,7 +721,7 @@ class JuntaDirectivaController extends Controller
 
 
         $seguimientos = Seguimiento::where('peticion_id', '=', $id_peticion)->where('activo', '=', 1)->get();
-        $tipo_documentos = TipoDocumento::where('tipo', '=', 'atestado')->orWhere('tipo', '=', 'dictamen')->pluck('tipo', 'id');
+        $tipo_documentos = TipoDocumento::where('tipo', '=', 'atestado')->orWhere('tipo', '=', 'dictamen')->orWhere('tipo', '=', 'acuerdo')->pluck('tipo', 'id');
         //dd($tipo_documentos);
 
         $disco = "../storage/documentos/";
@@ -842,13 +814,16 @@ class JuntaDirectivaController extends Controller
         $seguimiento->agendado = '0';
 
         //$seguimiento->descripcion = Parametro::where('parametro','=','des_nuevo_seguimiento')->get('valor');
-        $seguimiento->descripcion = 'carga de ' . TipoDocumento::where('id', '=', $tipo_documento)->first()->tipo;
+        $tipo_documento_nombre = TipoDocumento::where('id', '=', $tipo_documento)->first()->tipo;
+        $seguimiento->descripcion = 'carga de ' .$tipo_documento_nombre;
         $seguimiento->save();
-
+        if ($tipo_documento_nombre == "acuerdo") {
+            $acuerdo_creado = $this->correos_peticion_acuerdo($peticion,$seguimiento->inicio);   
+        }
 
         //**************************************************
         $seguimientos = Seguimiento::where('peticion_id', '=', $id_peticion)->where('activo', '=', 1)->get();
-        $tipo_documentos = TipoDocumento::where('tipo', '=', 'atestado')->orWhere('tipo', '=', 'dictamen')->pluck('tipo', 'id');
+        $tipo_documentos = TipoDocumento::where('tipo', '=', 'atestado')->orWhere('tipo', '=', 'dictamen')->orWhere('tipo', '=', 'acuerdo')->pluck('tipo', 'id');
         //dd($tipo_documentos);
 
         $disco = "../storage/documentos/";
@@ -1128,6 +1103,33 @@ class JuntaDirectivaController extends Controller
 
     
     }
+
+
+    public function correos_peticion_acuerdo($peticion,$fecha_seguimiento)
+    {    
+        $asunto = "Acuerdo de peticion disponible";
+
+        $fecha = Carbon::parse($fecha_seguimiento)->format('d-m-Y');
+        $hora = Carbon::parse($fecha_seguimiento)->format('h:i A');
+
+            // $contenido = "El contenido del mail enviado desde el controlador a la vistas";
+        $correo_destinatario = $peticion->correo;
+        //dd($fecha);
+        Mail::queue('correos.peticion_acuerdo_mail', ['peticion' => $peticion,'fecha' => $fecha,'hora' => $hora], 
+            function ($mail) use ($asunto,$correo_destinatario) {
+            $mail->from('siarcaf@gmail.com', 'Sistema de acuerdos y actas AGU'); 
+            $mail->to($correo_destinatario);
+            $mail->subject($asunto);
+        }); 
+        
+          
+
+            return 0;
+        
+    }
+
+
+    
 
 
 

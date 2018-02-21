@@ -23,10 +23,11 @@ class PlantillasController extends Controller
         $fechainicial=$request->fecha1;
         $fechafinal=$request->fecha2;   
 
-        $date1 = Date($fechainicial);
-        $date2 = Date($fechafinal);
+        $date1 = Carbon::create(explode('/', $fechainicial)[2],explode('/', $fechainicial)[1],explode('/', $fechainicial)[0]);
+        $date2 = Carbon::create(explode('/', $fechafinal)[2],explode('/', $fechafinal)[1],explode('/', $fechafinal)[0]);
 
-        if($date1>$date2){
+       
+        if($date1->gt($date2)){
         $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
         return view("Plantillas.Plantilla_actas")
         ->with('resultados',NULL);
@@ -239,21 +240,21 @@ $header = $section->createHeader();
 $textrun = $section->addTextRun('p2Style');
 
 
-$header->addImage('C:\xampp\htdocs\siarcaf\public\images\Logo_UES.jpg', 
-array('width'=>75, 'height'=>75, 'align'=>'Left','marginTop' => -1,
+$header->addImage('images/Logo_UES.jpg', 
+array('width'=>75, 'height'=>75, 'align'=>'Left',
+  'marginTop' => 0,
 'wrappingStyle'=>'square',
        'positioning' => 'absolute',     
-       'posVerticalRel' => 'line'));//margen izquierdo
+       'posVerticalRel' => 'line'
+       ));//margen izquierdo
 
 
-$header->addImage('C:\xampp\htdocs\siarcaf\public\images\agu_web.jpg', 
-array('width' => 120,
-'height' => 120,
-'align'=>'right',
-'wrappingStyle' => 'square',
-'positioning' => 'relative',
-'marginTop' => 0
-
+$header->addImage('images/agu_web.jpg', 
+array('width'=>95, 'height'=>95, 'align'=>'right',
+  'marginTop' => 0,
+'wrappingStyle'=>'square',
+       'positioning' => 'absolute',     
+       'posVerticalRel' => 'line'
        ));  //margen derecho
 
 
@@ -357,7 +358,7 @@ $section->addText('Asamblea General Universitaria');
 
 
 $footer = $section->createFooter();
-//$footer->addPreserveText('Page {PAGE} of {NUMPAGES}.', array('align'=>'right')); //Saca el numero de paginas del documento y lo agrega en el footer
+$footer->addPreserveText('Pagina {PAGE} de {NUMPAGES}.', array('align'=>'right')); //Saca el numero de paginas del documento y lo agrega en el footer
 
 $footer->addPreserveText('FINAL AVENIDA "Mártires Estudiantes del 30 de julio", Ciudad Universitaria
     Tel. Presidencia 2226-95950, Registro de Asociaciones Estudiantiles 2511-2057, Secretaria de la AGU 2225-7076,
@@ -424,22 +425,24 @@ $textrun = $section->addTextRun('p2Style');
 
 
 
-$header->addImage('C:\xampp\htdocs\siarcaf\public\images\Logo_UES.jpg', 
-array('width'=>75, 'height'=>75, 'align'=>'Left','marginTop' => -1,
+
+$header->addImage('images/Logo_UES.jpg', 
+array('width'=>75, 'height'=>75, 'align'=>'Left',
+  'marginTop' => 0,
 'wrappingStyle'=>'square',
        'positioning' => 'absolute',     
-       'posVerticalRel' => 'line'));//margen izquierdo
+       'posVerticalRel' => 'line'
+       ));//margen izquierdo
 
 
-$header->addImage('C:\xampp\htdocs\siarcaf\public\images\agu_web.jpg', 
-array('width' => 120,
-'height' => 120,
-'align'=>'right',
-'wrappingStyle' => 'square',
-'positioning' => 'relative',
-'marginTop' => 0
-
+$header->addImage('images/agu_web.jpg', 
+array('width'=>95, 'height'=>95, 'align'=>'right',
+  'marginTop' => 0,
+'wrappingStyle'=>'square',
+       'positioning' => 'absolute',     
+       'posVerticalRel' => 'line'
        ));  //margen derecho
+
 
 
 
@@ -499,7 +502,7 @@ $section->addText('Asamblea General Universitaria');
 
 
 $footer = $section->createFooter();
-//$footer->addPreserveText('Page {PAGE} of {NUMPAGES}.', array('align'=>'right')); //Saca el numero de paginas del documento y lo agrega en el footer
+$footer->addPreserveText('Pagina {PAGE} de {NUMPAGES}.', array('align'=>'right')); //Saca el numero de paginas del documento y lo agrega en el footer
 
 $footer->addPreserveText('FINAL AVENIDA "Mártires Estudiantes del 30 de julio", Ciudad Universitaria
     Tel. Presidencia 2226-95950, Registro de Asociaciones Estudiantiles 2511-2057, Secretaria de la AGU 2225-7076,

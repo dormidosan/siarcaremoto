@@ -18,6 +18,8 @@ use App\Periodo;
 use App\Seguimiento;
 use App\EstadoSeguimiento;
 use App\Http\Requests\PeticionRequest;
+use Mail;
+use Session;
 
 class PeticionController extends Controller
 {
@@ -140,6 +142,8 @@ class PeticionController extends Controller
         $seguimiento->descripcion = "Asignado a: JD";
         $guardado = $seguimiento->save();
 
+        $peticion_creada = $this->correos_peticion_creada($peticion);
+
         return view('General.registro_peticion')
             ->with('disco', $disco)
             ->with('peticion', $peticion);
@@ -178,6 +182,25 @@ class PeticionController extends Controller
         return $documento;
 
 
+    }
+
+
+    public function correos_peticion_creada($peticion)
+    {    
+        $asunto = "Creacion de peticion AGU ";
+
+            // $contenido = "El contenido del mail enviado desde el controlador a la vistas";
+        $correo_destinatario = $peticion->correo;
+
+         Mail::queue('correos.peticion_creada_mail', ['peticion' => $peticion], 
+                function ($mail) use ($asunto,$correo_destinatario) {
+                $mail->from('siarcaf@gmail.com', 'Sistema de acuerdos y actas AGU'); 
+                $mail->to($correo_destinatario);
+                $mail->subject($asunto);
+            });  
+
+            return 0;
+        
     }
 
 

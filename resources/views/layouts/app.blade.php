@@ -82,7 +82,7 @@
                                         <!--<small>ROL</small>-->
                                     </p>
                                 @else
-                                    <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="user-image" alt="User Image" onerror="this.onerror=null;this.src='../../storage/fotos/{!!Auth::user()->persona->foto!!}'">
+                                    <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="img-circle" alt="User Image" onerror="this.onerror=null;this.src='../../storage/fotos/{!!Auth::user()->persona->foto!!}'">
                                     <p>                                    
                                     <!-- <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="img-circle" alt="User Image" width="70%"> -->
                                         {{ Auth::user()->name }}

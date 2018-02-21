@@ -37,8 +37,7 @@ class AgendaController extends Controller
     {
         $n = intval($decimalInteger);
         $res = '';
-
-        $roman_numerals = array(
+ $roman_numerals = array(
             'M' => 1000,
             'CM' => 900,
             'D' => 500,
@@ -282,7 +281,7 @@ class AgendaController extends Controller
             //$agendas = Agenda::where('vigente','=', '1')->orderBy('created_at', 'ASC')->get();
             $agenda->activa  = '0';
             $agenda->vigente = '0';
-            //$agenda->fin=Carbon::now();
+            $agenda->fin=Carbon::now();
             $agenda->save();
 
             $agendas = Agenda::where('vigente','=','1')->orderBy('created_at', 'ASC')->get();
@@ -293,8 +292,9 @@ class AgendaController extends Controller
 
 
              $tiempos_sin_terminar =  Tiempo::where('salida','=',NULL)->get();
-             // dd($tiempos_sin_terminar);
+              //dd($tiempos_sin_terminar);
             foreach ($tiempos_sin_terminar as $tiempo_individual) {
+
                 $asistencia_individual = $tiempo_individual->asistencia;
                 $asistencia_individual->salida = Carbon::now()->toTimeString();
                 $asistencia_individual->save();
@@ -303,17 +303,23 @@ class AgendaController extends Controller
                 $tiempo_individual->save();
 
             }
+
+            $tiempos_asambleistas=Asistencia::where('agenda_id','=',$agenda->id)->where('salida','=',null)->get();
+            foreach ($tiempos_asambleistas as $tiemp_asamble) {
+                $tiemp_asamble->salida = $agenda->fin;
+                $tiemp_asamble->save();
+            }
+
+
             //$tiempos_sin_terminar =  Tiempo::where('salida','=',NULL)->get();
             //dd($tiempos_sin_terminar);
 
                 $busqueda=DB::table('asambleistas')  //todos los asambleistas que participaron como propietario en la plenaria a finalizar 
-                ->join('asistencias','asistencias.asambleista_id','=','asambleistas.id')
-                ->join('agendas','agendas.id','=','asistencias.agenda_id')
-                ->join('tiempos','tiempos.asistencia_id','=','asistencias.id')
-                ->join('estado_asistencias','estado_asistencias.id','=','tiempos.estado_asistencia_id')
-                ->where('agendas.id','=',$agenda->id)
-                ->where('estado_asistencias.estado','=','nor')
-                ->where('tiempos.tiempo_propietario','=',1)//1 para los que fueron propietarios            
+                ->join('asistencias','asistencias.asambleista_id','=','asambleistas.id')    
+                ->join('tiempos','tiempos.asistencia_id','=','asistencias.id')                       
+                ->where('asistencias.agenda_id','=',$agenda->id)
+                ->where('tiempos.tiempo_propietario','=',1)//1 para los que fueron propietarios         
+                ->select('asambleistas.id')   
                 ->get();
 
                 //dd($busqueda);
@@ -333,33 +339,28 @@ class AgendaController extends Controller
 
                 foreach ($parametros as $parametro) {
                     if ($parametro->nombre_parametro == 'porcentaje_asistencia') {
-                        $porcentaje_asistencia = ($parametro->valor) * 100;
+                        $porcentaje_asistencia = ($parametro->valor);
                     }
                     if ($parametro->nombre_parametro == 'monto_dieta') {
                         $monto_dieta = $parametro->valor;
                     }
                 }
 
-               //dd($parametros);
+              // dd($parametros);
 
         
         foreach ($busqueda as $busq) {
 
-            $agendas_anio = DB::table('agendas')->where('agendas.id','=',$request->id_agenda)->get();
-
-
-           // dd($agendas_anio);
-
-            foreach ($agendas_anio as $agendas_in) {
+           
 
                 /*$horasreunion = DB::table('agendas') //total de duracion de la reunion                   
                     ->where('agendas.id', '=', $agendas_in->id)
                     ->select('agendas.inicio','agendas.fin')
                     ->get();*/
 
-                $horasreunion = DB::table('agendas') //total de duracion de la reunion 
+                    $horasreunion = DB::table('agendas') //total de duracion de la reunion 
                     ->selectRaw('ABS(sum(time_to_sec(timediff(inicio,fin)))/3600) as suma')
-                    ->where('agendas.id', '=', $agendas_in->id)
+                    ->where('agendas.id', '=', $agenda->id)
                     ->get();
 
                   //  dd($agendas->id);
@@ -368,11 +369,11 @@ class AgendaController extends Controller
                    $horasasistencia = DB::table('tiempos')
                     ->selectRaw('ABS(sum(time_to_sec(timediff(tiempos.entrada,tiempos.salida)))/3600) as suma')
                     ->join('asistencias', 'asistencias.id', '=', 'tiempos.asistencia_id')
-                    ->join('estado_asistencias','estado_asistencias.id','=','tiempos.estado_asistencia_id')
+                    //->join('estado_asistencias','estado_asistencias.id','=','tiempos.estado_asistencia_id')
                     //s->where('estado_asistencias.estado','=','nor')         
                     ->where('tiempos.tiempo_propietario','=',1)                  
                     ->where('asistencias.asambleista_id', '=', $busq->id)
-                    ->where('asistencias.agenda_id', '=', $agendas_in->id)
+                    ->where('asistencias.agenda_id', '=', $agenda->id)
                     ->get();
 
                     /*$horasasistencia = DB::table('asistencias')
@@ -390,7 +391,7 @@ class AgendaController extends Controller
 
                 if ($horasreunion[0]->suma > 0.0) {
 
-                    $porcAsistencia = ($horasasistencia[0]->suma / $horasreunion[0]->suma) * 100; // porcentage de asistencia por asambleista
+                    $porcAsistencia = ($horasasistencia[0]->suma / $horasreunion[0]->suma); // porcentage de asistencia por asambleista
                 } else {
 
                     $porcAsistencia = 0.0; // 
@@ -398,6 +399,7 @@ class AgendaController extends Controller
                 }
 
                  //dd($porcAsistencia);
+                 //dd($porcentaje_asistencia);
 
                 if ($porcAsistencia >= $porcentaje_asistencia) {
 
@@ -417,7 +419,8 @@ class AgendaController extends Controller
                             ->select('cargos.comision_id','comisiones.codigo')
                             ->first();
 
-                           // dd($cargo);
+                            //dd($cargo);
+
                             $cantDiet = new Dieta();
                             $cantDiet->asambleista_id=$busq->id;
                             $cantDiet->mes=$mes;
@@ -425,12 +428,22 @@ class AgendaController extends Controller
                             $cantDiet->anio=$anio_agend;
                             //dd($cantDiet);
                             $cantDiet->asistencia=1; //lo inserta de un solo con 1 porquue alcanzo el porcentage de asistencia minimo para aplicar a la dieta
+
+                            if($cargo!=null){
                             if($cargo->codigo=='jda'){
                             $cantDiet->junta_directiva=1;
+
                             }
                             else{
+
                             $cantDiet->junta_directiva=0;
+
                             }
+                        }
+                        else{
+
+                                $cantDiet->junta_directiva=0;
+                        }
                             //dd($cantDiet);
                             $cantDiet->save();
                         
@@ -449,7 +462,7 @@ class AgendaController extends Controller
 
                 }
 
-            }
+            
 
             
            
@@ -606,7 +619,11 @@ class AgendaController extends Controller
 
         $propuestas = Propuesta::where('punto_id', '=', $punto->id)->orderBy('pareja', 'ASC')->orderBy('ronda', 'ASC')->get();
         //remplazar esta busqueda con los asambleistas realmente presentes
-        $presentes = Asambleista::where('id', '<', '6')->get();
+        //$presentes = Asambleista::where('id', '<', '6')->get();
+        $presentes  =  Asambleista::join("asistencias", "asambleistas.id", "=", "asistencias.asambleista_id")
+            ->where('asistencias.agenda_id','=',$agenda->id)
+            ->select('asambleistas.*')
+            ->get();
         $asambleistas_plenaria[] = array();
         foreach ($presentes as $asambleista) {
             $asambleistas_plenaria[$asambleista->id] = $asambleista->user->persona->primer_nombre
@@ -647,7 +664,11 @@ class AgendaController extends Controller
 
         $propuestas = Propuesta::where('punto_id', '=', $punto->id)->orderBy('pareja', 'ASC')->orderBy('ronda', 'ASC')->get();
         //remplazar esta busqueda con los asambleistas realmente presentes
-        $presentes = Asambleista::where('id', '<', '6')->get();
+        //$presentes = Asambleista::where('id', '<', '6')->get();
+        $presentes  =  Asambleista::join("asistencias", "asambleistas.id", "=", "asistencias.asambleista_id")
+            ->where('asistencias.agenda_id','=',$agenda->id)
+            ->select('asambleistas.*')
+            ->get();
         $asambleistas_plenaria[] = array();
         foreach ($presentes as $asambleista) {
             $asambleistas_plenaria[$asambleista->id] = $asambleista->user->persona->primer_nombre
@@ -697,7 +718,11 @@ class AgendaController extends Controller
 
         $propuestas = Propuesta::where('punto_id', '=', $punto->id)->orderBy('pareja', 'ASC')->orderBy('ronda', 'ASC')->get();
         //remplazar esta busqueda con los asambleistas realmente presentes
-        $presentes = Asambleista::where('id', '<', '6')->get();
+        //$presentes = Asambleista::where('id', '<', '6')->get();
+        $presentes  =  Asambleista::join("asistencias", "asambleistas.id", "=", "asistencias.asambleista_id")
+            ->where('asistencias.agenda_id','=',$agenda->id)
+            ->select('asambleistas.*')
+            ->get();
         $asambleistas_plenaria[] = array();
         foreach ($presentes as $asambleista) {
             $asambleistas_plenaria[$asambleista->id] = $asambleista->user->persona->primer_nombre
@@ -753,7 +778,11 @@ class AgendaController extends Controller
 
         $propuestas = Propuesta::where('punto_id', '=', $punto->id)->orderBy('pareja', 'ASC')->orderBy('ronda', 'ASC')->get();
         //remplazar esta busqueda con los asambleistas realmente presentes
-        $presentes = Asambleista::where('id', '<', '6')->get();
+        //$presentes = Asambleista::where('id', '<', '6')->get();
+        $presentes  =  Asambleista::join("asistencias", "asambleistas.id", "=", "asistencias.asambleista_id")
+            ->where('asistencias.agenda_id','=',$agenda->id)
+            ->select('asambleistas.*')
+            ->get();
         $asambleistas_plenaria[] = array();
         foreach ($presentes as $asambleista) {
             $asambleistas_plenaria[$asambleista->id] = $asambleista->user->persona->primer_nombre
@@ -790,7 +819,11 @@ class AgendaController extends Controller
 
         $propuestas = Propuesta::where('punto_id', '=', $punto->id)->orderBy('pareja', 'ASC')->orderBy('ronda', 'ASC')->get();
         //remplazar esta busqueda con los asambleistas realmente presentes
-        $presentes = Asambleista::where('id', '<', '6')->get();
+        //$presentes = Asambleista::where('id', '<', '6')->get();
+        $presentes  =  Asambleista::join("asistencias", "asambleistas.id", "=", "asistencias.asambleista_id")
+            ->where('asistencias.agenda_id','=',$agenda->id)
+            ->select('asambleistas.*')
+            ->get();
         $asambleistas_plenaria[] = array();
         foreach ($presentes as $asambleista) {
             $asambleistas_plenaria[$asambleista->id] = $asambleista->user->persona->primer_nombre

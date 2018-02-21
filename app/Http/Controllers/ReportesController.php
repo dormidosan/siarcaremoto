@@ -551,7 +551,7 @@ class ReportesController extends Controller
 
         $mesnum = $request->fecha1;
 
-
+ $resultados = NULL;
         //dd($agenda);
 
         if ($request->tipoDocumento == 'A') {
@@ -567,7 +567,7 @@ class ReportesController extends Controller
                     'personas.segundo_nombre', 'dietas.mes', 'dietas.anio', 'sectores.id', 'sectores.nombre', 'dietas.asambleista_id')->limit(1)->get();
 
 
-            $agendas_anio = DB::table('agendas')//todas las agendas no vigentes del año seleccionado en las que participo cada hdp
+            $agendas_anio = DB::table('agendas')//todas las agendas no vigentes del año seleccionado en las que participo cada
             ->join('asistencias', 'asistencias.agenda_id', '=', 'agendas.id')
                 ->join('asambleistas', 'asistencias.asambleista_id', '=', 'asambleistas.id')
                 ->whereYear('fecha', '=', $request->anio)
@@ -575,7 +575,7 @@ class ReportesController extends Controller
                 ->get();
 
 
-            if ($agendas_anio == NULL) {
+            if ($agendas_anio == NULL) { //esta restrigccion es por los seed
 
                 $resultados = NULL;
 
@@ -585,7 +585,7 @@ class ReportesController extends Controller
 
         }
 
-        if ($request->tipoDocumento == 'E') {
+        if (($request->tipoDocumento == 'E')&&$mesnum!=0) {
 
             $resultados = DB::table('dietas')
                 ->join('asambleistas', 'dietas.asambleista_id', '=', 'asambleistas.id')
@@ -601,7 +601,8 @@ class ReportesController extends Controller
 
         }
 
-        if ($request->tipoDocumento == 'D') {
+
+        if (($request->tipoDocumento == 'D')&&$mesnum!=0) {
 
             $resultados = DB::table('dietas')
                 ->join('asambleistas', 'dietas.asambleista_id', '=', 'asambleistas.id')
@@ -617,7 +618,7 @@ class ReportesController extends Controller
 
         }
 
-        if ($request->tipoDocumento == 'ND') {
+        if (($request->tipoDocumento == 'ND')&&$mesnum!=0) {
 
             $resultados = DB::table('dietas')
                 ->join('asambleistas', 'dietas.asambleista_id', '=', 'asambleistas.id')
@@ -668,11 +669,13 @@ class ReportesController extends Controller
         $fechainicial=$request->fecha1;
         $fechafinal=$request->fecha2;   
 
+        //dd(explode('/', $fechainicial)[0]);
 
-        $date1 = Date($fechainicial);
-        $date2 = Date($fechafinal);
+        $date1 = Carbon::create(explode('/', $fechainicial)[2],explode('/', $fechainicial)[1],explode('/', $fechainicial)[0]);
+        $date2 = Carbon::create(explode('/', $fechafinal)[2],explode('/', $fechafinal)[1],explode('/', $fechafinal)[0]);
 
-        if($date1>$date2){
+       
+        if($date1->gt($date2)){
         $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
         return view("Reportes.Reporte_permisos_temporales")
         ->with('resultados',NULL);
@@ -731,10 +734,11 @@ class ReportesController extends Controller
         $sector=$request->tipoDocumento;
         $tipo=$request->tipoDocumento;
         
-       $date1 = Date($fechainicial);
-        $date2 = Date($fechafinal);
+        $date1 = Carbon::create(explode('/', $fechainicial)[2],explode('/', $fechainicial)[1],explode('/', $fechainicial)[0]);
+        $date2 = Carbon::create(explode('/', $fechafinal)[2],explode('/', $fechafinal)[1],explode('/', $fechafinal)[0]);
 
-        if($date1>$date2){
+       
+        if($date1->gt($date2)){
         $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
         return view("Reportes.Reporte_asistencias_sesion_plenaria")
         ->with('resultados',NULL);
@@ -808,10 +812,11 @@ class ReportesController extends Controller
 
         $fechafinal = $request->fecha2;
 
-           $date1 = Date($fechainicial);
-        $date2 = Date($fechafinal);
+        $date1 = Carbon::create(explode('/', $fechainicial)[2],explode('/', $fechainicial)[1],explode('/', $fechainicial)[0]);
+        $date2 = Carbon::create(explode('/', $fechafinal)[2],explode('/', $fechafinal)[1],explode('/', $fechafinal)[0]);
 
-        if($date1>$date2){
+       
+        if($date1->gt($date2)){
         $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
         return view("Reportes.Reporte_bitacora_correspondencia")
         ->with('resultados',NULL);
@@ -868,133 +873,60 @@ class ReportesController extends Controller
             ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
                 'personas.segundo_nombre', 'sectores.nombre', 'personas.dui',
                 'personas.nit', 'personas.afp', 'personas.cuenta', 'asambleistas.id', DB::raw('0 AS dieta'), DB::raw('0 AS renta'))
+            
             ->get(); //todos los asambleistas
 
         //dd($busqueda);
 
-        $iva = 0.0;
-        $porcentaje_asistencia = 0.0;
+        //$hoy=Carbon::now();
+            $mes=$this->numero_mes($mesnum);
         $renta = 0.0;
         $monto_dieta = 0.0;
 
-        $cuenta = 0;
-        foreach ($busqueda as $busq) {
 
-            $agendas_anio = DB::table('agendas')//todas las agendas no vigentes del año seleccionado en las que participo cada asambleista
-            ->join('asistencias', 'asistencias.agenda_id', '=', 'agendas.id')
-                ->join('asambleistas', 'asistencias.asambleista_id', '=', 'asambleistas.id')
-                ->whereYear('fecha', '=', $anio)
-                ->where('asambleistas.id', '=', $busq->id)
-                ->where('agendas.vigente', '<>', 1)
-                ->get();
-
-
-            //dd($agendas_anio);
-
-            foreach ($agendas_anio as $agendas) {
-
-                $parametros = DB::table('parametros')->get();
+        $parametros = DB::table('parametros')->get();
 
                 foreach ($parametros as $parametro) {
-
-                    if ($parametro->nombre_parametro == 'iva') {
-                        $iva = $parametro->valor;
-                    }
-
-                    if ($parametro->nombre_parametro == 'porcentaje_asistencia') {
-                        $porcentaje_asistencia = ($parametro->valor) * 100;
-                    }
-
                     if ($parametro->nombre_parametro == 'renta') {
                         $renta = $parametro->valor;
                     }
-
                     if ($parametro->nombre_parametro == 'monto_dieta') {
                         $monto_dieta = $parametro->valor;
                     }
-
                 }
 
+                $cuenta=0;
+        foreach ($busqueda as $busq) {
+           
+            $dietas=DB::table('dietas')
+            ->selectRaw('sum(dietas.asistencia) as suma')
+            ->where('dietas.asambleista_id','=',$busqueda[$cuenta]->id)
+            ->where('dietas.anio','=',$anio)
+            ->first();
 
-                $horasreunion = DB::table('agendas')
-                    ->selectRaw('ABS(sum(time_to_sec(timediff(inicio,fin)))/3600) as suma')
-                    ->where('agendas.id', '=', $agendas->id)//por el momento solo filtro por el id
-                    ->where('agendas.vigente', '<>', 1)//este where tiene que ir para no mostrar reuniones no terminadas
-                    ->get();
+            //dd($dietas);
 
+            $busqueda[$cuenta]->dieta= round($dietas->suma*$monto_dieta,2);
+            $busqueda[$cuenta]->renta= round($busqueda[$cuenta]->dieta*$renta,2);
 
-                $horasasistencia = DB::table('asistencias')
-                    ->selectRaw('ABS(sum(time_to_sec(timediff(tiempos.entrada,tiempos.salida)))/3600) as suma')
-                    ->join('tiempos', 'asistencias.id', '=', 'tiempos.asistencia_id')
-                    ->join('estado_asistencias', 'tiempos.estado_asistencia_id', '=', 'estado_asistencias.id')
-                    ->where('estado_asistencias.id', '=', 3)//3 por ser asistencia normal
-                    ->where('asistencias.asambleista_id', '=', $busq->id)
-                    ->where('asistencias.agenda_id', '=', $agendas->id)//por el momento solo filtro por el id
-                    ->get();
-
-
-                if ($horasreunion[0]->suma > 0.0) {
-
-                    $porcAsistencia = ($horasasistencia[0]->suma / $horasreunion[0]->suma) * 100;
-                } else {
-
-                    $porcAsistencia = 0.0;
-
-                }
-
-
-                if ($porcAsistencia >= $porcentaje_asistencia) {
-
-                    $cantDiet = DB::table('dietas')
-                        ->where('dietas.asambleista_id', '=', $busq->id)
-                        ->where('dietas.anio', '=', $anio)
-                        ->selectRaw('SUM(asistencia) AS asistencia')
-                        ->get();
-
-
-                    $asistencianum = $cantDiet[0]->asistencia;
-
-
-                    if ($asistencianum == 0) {
-                        $monto_dieta = 0.0;
-                    } else {
-
-                        $monto_dieta = $monto_dieta * $asistencianum;
-
-                    }
-
-                    $busqueda[$cuenta]->dieta = $busqueda[$cuenta]->dieta + $monto_dieta;
-
-                    $renta = $monto_dieta * $renta;
-                    $renta = round($renta, 2);
-                    $busqueda[$cuenta]->renta = $busqueda[$cuenta]->renta + $renta;
-                }
-
+            if($busqueda[$cuenta]->dieta==0.0){
+            unset($busqueda[$cuenta]);
             }
 
-            if ($busqueda[$cuenta]->dieta == 0.0) {
-                unset($busqueda[$cuenta]);
-            }
-            $cuenta = $cuenta + 1;
+
+            $cuenta++;
         }
+                  
 
-
-        $sector = 0;
-        $dui = 0;
-        $nit = 0;
-        $afp = 0;
-        $cuenta = 0;
-
-
-        $view = \View::make('Reportes/Reporte_planilla_dieta_pdf', compact('busqueda', 'sector', 'nit', 'mes', 'anio', 'horasreunion', 'monto_dieta', 'renta'))->render();
+        $view = \View::make('Reportes/Reporte_planilla_dieta_pdf', compact('busqueda', 'anio'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($view)->setPaper('letter', 'portrait')->setWarnings(false);
         $hoy = Carbon::now()->format('Y-m-d');
         if ($verdescar == 1) {
-            return $pdf->stream('Planilla_Dieta_' . $anio . '_' . $sector . '_' . $hoy . '.pdf');
+            return $pdf->stream('Planilla_Dieta_' . $anio . '_' . $hoy . '.pdf');
         }
         if ($verdescar == 2) {
-            return $pdf->download('Planilla_Dieta_' . $anio . '_' . $sector . '_' . $hoy . '.pdf');
+            return $pdf->download('Planilla_Dieta_' . $anio . '_' . $hoy . '.pdf');
         }
         //return $pdf->stream('reporte.pdf'); //mostrar pdf en pagina
         //return $pdf->download('reporte.pdf'); // descargar el archivo pdf
@@ -1028,112 +960,6 @@ class ReportesController extends Controller
             ->where('parametros.parametro', '=', 'mdi')
             ->select('parametros.valor')
             ->first();
-
-        /*  $iva=0.0;
-          $porcentaje_asistencia=0.0;
-          $renta=0.0;
-          $monto_dieta=0.0;
-          $cuenta=0;
-          //dd($resultados);
-          foreach ($resultados as $resul) {
-
-          $agendas_anio=DB::table('agendas') //todas las agendas
-          ->join('asistencias','asistencias.agenda_id','=','agendas.id')
-          ->join('asambleistas','asistencias.asambleista_id','=','asambleistas.id')
-          ->whereYear('fecha','=',$anio)
-          ->whereMonth('fecha','=',$mes)
-          ->where('asambleistas.id','=',$resul->id)
-          ->where('agendas.vigente','<>',1)
-          ->get();
-
-          dd($agendas_anio);
-
-          foreach ($agendas_anio as $agendas) {
-
-          $parametros=DB::table('parametros')->get();
-          foreach ($parametros as $parametro) {
-          if($parametro->nombre_parametro=='iva'){
-              $iva=$parametro->valor;
-          }
-          if($parametro->nombre_parametro=='porcentaje_asistencia'){
-              $porcentaje_asistencia=($parametro->valor)*100;
-          }
-          if($parametro->nombre_parametro=='renta'){
-              $renta=$parametro->valor;
-          }
-          if($parametro->nombre_parametro=='monto_dieta'){
-              $monto_dieta=$parametro->valor;
-          }
-          }
-
-
-          $horasreunion=DB::table('agendas')
-          ->selectRaw('ABS(sum(time_to_sec(timediff(inicio,fin)))/3600) as suma')
-          ->where('agendas.id','=',$agendas->id) //por el momento solo filtro por el id
-          ->where('agendas.vigente','<>',1) //este where tiene que ir para no mostrar reuniones no terminadas
-          ->get();
-
-
-             $horasasistencia=DB::table('asistencias')
-          ->selectRaw('ABS(sum(time_to_sec(timediff(tiempos.entrada,tiempos.salida)))/3600) as suma')
-          ->join('tiempos','asistencias.id','=','tiempos.asistencia_id')
-          ->join('estado_asistencias','tiempos.estado_asistencia_id','=','estado_asistencias.id')
-          ->where('estado_asistencias.id','=',3)//3 por ser asistencia normal
-          ->where('asistencias.asambleista_id','=',$resul->id)
-          ->where('asistencias.agenda_id','=',$agendas->id)//por el momento solo filtro por el id
-          ->get();
-
-
-          if($horasreunion[0]->suma>0.0){
-
-          $porcAsistencia=($horasasistencia[0]->suma/$horasreunion[0]->suma)*100;
-          }
-          else{
-
-          $porcAsistencia=0.0;
-
-          }
-
-
-          if($porcAsistencia>=$porcentaje_asistencia){
-
-          $cantDiet = DB::table('dietas')
-          ->where('dietas.asambleista_id','=',$resul->id)
-          ->where('dietas.anio','=',$anio)
-          ->where('dietas.mes','=',$mes)
-          ->selectRaw('SUM(asistencia) AS asistencia')
-          ->get();
-
-
-          $asistencianum=$cantDiet[0]->asistencia;
-
-
-          if($asistencianum==0)
-          {
-          $monto_dieta=0.0;
-          }
-          else{
-
-          $monto_dieta=$monto_dieta*$asistencianum;
-
-          }
-
-          $resultados[$cuenta]->dieta=$resultados[$cuenta]->dieta+$monto_dieta;
-
-          $renta=$monto_dieta*$renta;
-          $renta=round($renta,2);
-          $resultados[$cuenta]->renta=$resultados[$cuenta]->renta+$renta;
-          }
-          }
-
-           if($resultados[$cuenta]->dieta==0.0){
-          unset($resultados[$cuenta]);
-          }
-              $cuenta=$cuenta+1;
-
-          }
-
-  */
 
 
         $view = \View::make('Reportes/Reporte_planilla_dieta_prof_Est_pdf', compact('resultados', 'mes', 'anio', 'monto_dieta'))->render();
@@ -1340,9 +1166,8 @@ class ReportesController extends Controller
             Excel::create('Consolidado_Renta_' . $sector . '_' . $mes . '_' . $anio . '_' . $hoy, function ($excel) use ($resultados) {
                 $excel->sheet('Hoja1', function ($sheet) use ($resultados) {
                     $data = array();
-                    foreach ($resultados as $result) {
-
-                        $monto_dieta = DB::table('parametros')
+                    
+                      $monto_dieta = DB::table('parametros')
                             ->where('parametros.parametro', '=', 'mdi')
                             ->select('parametros.valor')
                             ->first();
@@ -1352,7 +1177,7 @@ class ReportesController extends Controller
                             ->select('parametros.valor')
                             ->first();
 
-
+                    foreach ($resultados as $result) {
                         $result->montodieta = $result->asistencia * $monto_dieta->valor;
                         $result->renta = $result->asistencia * $monto_dieta->valor * $renta->valor;
                         $result->total = $result->montodieta - $result->renta;
@@ -1449,10 +1274,11 @@ class ReportesController extends Controller
         $fechainicial = $request->fecha1;
         $fechafinal = $request->fecha2;
 
-        $date1 = Date($fechainicial);
-        $date2 = Date($fechafinal);
+        $date1 = Carbon::create(explode('/', $fechainicial)[2],explode('/', $fechainicial)[1],explode('/', $fechainicial)[0]);
+        $date2 = Carbon::create(explode('/', $fechafinal)[2],explode('/', $fechafinal)[1],explode('/', $fechafinal)[0]);
 
-        if($date1>$date2){
+       
+        if($date1->gt($date2)){
         $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
         return view("Reportes.Reporte_permisos_permanentes")
         ->with('resultados',NULL);

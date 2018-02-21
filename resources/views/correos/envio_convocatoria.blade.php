@@ -20,32 +20,48 @@
 @endsection
 
 @section("content")
-    <div class="box box-danger">
-        <div class="box-header">
-            <h3 class="box-title">Generar Reuniones</h3>
-
+    <div class="box box-solid box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title">Generar Reunion</h3>
         </div>
 
         <div class="box-body">
-
-            <form id="convocatoria" method="post" action="{{ route('crear_reunion_jd') }}">
-                {{ csrf_field() }}
-                {{ Form::hidden('id_comision', '1') }}
+            <form id="convocatoria" method="post" action="{{ url('enviar_correo') }}">
+             {{ csrf_field() }}
+              @if(!empty($reunion))
+                <input type="hidden" name="id_reunion" id="id_reunion" value="{{$reunion->id}}">
+              @else
+                <input type="hidden" name="id_agenda" id="id_agenda" value="{{$agenda->id}}">
+              @endif
                 <div class="row">
                     <div class="col-lg-4 col-sm-12 col-md-12">
                         <div class="form-group">
                             <label for="lugar">Lugar</label>
-                            <input name="lugar" type="text" id="lugar" class="form-control" required="required">
+                            @if(!empty($reunion))
+                            <input name="lugar" type="text" id="lugar" class="form-control" required="required" disabled="disabled" value="{!! $reunion->lugar !!}">
+                            @else
+                            <input name="lugar" type="text" id="alugar" class="form-control" required="required" disabled="disabled" value="{!! $agenda->lugar !!}">
+                            @endif
                         </div>
                     </div>
                     <div class="col-lg-4 col-sm-12 col-md-12">
                         <div class="form-group">
                             <label for="fecha">Fecha</label>
+                            @if(!empty($reunion))
                             <div class="input-group date fecha" id="fechaReunion">
-                                <input name="fecha" id="fecha" type="text" class="form-control"><span
+                                <input name="fecha" id="fecha" type="text" class="form-control" disabled="disabled" 
+                                value="{{ \Carbon\Carbon::parse($reunion->convocatoria)->format('d-m-Y') }}"><span
                                         class="input-group-addon"><i class="glyphicon glyphicon-th"
                                                                      required="required"></i></span>
                             </div>
+                            @else
+                            <div class="input-group date fecha" id="fechaReunion">
+                                <input name="fecha" id="afecha" type="text" class="form-control" disabled="disabled" 
+                                value="{{ \Carbon\Carbon::parse($agenda->inicio)->format('d-m-Y') }}"><span
+                                        class="input-group-addon"><i class="glyphicon glyphicon-th"
+                                                                     required="required"></i></span>
+                            </div>
+                            @endif
                         </div>
 
                     </div>
@@ -53,10 +69,13 @@
                         <label>Hora</label>
                         <div class="form-group">
                             <div class='input-group date'>
-
-                                <input name="hora" type='text' id="hora" class="form-control" required="required"
-                                       placeholder="h:i AM">
-
+                                @if(!empty($reunion))
+                                <input name="hora" type='text' id="hora" class="form-control" required="required" disabled="disabled"
+                                    value="{{ \Carbon\Carbon::parse($reunion->convocatoria)->format('h:i A') }}"  placeholder="h:m AM">
+                                @else
+                                <input name="hora" type='text' id="ahora" class="form-control" required="required" disabled="disabled"
+                                    value="{{ \Carbon\Carbon::parse($agenda->inicio)->format('h:i A') }}"  placeholder="h:m AM">
+                                @endif
                                 <span class="input-group-addon">
                         <span class="glyphicon glyphicon-time"></span>
                     </span>
@@ -64,73 +83,19 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                         <label for="mensaje">Cuerpo del Mensaje</label>
+                        <textarea  name="mensaje" id="mensaje" class="form-control"></textarea>
+                     </div>
+                </div>
+                <br>
                 <div class="row text-center">
                     <div class="col-lg-12 col-sm-12 col-md-12">
-                        <button type="submit" class="btn btn-primary">Crear</button>
+                        <button type="submit" class="btn btn-success">Enviar Convocatoria</button>
                     </div>
                 </div>
             </form>
-            <br>
-            <div class="table-responsive">
-                <table id="agendas" class="table text-center table-striped table-bordered table-hover table-condensed">
-                    <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Codigo</th>
-                        <th>Lugar</th>
-                        <th>Convocatoria</th>
-                        <th>Fecha inicio</th>
-                        <th>Fecha fin</th>
-                        <th colspan="3">Accion</th>
-                    </tr>
-                    </thead>
-                    <tbody id="cuerpoTabla" class="table-hover">
-                    @php $contador =1 @endphp @forelse($reuniones as $reunion)
-
-                        <tr>
-
-                            <td>
-                                {!! $contador !!} @php $contador++ @endphp
-                            </td>
-                            <td>{!! $reunion->codigo !!}</td>
-                            <td>{!! $reunion->lugar !!}</td>
-                            <td>{{ \Carbon\Carbon::parse($reunion->convocatoria)->format('d-m-Y h:i A') }}</td>
-                            <td>{{ ($reunion->inicio) ? \Carbon\Carbon::parse($reunion->inicio)->format('h:i A') : "No Iniciada" }}</td>
-                            <td>{{ ($reunion->fin) ? \Carbon\Carbon::parse($reunion->fin)->format('h:i A') : "No Finalizada" }}</td>
-                            @if($reunion->vigente == 1)
-                                <td>
-                                    {!! Form::open(['route'=>['envio_convocatoria'],'method'=> 'POST','id'=>"c".$reunion->id]) !!}
-                                    <input type="hidden" name="id_comision" id="id_comision"
-                                           value="{{$reunion->comision_id}}">
-                                    <input type="hidden" name="id_reunion" id="id_reunion" value="{{$reunion->id}}">
-                                    <button type="submit" class="btn btn-info btn-xs btn-block">
-                                        <i class="fa fa-eye"></i> Enviar convocatoria
-                                    </button>
-                                    {!! Form::close() !!}
-                                </td>
-
-                                @if($reunion->activa == 0)
-                                    <td>
-                                        {!! Form::open(['route'=>['eliminar_reunion_jd'],'method'=> 'POST','id'=>"d".$reunion->id]) !!}
-                                        <input type="hidden" name="id_comision" id="id_comision"
-                                               value="{{$reunion->comision_id}}">
-                                        <input type="hidden" name="id_reunion" id="id_reunion" value="{{$reunion->id}}">
-                                        <button type="submit" class="btn btn-danger btn-xs btn-block">
-                                            <i class="fa fa-eye"></i> Eliminar reunion
-                                        </button>
-                                        {!! Form::close() !!}
-                                    </td>
-                                @endif
-                            @else
-                                <td></td>
-                            @endif
-                        </tr>
-                    @empty
-                        <p style="color: red ;">No hay criterios de busqueda</p>
-                    @endforelse
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
 @endsection
@@ -150,6 +115,7 @@
     <script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
     <script src="{{ asset('libs/adminLTE/plugins/mask/jquery.mask.min.js') }}"></script>
 @endsection
+
 
 
 
@@ -222,10 +188,10 @@
 
 @section("lobibox")
 
-    @if(Session::has('success'))
+    @if(Session::has('Exito'))
         <script>
-            notificacion("Exito", "{{ Session::get('success') }}", "success");
-            {{ Session::forget('success') }}
+            notificacion("Correos enviados", "{{ Session::get('Exito') }}", "success");
+            {{ Session::forget('Exito') }}
         </script>
     @endif
 
