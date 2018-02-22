@@ -4,8 +4,8 @@
     <section class="">
         <ol class="breadcrumb">
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
-            <li><a>Junta Directiva</a></li>
-            <li><a class="active">PLANTILLAS</a></li>
+            <li><a>Reporteria</a></li>
+            <li><a class="active">Menu Plantillas</a></li>
         </ol>
     </section>
 @endsection

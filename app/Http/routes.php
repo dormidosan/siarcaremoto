@@ -16,14 +16,26 @@ Route::get('/', function () {
 
 Route::get('/home', 'HomeController@index');
 
+/*
+Route::group(['middleware' => 'accesox'], function () {
+
+    });
+*/
 
 /* Routes para Comisiones */
-Route::group(['prefix' => 'comisiones'], function () {
-    Route::get('listado_agenda_comision', 'ComisionController@listado_agenda_comision')->name('listado_agenda_comision');
-    Route::get('comisiones', 'ComisionController@mostrar_comisiones')->name("mostrar_comisiones");
-    Route::get('administrar_comisiones', 'ComisionController@administrar_comisiones')->name("administrar_comisiones");
+Route::group(['prefix' => 'comisiones' , 'middleware' => ['auth']  ], function () {
+
+    Route::group(['middleware' => 'acceso1'], function () {
+        Route::post('crear_comision', 'ComisionController@crear_comision')->name("crear_comision");
+        Route::get('comisiones', 'ComisionController@mostrar_comisiones')->name("mostrar_comisiones"); 
+    });
+
+    Route::group(['middleware' => 'acceso2'], function () {
+        Route::get('administrar_comisiones', 'ComisionController@administrar_comisiones')->name("administrar_comisiones");
+    });
+
+    Route::get('listado_agenda_comision', 'ComisionController@listado_agenda_comision')->name('listado_agenda_comision');  //es de JD
     Route::post('guardar_documento_comision', 'ComisionController@guardar_documento_comision')->name("guardar_documento_comision");
-    Route::post('crear_comision', 'ComisionController@crear_comision')->name("crear_comision");
     Route::post('actualizar_comision', 'ComisionController@actualizar_comision')->name("actualizar_comision");
     Route::post('gestionar_asambleistas_comision', 'ComisionController@gestionar_asambleistas_comision')->name("gestionar_asambleistas_comision");
     Route::post('trabajo_comision', 'ComisionController@trabajo_comision')->name("trabajo_comision");
@@ -93,9 +105,18 @@ Route::post('Mensaje', 'ReportesController@Mensaje')->name("Mensaje");
 
 /* Peticiones */
 Route::group(['prefix' => 'peticiones'], function () {
-    Route::get('registrar_peticion', 'PeticionController@registrar_peticion')->name('registrar_peticion');
+
+    Route::group(['middleware' => 'acceso7'], function () {
+        Route::get('registrar_peticion', 'PeticionController@registrar_peticion')->name('registrar_peticion');
+    });
+
+    Route::group(['middleware' => 'acceso8'], function () {
+        Route::get('listado_peticiones', array('as' => 'listado_peticiones', 'uses' => 'PeticionController@listado_peticiones'));
+    });
+
+    
     Route::get('monitoreo_peticion', 'PeticionController@monitoreo_peticion')->name('monitoreo_peticion');
-    Route::get('listado_peticiones', array('as' => 'listado_peticiones', 'uses' => 'PeticionController@listado_peticiones'));
+    
     Route::post('consultar_estado_peticion', 'PeticionController@consultar_estado_peticion')->name("consultar_estado_peticion");
     Route::post('registrar_peticion_post', 'PeticionController@registrar_peticion_post')->name('registrar_peticion_post');
 });
@@ -198,6 +219,15 @@ Route::get('/Reporte_Convocatorias', function () {
 
 
 Route::group(['prefix' => 'plenarias'], function () {
+
+    Route::group(['middleware' => 'acceso3'], function () {
+        Route::get("consultar_agendas_vigentes", "AgendaController@consultar_agendas_vigentes")->name("consultar_agenda_vigentes");
+    });
+
+    // Route::group(['middleware' => 'acceso4'], function () {
+
+    // });
+    Route::get('historial_agendas', array('as' => 'historial_agendas', 'uses' => 'AgendaController@historial_agendas'));
     Route::get('descargar_documento/{id}', 'DocumentoController@descargar_documento')->name("descargar_documento");
     Route::post('sala_sesion_plenaria', array('as' => 'sala_sesion_plenaria', 'uses' => 'AgendaController@sala_sesion_plenaria'));
     Route::post('iniciar_sesion_plenaria', array('as' => 'iniciar_sesion_plenaria', 'uses' => 'AgendaController@iniciar_sesion_plenaria'));
@@ -220,30 +250,71 @@ Route::group(['prefix' => 'plenarias'], function () {
     Route::post('cambiar_propietaria', array('as' => 'cambiar_propietaria', 'uses' => 'AgendaController@cambiar_propietaria'));
     Route::post('obtener_datos_intervencion', 'AgendaController@obtener_datos_intervencion')->name("obtener_datos_intervencion");
     Route::post('retiro_temporal', 'AgendaController@retiro_temporal')->name("retiro_temporal");
+    Route::post('detalles_punto_agenda', 'AgendaController@detalles_punto_agenda')->name("detalles_punto_agenda");
 });
 
 // Pantalla publica
-Route::get('historial_agendas', array('as' => 'historial_agendas', 'uses' => 'AgendaController@historial_agendas'));
-Route::get("consultar_agendas_vigentes", "AgendaController@consultar_agendas_vigentes")->name("consultar_agenda_vigentes");
-Route::post('detalles_punto_agenda', 'AgendaController@detalles_punto_agenda')->name("detalles_punto_agenda");
+
+
+
 
 /* Routes Administracion */
 Route::group(['prefix' => 'administracion'], function () {
-    Route::get('gestionar_usuarios', function () {
-        return view('Administracion.gestionar_usuario');
-    })->name("administracion_usuario");
-    Route::get('gestionar_plantillas', "AdministracionController@gestionar_plantillas")->name("gestionar_plantillas");
-    Route::get('gestionar_perfiles', "AdministracionController@gestionar_perfiles")->name("gestionar_perfiles");;
-    Route::get('registrar_usuario', "AdministracionController@registrar_usuario")->name("mostrar_formulario_registrar_usuario");;
-    Route::get('periodos_agu', "AdministracionController@mostrar_periodos_agu")->name("periodos_agu");
-    Route::get('parametros', array('as' => 'parametros', 'uses' => 'AdministracionController@parametros'));
-    Route::get('cambiar_perfiles', "AdministracionController@cambiar_perfiles")->name("cambiar_perfiles");
-    Route::get('cambiar_cargos_comision', "AdministracionController@cambiar_cargos_comision")->name("cambiar_cargos_comision");
-    Route::get('cambiar_cargos_junta_directiva', "AdministracionController@cambiar_cargos_junta_directiva")->name("cambiar_cargos_junta_directiva");
-    Route::get('descargar_plantilla/{id}', 'AdministracionController@descargar_plantilla')->name("descargar_plantilla");
-    Route::get('registro_permisos_temporales', 'AdministracionController@registro_permisos_temporales')->name("registro_permisos_temporales");
-    Route::get('baja_asambleista', 'AdministracionController@baja_asambleista')->name("baja_asambleista");
-    Route::get('dietas_asambleista', 'AdministracionController@dietas_asambleista')->name("dietas_asambleista");
+
+    Route::group(['middleware' => 'acceso10'], function () {
+        //probablemente se quitara
+    });
+
+    Route::group(['middleware' => 'acceso11'], function () {
+        Route::get('parametros', array('as' => 'parametros', 'uses' => 'AdministracionController@parametros'));
+    });
+
+    Route::group(['middleware' => 'acceso12'], function () {
+        Route::get('gestionar_plantillas', "AdministracionController@gestionar_plantillas")->name("gestionar_plantillas");
+        Route::get('descargar_plantilla/{id}', 'AdministracionController@descargar_plantilla')->name("descargar_plantilla");
+    });
+
+    Route::group(['middleware' => 'acceso13'], function () {
+        Route::get('registro_permisos_temporales', 'AdministracionController@registro_permisos_temporales')->name("registro_permisos_temporales");
+    });
+
+    Route::group(['middleware' => 'acceso14'], function () {
+        Route::get('periodos_agu', "AdministracionController@mostrar_periodos_agu")->name("periodos_agu");
+    });
+
+    Route::group(['middleware' => 'acceso15'], function () {
+        Route::get('dietas_asambleista', 'AdministracionController@dietas_asambleista')->name("dietas_asambleista");
+    });
+
+    Route::group(['middleware' => 'acceso16'], function () {
+        Route::get('gestionar_usuarios', function () {
+            return view('Administracion.gestionar_usuario');
+            })->name("administracion_usuario");
+        Route::get('registrar_usuario', "AdministracionController@registrar_usuario")->name("mostrar_formulario_registrar_usuario");
+        Route::get('cambiar_perfiles', "AdministracionController@cambiar_perfiles")->name("cambiar_perfiles");
+        Route::get('cambiar_cargos_comision', "AdministracionController@cambiar_cargos_comision")->name("cambiar_cargos_comision");
+        Route::get('cambiar_cargos_junta_directiva', "AdministracionController@cambiar_cargos_junta_directiva")->name("cambiar_cargos_junta_directiva");
+        Route::get('baja_asambleista', 'AdministracionController@baja_asambleista')->name("baja_asambleista");
+    });
+
+    Route::group(['middleware' => 'acceso17'], function () {
+        Route::get('gestionar_perfiles', "AdministracionController@gestionar_perfiles")->name("gestionar_perfiles");
+    });    
+
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+
+
     Route::post('guardar_usuario', "AdministracionController@guardar_usuario")->name("guardar_usuario");
     Route::post('actualizar_usuario', "AdministracionController@actualizar_usuario")->name("actualizar_usuario");
     Route::post('guardar_periodo', "AdministracionController@guardar_periodo")->name("guardar_periodo");
@@ -277,19 +348,26 @@ Route::group(['prefix' => 'asambleistas'], function () {
 
 /* Junta Directiva*/
 Route::group(['prefix' => 'juntadirectiva'], function () {
-    Route::get('trabajo_junta_directiva', array('as' => 'trabajo_junta_directiva', 'uses' => 'JuntaDirectivaController@trabajo_junta_directiva'));
-    Route::get('listado_peticiones_jd', array('as' => 'listado_peticiones_jd', 'uses' => 'JuntaDirectivaController@listado_peticiones_jd'));
-    Route::get('listado_reuniones_jd', array('as' => 'listado_reuniones_jd', 'uses' => 'JuntaDirectivaController@listado_reuniones_jd'));
-    Route::get('generar_reuniones_jd', array('as' => 'generar_reuniones_jd', 'uses' => 'JuntaDirectivaController@generar_reuniones_jd'));
-    Route::get('listado_agenda_plenaria_jd', 'JuntaDirectivaController@listado_agenda_plenaria_jd')->name('listado_agenda_plenaria_jd');
-    Route::get('lista_asignacion', array('as' => 'lista_asignacion', 'uses' => 'JuntaDirectivaController@lista_asignacion'));
+
+    Route::group(['middleware' => 'acceso9'], function () {
+        Route::get('trabajo_junta_directiva', array('as' => 'trabajo_junta_directiva', 'uses' => 'JuntaDirectivaController@trabajo_junta_directiva'));
+        Route::get('listado_peticiones_jd', array('as' => 'listado_peticiones_jd', 'uses' => 'JuntaDirectivaController@listado_peticiones_jd'));
+        Route::get('listado_reuniones_jd', array('as' => 'listado_reuniones_jd', 'uses' => 'JuntaDirectivaController@listado_reuniones_jd'));
+        Route::get('generar_reuniones_jd', array('as' => 'generar_reuniones_jd', 'uses' => 'JuntaDirectivaController@generar_reuniones_jd'));
+        Route::get('listado_agenda_plenaria_jd', 'JuntaDirectivaController@listado_agenda_plenaria_jd')->name('listado_agenda_plenaria_jd');
+        Route::get('lista_asignacion', array('as' => 'lista_asignacion', 'uses' => 'JuntaDirectivaController@lista_asignacion'));
+        // Route::get('seguimiento_peticion_individual_jd', array('as' => 'seguimiento_peticion_individual_jd', 'uses' => 'JuntaDirectivaController@seguimiento_peticion_individual_jd'));
+        //seguimiento_peticion_individual_jd DEPRECADA ahora usa metodo post seguimiento_peticion_jd
+    });
+
+    
     Route::post('listado_sesion_plenaria', array('as' => 'listado_sesion_plenaria', 'uses' => 'JuntaDirectivaController@listado_sesion_plenaria'));
     Route::post('agregar_puntos_jd', array('as' => 'agregar_puntos_jd', 'uses' => 'JuntaDirectivaController@agregar_puntos_jd'));
     Route::post('crear_punto_plenaria', array('as' => 'crear_punto_plenaria', 'uses' => 'JuntaDirectivaController@crear_punto_plenaria'));
     Route::post('ordenar_puntos_jd', array('as' => 'ordenar_puntos_jd', 'uses' => 'JuntaDirectivaController@ordenar_puntos_jd'));
     Route::post('nuevo_orden', array('as' => 'nuevo_orden', 'uses' => 'JuntaDirectivaController@nuevo_orden'));
     Route::post('seguimiento_peticion_jd', array('as' => 'seguimiento_peticion_jd', 'uses' => 'JuntaDirectivaController@seguimiento_peticion_jd'));
-    Route::get('seguimiento_peticion_individual_jd', array('as' => 'seguimiento_peticion_individual_jd', 'uses' => 'JuntaDirectivaController@seguimiento_peticion_individual_jd'));
+    
     Route::post('iniciar_reunion_jd', array('as' => 'iniciar_reunion_jd', 'uses' => 'JuntaDirectivaController@iniciar_reunion_jd'));
     Route::post('puntos_agendados', array('as' => 'puntos_agendados', 'uses' => 'JuntaDirectivaController@puntos_agendados'));
     Route::post('asistencia_jd', array('as' => 'asistencia_jd', 'uses' => 'JuntaDirectivaController@asistencia_jd'));
@@ -339,3 +417,6 @@ Route::post('/correo', function () {
 Route::post('envio_convocatoria', array('as' => 'envio_convocatoria', 'uses' => 'MailController@envio_convocatoria'));
 Route::post('enviar_correo', array('as' => 'enviar_correo', 'uses' => 'MailController@enviar_correo'));
 
+Route::get('error', function () {
+    abort(404);
+});

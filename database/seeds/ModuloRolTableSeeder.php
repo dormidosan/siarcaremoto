@@ -12,8 +12,8 @@ class ModuloRolTableSeeder extends Seeder
      */
     public function run()
     {
-        //
-        for ($i=1;$i<=29;$i++){
+        //asignacion de acceso a todos los modulos al rol administrador
+        for ($i=1;$i<=28;$i++){
             \DB::table('modulo_rol')->insert(array (
                 'rol_id'  => 1,
                 'modulo_id'  => $i,
@@ -21,6 +21,29 @@ class ModuloRolTableSeeder extends Seeder
                 'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
             ));
         }
+
+        //asignacion de acceso a secretario
+        $modulos_secretario = array(1,3,14,15,4,16,17,18,8,19,20,21);
+        foreach ($modulos_secretario as $value){
+            \DB::table('modulo_rol')->insert(array (
+                'rol_id'  => 2,
+                'modulo_id'  => $value,
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ));
+        }
+
+        //asignacion de acceso a secretario
+        $modulos_asambleista = array(1,2,3,14,15,13,4,16,17,18,5,7);
+        foreach ($modulos_asambleista as $value){
+            \DB::table('modulo_rol')->insert(array (
+                'rol_id'  => 3,
+                'modulo_id'  => $value,
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ));
+    }
+
 
     }
 }

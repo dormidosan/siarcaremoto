@@ -2,7 +2,8 @@
 
 @section('styles')
     <link rel="stylesheet" href="{{ asset("libs/pretty-checkbox/pretty-checkbox.min.css") }}">
-    <link href="{{ asset("libs/MaterialDesign/css/materialdesignicons.css") }}" media="all" rel="stylesheet" type="text/css"/>
+    <link href="{{ asset("libs/MaterialDesign/css/materialdesignicons.css") }}" media="all" rel="stylesheet"
+          type="text/css"/>
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
 
     <!-- Datatables-->
@@ -57,44 +58,50 @@
                             {{ csrf_field() }}
                             <input type="text" id="id_rol" name="id_rol" hidden value="{{ $id_rol->id }}">
                             @foreach($modulos_padres as $modulos_padre)
-                                <tr>
-                                    <td class="text-center text-bold">{{$modulos_padre->nombre_modulo}}</td>
-                                    <td class="col-lg-6">
-                                        @foreach($modulos_hijos as $modulos_hijo)
-                                            @if($modulos_hijo->modulo_padre == $modulos_padre->id)
-                                                <div>
-                                                    @php $searchedRole = array_search($id_rol->nombre_rol,$modulos_hijo->roles->pluck('nombre_rol')->toArray()); @endphp
+                                @if($modulos_padre->nombre_modulo != "Asambleistas")
+                                    <tr>
+                                        <td class="text-center text-bold">{{$modulos_padre->nombre_modulo}}</td>
+                                        <td class="col-lg-6">
+                                            @foreach($modulos_hijos as $modulos_hijo)
+                                                @if($modulos_hijo->modulo_padre == $modulos_padre->id)
+                                                    <div>
+                                                        @php $searchedRole = array_search($id_rol->nombre_rol,$modulos_hijo->roles->pluck('nombre_rol')->toArray()); @endphp
 
-                                                    {{-- @if($modulos_hijo->roles[$searchedRole]->id == $id_rol->id) --}}
-                                                    @if(in_array($modulos_hijo->id,$modulosArray))
-                                                        <div class="pretty p-icon p-smooth">
-                                                            <input type="checkbox" name="modulos[]"
-                                                                   value="{{ $modulos_hijo->id }}" checked
-                                                                   onchange="habilitar_button()"/>
-                                                            <div class="state p-success">
-                                                                <i class="icon mdi mdi-check"></i>
-                                                                <label>{{$modulos_hijo->nombre_modulo}}</label>
+                                                        {{-- @if($modulos_hijo->roles[$searchedRole]->id == $id_rol->id) --}}
+                                                        @if(in_array($modulos_hijo->id,$modulosArray))
+                                                            <div class="pretty p-icon p-smooth">
+                                                                <input type="checkbox" name="modulos[]"
+                                                                       value="{{ $modulos_hijo->id }}" checked
+                                                                       onchange="habilitar_button()"/>
+                                                                <div class="state p-success">
+                                                                    <i class="icon mdi mdi-check"></i>
+                                                                    <label>{{$modulos_hijo->nombre_modulo}}</label>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    @else
-                                                        <div class="pretty p-icon p-smooth">
-                                                            <input type="checkbox" name="modulos[]"
-                                                                   value="{{ $modulos_hijo->id }}" onchange="habilitar_button()"/>
-                                                            <div class="state p-success">
-                                                                <i class="icon mdi mdi-check"></i>
-                                                                <label>{{$modulos_hijo->nombre_modulo}}</label>
+                                                        @else
+                                                            <div class="pretty p-icon p-smooth">
+                                                                <input type="checkbox" name="modulos[]"
+                                                                       value="{{ $modulos_hijo->id }}"
+                                                                       onchange="habilitar_button()"/>
+                                                                <div class="state p-success">
+                                                                    <i class="icon mdi mdi-check"></i>
+                                                                    <label>{{$modulos_hijo->nombre_modulo}}</label>
+                                                                </div>
                                                             </div>
-                                                        </div>
-                                                    @endif
-                                                </div>
-                                            @endif
-                                        @endforeach
-                                    </td>
-                                </tr>
+                                                        @endif
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </td>
+                                    </tr>
+                                @else
+                                @endif
                             @endforeach
                             <tr class="text-center">
                                 <td colspan="2">
-                                    <button type="submit" id="aceptar" class="btn btn-primary disabled" disabled>Aceptar</button>
+                                    <button type="submit" id="aceptar" class="btn btn-primary disabled" disabled>
+                                        Aceptar
+                                    </button>
                                 </td>
                             </tr>
                         </form>
@@ -122,11 +129,11 @@
 
         function habilitar_button() {
             var chk_arr = $('input[name="modulos[]"]:checked').length;
-            if(chk_arr == 0) {
+            if (chk_arr == 0) {
                 $("#aceptar").addClass("disabled");
-                $("#aceptar").attr("disabled","disabled");
+                $("#aceptar").attr("disabled", "disabled");
 
-            } else{
+            } else {
                 $("#aceptar").removeClass("disabled");
                 $("#aceptar").removeAttr("disabled");
 

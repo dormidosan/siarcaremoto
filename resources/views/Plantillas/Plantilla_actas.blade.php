@@ -8,6 +8,17 @@
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
 @endsection
 
+@section('breadcrumb')
+    <section class="">
+        <ol class="breadcrumb">
+            <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
+            <li><a> Reporteria</a></li>
+            <li><a href="{{url('Menu_plantillas')}}">Menu Reportes</a></li>
+            <li><a class="active">Actas</a></li>
+        </ol>
+    </section>
+@endsection
+
 @section('content')
     <div class="box box-danger">
         <div class="box-header with-border">

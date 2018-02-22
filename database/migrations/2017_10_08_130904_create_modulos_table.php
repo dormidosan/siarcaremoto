@@ -18,7 +18,8 @@ class CreateModulosTable extends Migration
             $table->string('nombre_modulo', 50)->nullable();
             $table->string('url', 50)->nullable();
             $table->unsignedInteger('modulo_padre')->nullable();
-            //$table->unsignedInteger('orden');
+            $table->integer('nivel_acceso');
+            $table->unsignedInteger('orden');
             $table->string('icono', 50)->nullable();
             $table->boolean('tiene_hijos');
             $table->index(["modulo_padre"], 'fk_modulo_padre_idx');

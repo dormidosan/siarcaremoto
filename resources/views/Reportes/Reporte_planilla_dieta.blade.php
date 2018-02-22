@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/toogle/css/bootstrap-toggle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
 @endsection
+@section('breadcrumb')
+    <section class="">
+        <ol class="breadcrumb">
+            <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
+            <li><a> Reporteria</a></li>
+            <li><a href="{{url('Menu_reportes')}}">Menu Reportes</a></li>
+            <li><a class="active">Planilla de Dieta</a></li>
+        </ol>
+    </section>
+@endsection
 
 @section('content')
 

@@ -18,7 +18,7 @@
 </head>
 
 @if(Auth::check())
-    @php($modulos = Auth::user()->rol->modulos)
+    @php($modulos = Auth::user()->rol->modulos->sortBy('orden'))
     @php($modulos_padre = [])
     @foreach($modulos as $modulo)
         @if(is_null($modulo->modulo_padre))

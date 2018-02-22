@@ -366,7 +366,9 @@ $footer->addPreserveText('FINAL AVENIDA "Mártires Estudiantes del 30 de julio",
 
 try {
       $objWriter =  \PhpOffice\PhpWord\IOFactory::createWriter($PHPWord, 'Word2007'); 
-      $objWriter->save('Acta_'.$fecha_agenda.'_'. $codigo_agenda.'.docx'); // guarda los archivo en la carpeta public del proyecto
+      $ruta=storage_path().'\app'.'\Acta_'.$fecha_agenda.'_'. $codigo_agenda.'_'.$periodo_nombre.'.docx';
+      //dd($ruta);
+      $objWriter->save($ruta); // guarda los archivo en la carpeta public del proyecto
 
     } catch (Exception $e) {
 
@@ -374,7 +376,7 @@ try {
 
     
 
-return response()->download('C:\xampp\htdocs\siarcaf\public\Acta_'.$fecha_agenda.'_'. $codigo_agenda.'.docx');
+return response()->download($ruta);
 
 
     }
@@ -393,6 +395,7 @@ return response()->download('C:\xampp\htdocs\siarcaf\public\Acta_'.$fecha_agenda
       ->where('agendas.id','=',$id_agenda)
       ->first();
         
+        $codigo_agenda=$agendas->codigo;
 
         $periodos=DB::table('periodos')
         ->where('periodos.id','=', $agendas->periodo_id)
@@ -511,15 +514,17 @@ $footer->addPreserveText('FINAL AVENIDA "Mártires Estudiantes del 30 de julio",
 
 try {
       $objWriter =  \PhpOffice\PhpWord\IOFactory::createWriter($PHPWord, 'Word2007'); 
-      $objWriter->save('Acuerdo_.docx'); // guarda los archivo en la carpeta public del proyecto
+      $ruta=storage_path().'\app'.'\Acuerdo_'.$codigo_agenda.'_'.$periodo_nombre.'.docx';
+      //dd($ruta);
+      $objWriter->save($ruta); // guarda los archivo en la carpeta public del proyecto
 
     } catch (Exception $e) {
 
     }
 
+    
 
-return response()->download('C:\xampp\htdocs\siarcaf\public\Acuerdo_.docx');
-
+return response()->download($ruta);
 
     }
 
