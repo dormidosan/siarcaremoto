@@ -10,8 +10,7 @@
         <ol class="breadcrumb">
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Administracion</a></li>
-            <li><a>Gestionar Usuarios</a></li>
-            <li><a class="active">Gestionar Perfiles</a></li>
+            <li class="active">Gestionar Perfiles</li>
         </ol>
     </section>
 @endsection

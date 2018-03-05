@@ -277,7 +277,7 @@
                                 date: {
                                     format: 'DD-MM-YYYY',
                                     min: 'startDate',
-                                    message: 'Fecha fin no puede ser mayor que fecha inicio'
+                                    message: 'Fecha fin no puede ser menor que fecha inicio'
                                 }
                             }
                         }

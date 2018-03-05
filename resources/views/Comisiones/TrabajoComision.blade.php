@@ -1,9 +1,5 @@
 @extends('layouts.app')
 
-@section('styles')
-    <link rel="stylesheet" href="{{ asset('') }}">
-@endsection
-
 @section('breadcrumb')
     <section>
         <ol class="breadcrumb">

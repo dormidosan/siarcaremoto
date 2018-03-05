@@ -55,8 +55,6 @@ class ReportesController extends Controller
         $periodos = Periodo::where('id', '!=', '0')->pluck('nombre_periodo', 'id');
 
 
-      
-
         return view('Reportes.Reporte_Asambleistas_Cumple')
             ->with('periodo', $periodo)
             ->with('periodos', $periodos)
@@ -482,17 +480,17 @@ class ReportesController extends Controller
 
     }
 
-    public function buscar_consolidados_renta(ReportesConsolidadosRentaRequest $request)
+    public function buscar_consolidados_renta(Request $request)
     {
-//dd($request->all());
+      //dd($request->all());
 
-        $mes = $this->numero_mes($request->fecha1);
+        $mes = $this->numero_mes($request->mes);
 
-        $mesnum = $request->fecha1;
+       
 
         $tipodoc = 0;
 
-        //dd($agenda);
+   
 
 
         if ($request->tipoDocumento == 'E') {
@@ -536,22 +534,22 @@ class ReportesController extends Controller
             ->with('tipo', $request->tipoDocumento);
 
 
-        return view("Reportes.Reporte_consolidados_renta", ['resultados' => NULL]);
+        
 
     }
 
 
-    public function buscar_planilla_dieta(ReportesRequest $request)
+    public function buscar_planilla_dieta(Request $request)
     {
 
         //dd($request->all());
 
 
-        $mes = $this->numero_mes($request->fecha1);
+        $mes = $this->numero_mes($request->mes);
 
-        $mesnum = $request->fecha1;
+        $mesnum = $request->mes;
 
- $resultados = NULL;
+        $resultados = NULL;
         //dd($agenda);
 
         if ($request->tipoDocumento == 'A') {
@@ -585,7 +583,7 @@ class ReportesController extends Controller
 
         }
 
-        if (($request->tipoDocumento == 'E')&&$mesnum!=0) {
+        if (($request->tipoDocumento == 'E') && $mesnum != 0) {
 
             $resultados = DB::table('dietas')
                 ->join('asambleistas', 'dietas.asambleista_id', '=', 'asambleistas.id')
@@ -602,7 +600,7 @@ class ReportesController extends Controller
         }
 
 
-        if (($request->tipoDocumento == 'D')&&$mesnum!=0) {
+        if (($request->tipoDocumento == 'D') && $mesnum != 0) {
 
             $resultados = DB::table('dietas')
                 ->join('asambleistas', 'dietas.asambleista_id', '=', 'asambleistas.id')
@@ -618,7 +616,7 @@ class ReportesController extends Controller
 
         }
 
-        if (($request->tipoDocumento == 'ND')&&$mesnum!=0) {
+        if (($request->tipoDocumento == 'ND') && $mesnum != 0) {
 
             $resultados = DB::table('dietas')
                 ->join('asambleistas', 'dietas.asambleista_id', '=', 'asambleistas.id')
@@ -666,36 +664,34 @@ class ReportesController extends Controller
         //  dd($request->all());
 
 
-        $fechainicial=$request->fecha1;
-        $fechafinal=$request->fecha2;   
+        $fechainicial = $request->fecha1;
+        $fechafinal = $request->fecha2;
 
         //dd(explode('/', $fechainicial)[0]);
 
-        $date1 = Carbon::create(explode('/', $fechainicial)[2],explode('/', $fechainicial)[1],explode('/', $fechainicial)[0]);
-        $date2 = Carbon::create(explode('/', $fechafinal)[2],explode('/', $fechafinal)[1],explode('/', $fechafinal)[0]);
+        //$date1 = Carbon::create(explode('/', $fechainicial)[2], explode('/', $fechainicial)[1], explode('/', $fechainicial)[0]);
+        //$date2 = Carbon::create(explode('/', $fechafinal)[2], explode('/', $fechafinal)[1], explode('/', $fechafinal)[0]);
 
-       
-        if($date1->gt($date2)){
-        $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
-        return view("Reportes.Reporte_permisos_temporales")
-        ->with('resultados',NULL);
-        }
 
-         $resultados=DB::table('agendas')
-        ->join('asistencias','asistencias.agenda_id','=','agendas.id')
-        ->join('tiempos','asistencias.id','=','tiempos.asistencia_id')
-        ->join('estado_asistencias','tiempos.estado_asistencia_id','=','estado_asistencias.id')
-        ->where('estado_asistencias.id','=',1)//1 por ser permisos temporales 
-        ->where
-([
-  ['agendas.fecha','>=',$this->convertirfecha($fechainicial)],
-  ['agendas.fecha','<=',$this->convertirfecha($fechafinal)]
-])
-->select('agendas.id','agendas.fecha','agendas.periodo_id')
-->distinct()
-        ->get();
- 
+        /*  if($date1->gt($date2)){
+          $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
+          return view("Reportes.Reporte_permisos_temporales")
+          ->with('resultados',NULL);
+          }*/
 
+        $resultados = DB::table('agendas')
+            ->join('asistencias', 'asistencias.agenda_id', '=', 'agendas.id')
+            ->join('tiempos', 'asistencias.id', '=', 'tiempos.asistencia_id')
+            ->join('estado_asistencias', 'tiempos.estado_asistencia_id', '=', 'estado_asistencias.id')
+            ->where('estado_asistencias.id', '=', 1)//1 por ser permisos temporales
+            ->where
+            ([
+                ['agendas.fecha', '>=', $this->convertirfecha($fechainicial)],
+                ['agendas.fecha', '<=', $this->convertirfecha($fechafinal)]
+            ])
+            ->select('agendas.id', 'agendas.fecha', 'agendas.periodo_id')
+            ->distinct()
+            ->get();
 
 
         if ($resultados == NULL) {
@@ -710,32 +706,74 @@ class ReportesController extends Controller
         return view("Reportes.Reporte_permisos_temporales")
             ->with('resultados', $resultados);
 
-        // dd($resultados);
-
-
-        return view("Reportes.Reporte_permisos_temporales", ['resultados' => NULL]);
+     
     }
-
-
-
 
 
     public function buscar_asistencias(ReportesAsistenciasRequest $request)
     {
 
 
+        //dd($request->all());
 
-        // dd($request->all());
+
+        $fechainicial = $request->fecha1;
+        $fechafinal = $request->fecha2;
+
+        $sector = $request->tipoDocumento;
+        $tipo = $request->tipoDocumento;
 
 
-        $fechainicial=$request->fecha1;
-        $fechafinal=$request->fecha2;
-        
-        $sector=$request->tipoDocumento;
-        $tipo=$request->tipoDocumento;
-        
-        $date1 = Carbon::create(explode('/', $fechainicial)[2],explode('/', $fechainicial)[1],explode('/', $fechainicial)[0]);
-        $date2 = Carbon::create(explode('/', $fechafinal)[2],explode('/', $fechafinal)[1],explode('/', $fechafinal)[0]);
+
+/*
+
+       $agenda=DB::table('agendas')->where('agendas.id','=',4)->first();
+
+        $fecha_generado=Carbon::now()->format('Y-m-d');
+
+        $puntos=DB::table('puntos')
+        ->where('puntos.agenda_id','=',$agenda->id)
+        ->get();
+
+        $periodo=DB::table('periodos')
+        ->where('periodos.id','=',$agenda->periodo_id)
+        ->first();
+
+        $jefe=DB::table('asambleistas')
+        ->join('users','users.id','=','asambleistas.user_id')
+        ->join('personas','personas.id','=','users.persona_id')
+        ->join('cargos','cargos.asambleista_id','=','asambleistas.id')
+        ->where('cargos.cargo','=','Presidente')
+        ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
+                'personas.segundo_nombre')
+        ->first();
+
+       
+
+       
+        $primera_convocatoria=Carbon::parse($agenda->inicio)->format('H:i');
+        $segunda_convocatoria=Carbon::parse($agenda->inicio)->addMinutes(30)->format('H:i');
+
+        $view = \View::make('Reportes/Reporte_agenda_pdf', compact('fecha_generado','puntos','periodo','agenda','primera_convocatoria','segunda_convocatoria','jefe'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadHTML($view)->setPaper('letter', 'portrait')->setWarnings(false);
+
+     
+        $acta_de_jaime=storage_path().'\app'.'\Convocatoria '.$fecha_generado.'.pdf';
+
+        $pdf ->save($acta_de_jaime);
+
+*/
+
+
+
+
+
+
+
+        /*$date1 = Carbon::create(explode('-', $fechainicial)[2],explode('-', $fechainicial)[1],explode('-', $fechainicial)[0]);
+        $date2 = Carbon::create(explode('-', $fechafinal)[2],explode('-', $fechafinal)[1],explode('-', $fechafinal)[0]);
 
        
         if($date1->gt($date2)){
@@ -745,11 +783,8 @@ class ReportesController extends Controller
         }
 
         if ($sector == 'E') {
-
-
             $sector = 'ESTUDIANTIL';
         }
-
 
         if ($sector == 'D') {
 
@@ -762,6 +797,20 @@ class ReportesController extends Controller
 
 
             $sector = 'NO DOCENTE';
+        }
+
+        */
+
+        switch ($sector) {
+            case 'E':
+                $sector = 'ESTUDIANTIL';
+                break;
+            case 'D':
+                $sector = 'DOCENTE';
+                break;
+            case 'ND':
+                $sector = 'NO DOCENTE';
+                break;
         }
 
 
@@ -796,13 +845,8 @@ class ReportesController extends Controller
             ->with('tipo', $tipo);
 
 
-
-
-
-
         return view("Reportes.Reporte_asistencias_sesion_plenaria", ['resultados' => NULL]);
     }
-
 
 
     public function buscar_bitacora_correspondencia(BuscarBitacoraCorrespRequest $request)
@@ -812,15 +856,15 @@ class ReportesController extends Controller
 
         $fechafinal = $request->fecha2;
 
-        $date1 = Carbon::create(explode('/', $fechainicial)[2],explode('/', $fechainicial)[1],explode('/', $fechainicial)[0]);
-        $date2 = Carbon::create(explode('/', $fechafinal)[2],explode('/', $fechafinal)[1],explode('/', $fechafinal)[0]);
+        //$date1 = Carbon::create(explode('/', $fechainicial)[2], explode('/', $fechainicial)[1], explode('/', $fechainicial)[0]);
+       // $date2 = Carbon::create(explode('/', $fechafinal)[2], explode('/', $fechafinal)[1], explode('/', $fechafinal)[0]);
+/*
 
-       
-        if($date1->gt($date2)){
-        $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
-        return view("Reportes.Reporte_bitacora_correspondencia")
-        ->with('resultados',NULL);
-        }
+        if ($date1->gt($date2)) {
+            $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
+            return view("Reportes.Reporte_bitacora_correspondencia")
+                ->with('resultados', NULL);
+        }*/
 
 
         $resultados = DB::table('peticiones')
@@ -873,50 +917,49 @@ class ReportesController extends Controller
             ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
                 'personas.segundo_nombre', 'sectores.nombre', 'personas.dui',
                 'personas.nit', 'personas.afp', 'personas.cuenta', 'asambleistas.id', DB::raw('0 AS dieta'), DB::raw('0 AS renta'))
-            
             ->get(); //todos los asambleistas
 
         //dd($busqueda);
 
         //$hoy=Carbon::now();
-            $mes=$this->numero_mes($mesnum);
+        $mes = $this->numero_mes($mesnum);
         $renta = 0.0;
         $monto_dieta = 0.0;
 
 
         $parametros = DB::table('parametros')->get();
 
-                foreach ($parametros as $parametro) {
-                    if ($parametro->nombre_parametro == 'renta') {
-                        $renta = $parametro->valor;
-                    }
-                    if ($parametro->nombre_parametro == 'monto_dieta') {
-                        $monto_dieta = $parametro->valor;
-                    }
-                }
+        foreach ($parametros as $parametro) {
+            if ($parametro->nombre_parametro == 'renta') {
+                $renta = $parametro->valor;
+            }
+            if ($parametro->nombre_parametro == 'monto_dieta') {
+                $monto_dieta = $parametro->valor;
+            }
+        }
 
-                $cuenta=0;
+        $cuenta = 0;
         foreach ($busqueda as $busq) {
-           
-            $dietas=DB::table('dietas')
-            ->selectRaw('sum(dietas.asistencia) as suma')
-            ->where('dietas.asambleista_id','=',$busqueda[$cuenta]->id)
-            ->where('dietas.anio','=',$anio)
-            ->first();
+
+            $dietas = DB::table('dietas')
+                ->selectRaw('sum(dietas.asistencia) as suma')
+                ->where('dietas.asambleista_id', '=', $busqueda[$cuenta]->id)
+                ->where('dietas.anio', '=', $anio)
+                ->first();
 
             //dd($dietas);
 
-            $busqueda[$cuenta]->dieta= round($dietas->suma*$monto_dieta,2);
-            $busqueda[$cuenta]->renta= round($busqueda[$cuenta]->dieta*$renta,2);
+            $busqueda[$cuenta]->dieta = round($dietas->suma * $monto_dieta, 2);
+            $busqueda[$cuenta]->renta = round($busqueda[$cuenta]->dieta * $renta, 2);
 
-            if($busqueda[$cuenta]->dieta==0.0){
-            unset($busqueda[$cuenta]);
+            if ($busqueda[$cuenta]->dieta == 0.0) {
+                unset($busqueda[$cuenta]);
             }
 
 
             $cuenta++;
         }
-                  
+
 
         $view = \View::make('Reportes/Reporte_planilla_dieta_pdf', compact('busqueda', 'anio'))->render();
         $pdf = \App::make('dompdf.wrapper');
@@ -1166,16 +1209,16 @@ class ReportesController extends Controller
             Excel::create('Consolidado_Renta_' . $sector . '_' . $mes . '_' . $anio . '_' . $hoy, function ($excel) use ($resultados) {
                 $excel->sheet('Hoja1', function ($sheet) use ($resultados) {
                     $data = array();
-                    
-                      $monto_dieta = DB::table('parametros')
-                            ->where('parametros.parametro', '=', 'mdi')
-                            ->select('parametros.valor')
-                            ->first();
 
-                        $renta = DB::table('parametros')
-                            ->where('parametros.parametro', '=', 'ren')
-                            ->select('parametros.valor')
-                            ->first();
+                    $monto_dieta = DB::table('parametros')
+                        ->where('parametros.parametro', '=', 'mdi')
+                        ->select('parametros.valor')
+                        ->first();
+
+                    $renta = DB::table('parametros')
+                        ->where('parametros.parametro', '=', 'ren')
+                        ->select('parametros.valor')
+                        ->first();
 
                     foreach ($resultados as $result) {
                         $result->montodieta = $result->asistencia * $monto_dieta->valor;
@@ -1192,80 +1235,7 @@ class ReportesController extends Controller
     }
 
 
-    public function Reporte_consolidados_renta_docente($tipo)
-    {
-
-
-        //dd($tipo);
-
-
-        $parametros = explode('.', $tipo);
-        $tipodes = $parametros[0];
-        $sector = $parametros[1];
-        $idagenda = $parametros[2];
-        $fecheperiodo = $parametros[3];
-        $idperiodo = $parametros[4];
-
-        $nombreperiodo1 = DB::table('periodos')
-            ->where('periodos.id', '=', $idperiodo)
-            ->select('periodos.nombre_periodo')
-            ->get();
-
-        $nombreperiodo = $nombreperiodo1[0]->nombre_periodo;
-        //dd($nombreperiodo);
-
-
-        if ($sector == 'D') {
-
-            $resultados = DB::table('asistencias')
-                ->join('asambleistas', 'asistencias.asambleista_id', '=', 'asambleistas.id')
-                ->join('users', 'asambleistas.user_id', '=', 'users.id')
-                ->join('personas', 'users.persona_id', '=', 'personas.id')
-                ->join('facultades', 'asambleistas.facultad_id', '=', 'facultades.id')
-                ->where('asistencias.agenda_id', '=', $idagenda)//por el momento solo filtro por el id
-                ->where('asistencias.estado_asistencia_id', '=', 3)//3 por ser asistencias normales
-                ->where('asambleistas.sector_id', '=', 2)//sector estudiantil
-                ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
-                    'personas.segundo_nombre', 'asistencias.entrada', 'asistencias.salida', 'asistencias.propietario', 'facultades.nombre', 'personas.nit')
-                ->orderBy('facultades.nombre', 'desc')
-                ->get();
-            $sector = 'DOCENTE';
-        }
-
-
-        if ($sector == 'ND') {
-
-            $resultados = DB::table('asistencias')
-                ->join('asambleistas', 'asistencias.asambleista_id', '=', 'asambleistas.id')
-                ->join('users', 'asambleistas.user_id', '=', 'users.id')
-                ->join('personas', 'users.persona_id', '=', 'personas.id')
-                ->join('facultades', 'asambleistas.facultad_id', '=', 'facultades.id')
-                ->where('asistencias.agenda_id', '=', $idagenda)//por el momento solo filtro por el id
-                ->where('asistencias.estado_asistencia_id', '=', 3)//3 por ser asistencias normales
-                ->where('asambleistas.sector_id', '=', 3)//sector estudiantil
-                ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
-                    'personas.segundo_nombre', 'asistencias.entrada', 'asistencias.salida', 'asistencias.propietario', 'facultades.nombre', 'personas.nit')
-                ->orderBy('facultades.nombre', 'desc')
-                ->get();
-            $sector = 'NO DOCENTE';
-        }
-
-
-        $view = \View::make('Reportes/Reporte_consolidados_renta_docente_pdf', compact('resultados', 'sector', 'nombreperiodo'))->render();
-        $pdf = \App::make('dompdf.wrapper');
-        $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadHTML($view)->setPaper('letter', 'landscape')->setWarnings(false);
-
-        $hoy = Carbon::now()->format('Y-m-d');
-        if ($verdescar == 1) {
-            return $pdf->stream('Consolidado_Renta_' . $sector . '_' . $mes . '_' . $anio . '_' . $hoy . '.pdf');
-        }
-        if ($verdescar == 2) {
-            return $pdf->download('Consolidado_Renta_' . $sector . '_' . $mes . '_' . $anio . '_' . $hoy . '.pdf');
-        }
-
-
-    }
+  
 
 
     public function buscar_permisos_permanentes(ReportesPermisospermanentesRequest $request)
@@ -1274,15 +1244,15 @@ class ReportesController extends Controller
         $fechainicial = $request->fecha1;
         $fechafinal = $request->fecha2;
 
-        $date1 = Carbon::create(explode('/', $fechainicial)[2],explode('/', $fechainicial)[1],explode('/', $fechainicial)[0]);
-        $date2 = Carbon::create(explode('/', $fechafinal)[2],explode('/', $fechafinal)[1],explode('/', $fechafinal)[0]);
+        //$date1 = Carbon::create(explode('/', $fechainicial)[2], explode('/', $fechainicial)[1], explode('/', $fechainicial)[0]);
+        //$date2 = Carbon::create(explode('/', $fechafinal)[2], explode('/', $fechafinal)[1], explode('/', $fechafinal)[0]);
 
-       
-        if($date1->gt($date2)){
-        $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
-        return view("Reportes.Reporte_permisos_permanentes")
-        ->with('resultados',NULL);
-        }
+
+        /*if ($date1->gt($date2)) {
+            $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
+            return view("Reportes.Reporte_permisos_permanentes")
+                ->with('resultados', NULL);
+        }*/
 
         $resultados = DB::table('permisos')
             ->where
@@ -1387,9 +1357,9 @@ class ReportesController extends Controller
     public function convertirfecha($fecha)
     {
 
-        $fecha1conver = explode('/', $fecha);
-        $fechatrans = $fecha1conver[2] . '-' . $fecha1conver[1] . '-' . $fecha1conver[0];
-        $fechainicial = date('Y-m-d', strtotime($fechatrans));
+        //$fecha1conver = explode('/', $fecha);
+        //$fechatrans = $fecha1conver[2] . '-' . $fecha1conver[1] . '-' . $fecha1conver[0];
+        $fechainicial = date('Y-m-d', strtotime($fecha));
 
         return $fechainicial;
     }

@@ -100,6 +100,11 @@
                             <td>{{ $documento->nombre_documento }}</td>
                             <td>{{ $documento->tipo_documento->tipo }}</td>
                             <td>{{ $documento->fecha_ingreso }}</td>
+                            @if   ((Auth::user()->rol_id != 1) and ($documento->privado == 1))
+                            <td>
+                                Solicitar en AGU 
+                            </td>
+                            @else
                             <td>
                                 <a class="btn btn-primary btn-xs "
                                    href="{{ asset($disco.''.$documento->path) }}"
@@ -108,6 +113,7 @@
                                    href="descargar_documento/<?= $documento->id; ?>" role="button">
                                     <i class="fa fa-download"></i> Descargar</a>
                             </td>
+                            @endif
                         </tr>
                     @endforeach
                 @endif

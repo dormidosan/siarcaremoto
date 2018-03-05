@@ -89,7 +89,7 @@
                         <tr>
                             <td>{{ $periodo->nombre_periodo }}</td>
                             <td>{{ substr($periodo->inicio,0,4) ." - ". substr($periodo->fin,0,4)}}</td>
-                            <td><a href="" class="btn btn-xs btn-info">Descargar</a></td>
+                            <td><a href="{{url("/Reporte_Asambleista_Periodo/2.$periodo->id")}}" class="btn btn-xs btn-info">Descargar</a></td>
                             @if($periodo->activo)
                                 <td>
                                     <button type="button" class="btn btn-xs btn-danger"

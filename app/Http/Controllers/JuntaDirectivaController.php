@@ -647,7 +647,7 @@ class JuntaDirectivaController extends Controller
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
 
         if ($request->hasFile('documento_jd')) {
-            $documento_jd = $this->guardarDocumento($request->documento_jd, '7', 'documentos'); //7 es bitacora
+            $documento_jd = $this->guardarDocumento($request->documento_jd, '7', 'documentos','0'); //7 es bitacora , 0 indica que no es privado
             $reunion->documentos()->attach($documento_jd);
         }
 
@@ -693,7 +693,7 @@ class JuntaDirectivaController extends Controller
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
 
         if ($request->hasFile('documento_jd')) {
-            $documento_jd = $this->guardarDocumento($request->documento_jd, '5', 'documentos'); //5 es acta plenaria
+            $documento_jd = $this->guardarDocumento($request->documento_jd, '5', 'documentos','0'); //5 es acta plenaria, 0 indica que no es privado
             $agenda->documentos()->attach($documento_jd);
 
         }
@@ -784,7 +784,8 @@ class JuntaDirectivaController extends Controller
         }
 
         if ($request->hasFile('documento_jd')) {
-            $documento_jd = $this->guardarDocumento($request->documento_jd, $tipo_documento, 'documentos');
+            $doc_privado = ($request->privado) ? '1' : '0' ; //si el doc es privado , entonces envia 1 , sino enviara cero
+            $documento_jd = $this->guardarDocumento($request->documento_jd, $tipo_documento, 'documentos',$doc_privado);
             //dd();
 
 
@@ -970,7 +971,7 @@ class JuntaDirectivaController extends Controller
     }
 
 
-    public function guardarDocumento($doc, $tipo, $destino)
+    public function guardarDocumento($doc, $tipo, $destino,$privado)
     {
         $archivo = $doc;
         $documento = new Documento();
@@ -978,6 +979,7 @@ class JuntaDirectivaController extends Controller
         $documento->tipo_documento_id = $tipo; // PETICION = 1
         $documento->periodo_id = Periodo::latest()->first()->id;
         $documento->fecha_ingreso = Carbon::now();
+        $documento->privado = $privado;
         $ruta = MD5(microtime()) . "." . $archivo->getClientOriginalExtension();
 
         while (Documento::where('path', '=', $ruta)->first()) {

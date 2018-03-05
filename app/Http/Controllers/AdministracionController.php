@@ -163,7 +163,7 @@ class AdministracionController extends Controller
     public function guardar_periodo(PeriodoRequest $request)
     {
         $periodo_activo = Periodo::where("activo", 1)->first();
-        if (!empty($periodo_activo)) {
+        if ($periodo_activo) {
             $request->session()->flash("error", "Ya existe un periodo activo");
             return redirect()->back();
         } else {
@@ -179,27 +179,45 @@ class AdministracionController extends Controller
                 if ($extension == "xlsx" || $extension == "csv") {
                     $path = $request->excel->path();
                     $data = Excel::load($path, function ($reader) {
-                    })->get();
-                    if (!empty($data) && $data->count()) {
-                        foreach ($data as $key => $value) {
-                            //$asambleistas[] = ['name' => $value->name, 'phone' => $value->phone, 'email' => $value->email];
+                        $results = $reader->ignoreEmpty();
+                    })->get()->toArray();
+
+                    $data = array_filter($data);
+                    $datos = array();
+
+                    foreach ($data as $row){
+                        $row = array_diff($row,[" ","   ","",null]);
+                        if (count($row) != 0){
+                            array_push($datos,$row);
+                        }
+                    }
+
+                    //$data = array_diff($data,[" "]);
+                    //if (!empty($data) && count($data) ) {
+                    if (!empty($datos) && count($datos) ) {
+                        //dd($datos);
+                        foreach ($datos as $row) {
                             $persona = new Persona();
-                            $persona->primer_nombre = $value->primer_nombre;
-                            $persona->segundo_nombre = $value->segundo_nombre;
-                            $persona->primer_apellido = $value->primer_apellido;
-                            $persona->segundo_apellido = $value->segundo_nombre;
-                            $persona->dui = $value->dui;
-                            $persona->nit = $value->nit;
-
-                            //sentencia para agregar la foto
-                            //$persona->foto = $request->get("foto");
-
-                            $persona->afp = $value->afp;
-                            $persona->cuenta = $value->cuenta;
+                            if (array_key_exists('primer_nombre',$row))
+                                $persona->primer_nombre = trim($row["primer_nombre"]);
+                            if (array_key_exists('segundo_nombre',$row))
+                                $persona->segundo_nombre = trim($row["segundo_nombre"]);
+                            if (array_key_exists('primer_apellido',$row))
+                                $persona->primer_apellido = trim($row["primer_apellido"]);
+                            if (array_key_exists('segundo_apellido',$row))
+                                $persona->segundo_apellido = trim($row["segundo_apellido"]);
+                            if (array_key_exists('dui',$row))
+                                $persona->dui = trim($row["dui"]);
+                            if (array_key_exists('nit',$row))
+                                $persona->nit = trim($row["nit"]);
+                            if (array_key_exists('afp',$row))
+                                $persona->afp = trim($row["afp"]);
+                            if (array_key_exists('cuenta',$row))
+                                $persona->cuenta = trim($row["cuenta"]);
                             $persona->save();
 
                             $usuario = new User();
-                            switch ($value->tipo_usuario) {
+                            switch ($row["tipo_usuario"]) {
                                 case "Administrador":
                                     $usuario->rol_id = 1;
                                     break;
@@ -214,38 +232,39 @@ class AdministracionController extends Controller
                             $usuario->persona_id = $persona->id;
                             $usuario->name = $persona->primer_nombre . "." . $persona->primer_apellido;
                             $usuario->password = bcrypt("ATB");
-                            $usuario->email = $value->correo;
+                            $usuario->email = trim($row["correo"]);
                             $usuario->activo = 1;
                             $usuario->save();
 
-                            //$periodo_activo = Periodo::where("activo", "=", 1)->first();
-                            //dd($periodo_activo);
-                            $asambleista = new Asambleista();
-                            $asambleista->user_id = $usuario->id;
-                            $asambleista->periodo_id = $periodo->id;
-                            $asambleista->facultad_id = (Facultad::where("nombre", strtoupper($value->facultad))->first())->id;
-                            $asambleista->sector_id = (Sector::where("nombre", $value->sector)->first())->id;
+                            if ($row["tipo_usuario"] == "Asambleista") {
+                                $asambleista = new Asambleista();
+                                $asambleista->user_id = $usuario->id;
+                                $asambleista->periodo_id = $periodo->id;
+                                $asambleista->facultad_id = (Facultad::where("nombre", strtoupper($row["facultad"]))->first())->id;
+                                $asambleista->sector_id = (Sector::where("nombre", $row["sector"])->first())->id;
 
-                            switch ($value->propetario) {
-                                case "Si":
-                                    $asambleista->propietario = 1;
-                                    break;
-                                case "No":
-                                    $asambleista->propietario = 0;
-                                    break;
+                                switch (strtoupper($row["propetario"])) {
+                                    case "SI":
+                                        $asambleista->propietario = 1;
+                                        break;
+                                    case "NO":
+                                        $asambleista->propietario = 0;
+                                        break;
+                                }
+                                //setea al user como un asambleista activo
+                                $asambleista->activo = 1;
+
+                                $hoy = Carbon::now();
+                                $inicio_periodo = $periodo->inicio;
+
+                                if ($hoy > $inicio_periodo) {
+                                    $asambleista->inicio = $hoy;
+                                } else {
+                                    $asambleista->inicio = $inicio_periodo;
+                                }
+                                $asambleista->save();
                             }
-                            //setea al user como un asambleista activo
-                            $asambleista->activo = 1;
 
-                            $hoy = Carbon::now();
-                            $inicio_periodo = $periodo->inicio;
-
-                            if ($hoy > $inicio_periodo) {
-                                $asambleista->inicio = $hoy;
-                            } else {
-                                $asambleista->inicio = $inicio_periodo;
-                            }
-                            $asambleista->save();
                         }
                     }
                 }

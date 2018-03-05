@@ -19,6 +19,7 @@ class CreateDocumentosTable extends Migration
             $table->unsignedInteger('tipo_documento_id');
             $table->unsignedInteger('periodo_id');
             $table->dateTime('fecha_ingreso')->nullable();
+            $table->boolean('privado')->nullable();
             $table->string('path', 45)->nullable();
 
             $table->index(["tipo_documento_id"], 'fk_documentos_tipo_documentos1_idx');

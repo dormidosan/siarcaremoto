@@ -103,6 +103,7 @@
                                     <input type="hidden" name="id_comision" id="id_comision"
                                            value="{{$reunion->comision_id}}">
                                     <input type="hidden" name="id_reunion" id="id_reunion" value="{{$reunion->id}}">
+                                    <input type="hidden" name="correo_JD" id="correo_JD" value="1">
                                     <button type="submit" class="btn btn-info btn-xs btn-block">
                                         <i class="fa fa-eye"></i> Enviar convocatoria
                                     </button>
@@ -122,6 +123,7 @@
                                     </td>
                                 @endif
                             @else
+                                <td></td>
                                 <td></td>
                             @endif
                         </tr>

@@ -71,6 +71,11 @@ return [
             'visibility' => 'public',
         ],
 
+        'temporales' => [
+            'driver' => 'local',
+            'root' => storage_path('temporales'),
+        ],
+        
         's3' => [
             'driver' => 's3',
             'key' => 'your-key',

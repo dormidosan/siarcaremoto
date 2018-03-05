@@ -41,6 +41,7 @@
                         <div class="form-group">
                             <label>Seleccione Tipo Documento</label>
                             {!! Form::select('tipo_documentos',$tipo_documentos,null,['id'=>'tipo_documentos', 'class'=>'form-control', 'required'=>'required', 'placeholder' => 'Seleccione tipo...']) !!}
+                            <input type="checkbox" name="privado" value="1"> <span style="color:red"> Documento privado<span> <br>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6 col-md-6">

@@ -657,7 +657,7 @@ class ComisionController extends Controller
             if ($reunion->vigente == 1){
                 $id = 'c'.$reunion->id;
                 $table_body .= "<td>
-                                    <form id='$id' method='POST' route='". route('correo')."'>". csrf_field()."
+                                    <form id='$id' method='POST' route='". route('envio_convocatoria')."'>". csrf_field()."
                                         <input type='hidden' name='id_comision' id='id_comision' value='$reunion->comision_id'>
                                         <input type='hidden' name='id_reunion' id='id_reunion' value='$reunion->id'>
                                         <button type='submit' class='btn btn-info btn-xs btn-block'><i class='fa fa-eye'></i> Enviar Convocatoria</button>

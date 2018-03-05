@@ -40,6 +40,10 @@ class VariablesTableSeeder extends Seeder
             'tipo' => 'bitacora'
         ));
 
+        \DB::table('tipo_documentos')->insert(array(
+            'tipo' => 'convocatoria'
+        ));
+
 
         \DB::table('periodos')->insert(array(
             'nombre_periodo' => '2013-2015',

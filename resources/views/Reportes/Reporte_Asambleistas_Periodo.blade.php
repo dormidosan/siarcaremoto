@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/icheck/skins/square/green.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/toogle/css/bootstrap-toggle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -36,7 +37,7 @@
                 <div class="row">
                        <div class="col-lg-3 col-sm-12 col-md-3">
                         <label>Periodo AGU</label>
-                        {!! Form::select('periodo',$periodos,$periodo,['id'=>'periodo','class'=>'form-control','requiered'=>'required','placeholder'=>'seleccione periodo']) !!}
+                        {!! Form::select('periodo',$periodos,$periodo,['id'=>'periodo','name'=>'periodo','class'=>'form-control','requiered'=>'required','placeholder'=>'seleccione periodo']) !!}
                     </div>
                    
                    
@@ -128,23 +129,35 @@ $('#fecha').datepicker({
     <script src="{{ asset('libs/adminLTE/plugins/icheck/icheck.min.js') }}"></script>
     <script src="{{ asset('libs/adminLTE/plugins/toogle/js/bootstrap-toggle.min.js') }}"></script>
     <script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
 @endsection
 
 @section("scripts")
     <script type="text/javascript">
-        $(function () {
-            $('.input-group.date.fecha').datepicker({
-                format: "dd/mm/yyyy",
-                clearBtn: true,
-                language: "es",
-                autoclose: true,
-                todayHighlight: true,
-                toggleActive: true
-            });
+          $(function () {
+          
 
-            $('#hora').datetimepicker({
-                format: 'LT',
-            });
+            $('#buscarDocs')
+                .formValidation({
+                    framework: 'bootstrap',
+                    icon: {
+                        valid: 'glyphicon glyphicon-ok',
+                        invalid: 'glyphicon glyphicon-remove',
+                        validating: 'glyphicon glyphicon-refresh'
+                    },
+                    fields: {
+
+                        periodo: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Seleccione el periodo'
+                                }
+                            }
+                        }
+                        
+                    }
+                });
         });
     </script>
 @endsection

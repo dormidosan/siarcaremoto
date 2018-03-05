@@ -10,6 +10,7 @@ use PhpOffice\PhpWord\Style;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Http\Requests\ActasRequest;
+use Storage;
 class PlantillasController extends Controller
 {
     /**
@@ -22,18 +23,6 @@ class PlantillasController extends Controller
  public function buscar_actas(ActasRequest $request){
         $fechainicial=$request->fecha1;
         $fechafinal=$request->fecha2;   
-
-        $date1 = Carbon::create(explode('/', $fechainicial)[2],explode('/', $fechainicial)[1],explode('/', $fechainicial)[0]);
-        $date2 = Carbon::create(explode('/', $fechafinal)[2],explode('/', $fechafinal)[1],explode('/', $fechafinal)[0]);
-
-       
-        if($date1->gt($date2)){
-        $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
-        return view("Plantillas.Plantilla_actas")
-        ->with('resultados',NULL);
-        }
-
-
 
         $resultados=DB::table('agendas')
      
@@ -220,8 +209,10 @@ return $nombrefacultad;
 
         $periodo_nombre=$periodos->nombre_periodo; //leido de la base
       
-
-       
+        /*$agenda=DB::table('agendas')
+        ->where('agendas.id','=',$id_agenda)
+        ->first();
+       */
 $PHPWord = new PHPWord();
 
 // Every element you want to append to the word document is placed in a section.
@@ -265,7 +256,7 @@ $header->addText('UNIVERSIDAD DE EL SALVADOR','r2Style', 'p2Style');
 
 $header->addText('ASAMBLEA GENERAL UNIVERSITARIA','r2Style', 'p2Style');
 
-$header->addText('ACTA No.##/'.$periodo_nombre.' SESION PLENARIA ORDINARIA','r2Style', 'p2Style');
+$header->addText('ACTA No. '.$id_agenda.'/'.$periodo_nombre.' SESION PLENARIA ORDINARIA','r2Style', 'p2Style');
 
 
 
@@ -325,35 +316,153 @@ $textrun3 = $section->addTextRun('arial12');
 //dd($id_agenda);
  $puntos=DB::table('puntos')
         ->where('puntos.agenda_id','=',$id_agenda)
-        ->where('puntos.retirado','=',0)
+        
          ->orderBy('puntos.romano','asc')
         ->get();
 //dd($puntos);
 
 foreach ($puntos as $punto) {
-    $section->addListItem($punto->romano.' '.$punto->descripcion, 0, null, 'multilevel');
+
+
+
+   $seguimiento=DB::table('seguimientos')
+    ->join('estado_seguimientos','estado_seguimientos.id','=','seguimientos.estado_seguimiento_id')
+    ->join('comisiones','comisiones.id','=','seguimientos.comision_id')
+    ->where('seguimientos.peticion_id','=',$punto->peticion_id)
+    ->where('estado_seguimientos.estado','=','se')//se mando a seguimiento
+    ->where('seguimientos.activo','=',1)
+    ->where('seguimientos.comision_id','<>',1)
+    ->select('comisiones.nombre')
+    ->first();
+    
+$envio='';
+
+if($seguimiento==NULL){
+
+  $envio='';
+}else{
+
+  $envio=' Enviado a comision: '.$seguimiento->nombre;
+}
+
+
+  if($punto->retirado==0){
+    $section->addListItem($punto->romano.' '.$punto->descripcion.$envio, 0, null, 'multilevel');
+  }
+
+  if($punto->retirado==1){
+    $section->addListItem($punto->romano.' '.$punto->descripcion.$envio .' (PUNTO RETIRADO)', 0, null, 'multilevel');
+  }
+
+
 
     $propuestas=DB::table('propuestas')
     ->where('propuestas.punto_id','=',$punto->id)
     ->get();
-    foreach ($propuestas as $propuesta) {
+  
+
+    if($propuestas!=null){
+
+
+    
+    //propuestas
+
+      
+        $t = $section->addTextRun('arial12');
+        $t->addText('         Propuestas:', 
+        array('name'=>'Arial', 'size'=>8, 'bold'=>true,'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
+         
+      
+foreach ($propuestas as $propuesta) { 
    if($propuesta->ganadora==1){
-    $section->addListItem($propuesta->nombre_propuesta.' FAVOR: '.$propuesta->favor.' CONTRA: '.$propuesta->contra.' (PROPUESTA GANADORA)', 1, null, 'multilevel');   
+    $section->addListItem($propuesta->nombre_propuesta.' FAVOR: '.$propuesta->favor.' CONTRA: '.$propuesta->contra.' (PROPUESTA GANADORA)', 1,array('color'=>'blue'), 'multilevel');   
     }
     else{
     $section->addListItem($propuesta->nombre_propuesta.' FAVOR: '.$propuesta->favor.' CONTRA: '.$propuesta->contra, 1, null, 'multilevel');
     }
+
     }
-    
+}
+else{
+
+        $t12 = $section->addTextRun('arial12');
+        $t12->addText('         Propuestas: ', 
+        array('name'=>'Arial', 'size'=>8, 'bold'=>true,'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
+         
+        $t12->addText('sin propuestas', 
+        array('name'=>'Arial', 'size'=>8, 'bold'=>true,'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0,'color'=>'red'));
+
+}
+
+
+
+
+    $intervenciones=DB::table('intervenciones')
+    ->where('intervenciones.punto_id','=',$punto->id)
+    ->get();
+  
+
+
+     //intervenciones
+
+  if($intervenciones!=null){
+
+      
+      
+        $t2 = $section->addTextRun('arial12');
+        $t2->addText('         Intervenciones:', 
+        array('name'=>'Arial', 'size'=>8, 'bold'=>true,'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
+     
+      
+foreach ($intervenciones as $intervencion ) {
+      $asambleista=DB::table('asambleistas')
+      ->join('users','users.id','=','asambleistas.user_id')
+      ->join('personas','personas.id','=','users.persona_id')
+      ->where('Asambleistas.id','=',$intervencion->asambleista_id)
+      ->select('personas.primer_nombre','personas.segundo_nombre','personas.primer_apellido','personas.segundo_apellido')
+      ->first();
+      
+      $section->addListItem('El Asambleista '.$asambleista->primer_nombre.' '.$asambleista->segundo_nombre
+    .' '.$asambleista->primer_apellido.' '.$asambleista->segundo_apellido.' Realizo la siguiente intervención: '.' '.$intervencion->descripcion, 1, null, 'multilevel');
+
+    }
+
+
+   
+
+}
+
+else{
+
+        $t3 = $section->addTextRun('arial12');
+        $t3->addText('         Intervenciones: ', 
+        array('name'=>'Arial', 'size'=>8, 'bold'=>true,'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
+         
+        
+        $t3->addText('sin intervenciones', 
+        array('name'=>'Arial', 'size'=>8, 'bold'=>true,'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0,'color'=>'red'));
+
+}
+
+
 }
 
 
 $section->addText('Y para su conocimiento y efectos legales consiguientes, transcribo el presente Acuerdo en la 
     Ciudad Universitaria, San Salvador, '.$fecha_agenda);
 
+ $secretario=DB::table('asambleistas')
+        ->join('users','users.id','=','asambleistas.user_id')
+        ->join('personas','personas.id','=','users.persona_id')
+        ->join('cargos','cargos.asambleista_id','=','asambleistas.id')
+        ->where('cargos.cargo','=','Secretario JD') //secretario/a
+        ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
+                'personas.segundo_nombre')
+        ->first();
 
-$section->addText('Lic. César Alfredo Arias Hernández');
-$section->addText('Secretario de la Junta Directiva');
+
+$section->addText($secretario->primer_nombre.' '.$secretario->segundo_nombre.' '.$secretario->primer_apellido.' '.$secretario->segundo_apellido);
+$section->addText('Secretario/a de la Junta Directiva');
 $section->addText('Asamblea General Universitaria');
 
 
@@ -368,20 +477,55 @@ try {
       $objWriter =  \PhpOffice\PhpWord\IOFactory::createWriter($PHPWord, 'Word2007'); 
       $ruta=storage_path().'\app'.'\Acta_'.$fecha_agenda.'_'. $codigo_agenda.'_'.$periodo_nombre.'.docx';
       //dd($ruta);
+      $nombre='Acta_'.$fecha_agenda.'_'. $codigo_agenda.'_'.$periodo_nombre.'.docx';
       $objWriter->save($ruta); // guarda los archivo en la carpeta public del proyecto
-
+      $valor_retorno = $this->guardarDocumento($ruta, $nombre, 'temporales');
     } catch (Exception $e) {
 
     }
 
     
+//$this->descargar_documento($nombre);
 
-return response()->download($ruta);
+$ruta_documento=storage_path().'\temporales'.'\\'.$nombre;
+return response()->download($ruta_documento);
 
 
     }
 
+public function descargar_documento($nombre_archivo){
+
+//$ruta_documento= "..\storage\\temporales/".$nombre_archivo;
+$ruta_documento=storage_path().'\temporales'.'\\'.$nombre_archivo;
+dd($ruta_documento);
+return response()->download($ruta_documento);
+}
  
+
+   public function guardarDocumento($doc, $nombre, $destino)
+    {
+        $archivo = $doc;
+        /*$documento = new Documento();
+        $documento->nombre_documento = $archivo->getClientOriginalName();
+        $documento->tipo_documento_id = $tipo; // PETICION = 1
+        $documento->periodo_id = Periodo::latest()->first()->id;
+        $documento->fecha_ingreso = Carbon::now();*/
+        //$ruta = MD5(microtime()) . "." . $archivo->getClientOriginalExtension();
+        $ruta=$nombre;
+/*
+        while (Documento::where('path', '=', $ruta)->first()) {
+            $ruta = MD5(microtime()) . "." . $archivo->getClientOriginalExtension();
+        }
+*/
+        $r1 = Storage::disk($destino)->put($ruta, \File::get($archivo));
+       /* $documento->path = $ruta;
+        $documento->save();*/
+        return 0;
+
+
+    }
+
+
 
     public function desc_Plantilla_acuerdos($tipo) //https://stackoverflow.com/questions/46202824/how-to-fix-warning-illegal-string-offset-in-laravel-5-4
     {
@@ -409,6 +553,7 @@ return response()->download($ruta);
       $propuestas=DB::table('propuestas')
       ->where('propuestas.id','=',$id_propuesta)
       ->first();
+
 
        
 $PHPWord = new PHPWord();
@@ -455,13 +600,15 @@ $header->addText('UNIVERSIDAD DE EL SALVADOR','r2Style', 'p2Style');
 
 $header->addText('ASAMBLEA GENERAL UNIVERSITARIA','r2Style', 'p2Style');
 
-
+$section->addTextRun('arial12');
 
 $textrun = $section->addTextRun('arial12');
 
 $textrun->addText('El Infrascrito Secretario de la Junta Directiva de la Asamblea General Universitaria
 , de la Universidad de El Salvador (Periodo '.$periodo_nombre.' ) Certifica: ', 
 array('name'=>'Arial', 'size'=>10, 'bold'=>true,'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
+
+$section->addTextRun('arial12');
 
 $textrun2 = $section->addTextRun('arial12');
 
@@ -474,21 +621,27 @@ array('name'=>'Arial', 'size'=>10, 'bold'=>true,'spaceBefore' => 0, 'spaceAfter'
 $textrun2->addText('Celebrada el dia '.$agendas->fecha.' Se encuentra el punto '.$puntos_agen->romano.': '.$puntos_agen->descripcion.' En el que consta el Acuerdo numero '.$puntos_agen->numero.': que literalmente dice: ', 
 array('name'=>'Arial', 'size'=>10, 'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
 
+$section->addTextRun('arial12');
+
 $textrun23 = $section->addTextRun('arial12');
 
 $textrun23->addText('Punto '.$puntos_agen->romano.': '.$puntos_agen->descripcion.' numero '.$puntos_agen->numero.' que literalmente dice: ', 
 array('name'=>'Arial', 'size'=>10, 'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
+
+$section->addTextRun('arial12');
 
 $textrun24 = $section->addTextRun('arial12');
 
 $textrun24->addText( $propuestas->nombre_propuesta, 
 array('name'=>'Arial', 'size'=>10,'bold'=>true, 'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
 
+$section->addTextRun('arial12');
 $textrun25 = $section->addTextRun('arial12');
 
 $textrun25->addText('La Junta Directiva con base en el Articulo 20 literales b) y s) del Reglamento interno de la Asamblea General Universitaria de la Universidad de El Salvador por'.$propuestas->favor.' Acuerda: ', 
 array('name'=>'Arial', 'size'=>10, 'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
 
+$section->addTextRun('arial12');
 $textrun26 = $section->addTextRun('arial12');
 
 $textrun26->addText( $propuestas->nombre_propuesta, 
@@ -497,9 +650,20 @@ array('name'=>'Arial', 'size'=>10,'bold'=>true, 'spaceBefore' => 0, 'spaceAfter'
 
 $section->addText('Y para su conocimiento y efectos legales consiguientes, transcribo el presente Acuerdo en la 
     Ciudad Universitaria, San Salvador, ');
+$section->addTextRun('arial12');
+$section->addTextRun('arial12');
+
+$secretario=DB::table('asambleistas')
+        ->join('users','users.id','=','asambleistas.user_id')
+        ->join('personas','personas.id','=','users.persona_id')
+        ->join('cargos','cargos.asambleista_id','=','asambleistas.id')
+        ->where('cargos.cargo','=','Secretario JD') //secretario/a
+        ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
+                'personas.segundo_nombre')
+        ->first();
 
 
-$section->addText('Lic. César Alfredo Arias Hernández');
+$section->addText($secretario->primer_nombre.' '.$secretario->segundo_nombre.' '.$secretario->primer_apellido.' '.$secretario->segundo_apellido);
 $section->addText('Secretario de la Junta Directiva');
 $section->addText('Asamblea General Universitaria');
 
@@ -516,15 +680,18 @@ try {
       $objWriter =  \PhpOffice\PhpWord\IOFactory::createWriter($PHPWord, 'Word2007'); 
       $ruta=storage_path().'\app'.'\Acuerdo_'.$codigo_agenda.'_'.$periodo_nombre.'.docx';
       //dd($ruta);
+      $nombre='Acuerdo_'.$codigo_agenda.'_'.$periodo_nombre.'.docx';
       $objWriter->save($ruta); // guarda los archivo en la carpeta public del proyecto
-
+      $valor_retorno = $this->guardarDocumento($ruta, $nombre, 'temporales');
     } catch (Exception $e) {
 
     }
 
     
+    $ruta_documento=storage_path().'\temporales'.'\\'.$nombre;
+   return response()->download($ruta_documento);
 
-return response()->download($ruta);
+//return response()->download($ruta);
 
     }
 
@@ -683,12 +850,13 @@ return response()->download('C:\xampp\htdocs\siarcaf\public\Dictamen_'.$fecha_ag
 
     }
 
+  
+        public function convertirfecha($fecha)
+    {
 
-     public function convertirfecha($fecha){
-
-$fecha1conver= explode('/', $fecha);
-$fechatrans=$fecha1conver[2].'-'.$fecha1conver[1].'-'.$fecha1conver[0];
-$fechainicial = date('Y-m-d', strtotime($fechatrans));
+        //$fecha1conver = explode('/', $fecha);
+        //$fechatrans = $fecha1conver[2] . '-' . $fecha1conver[1] . '-' . $fecha1conver[0];
+        $fechainicial = date('Y-m-d', strtotime($fecha));
 
         return $fechainicial;
     }

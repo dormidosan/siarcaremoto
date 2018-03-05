@@ -1,11 +1,12 @@
 @extends('layouts.app')
 
 @section('styles')
-      <link rel="stylesheet" href="{{ asset('libs/datepicker/css/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/datepicker/css/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/datetimepicker/css/bootstrap-datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/icheck/skins/square/green.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/toogle/css/bootstrap-toggle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
 @endsection
 
 @section('breadcrumb')
@@ -158,22 +159,91 @@
     <script src="{{ asset('libs/adminLTE/plugins/icheck/icheck.min.js') }}"></script>
     <script src="{{ asset('libs/adminLTE/plugins/toogle/js/bootstrap-toggle.min.js') }}"></script>
     <script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
 @endsection
 
 @section("scripts")
     <script type="text/javascript">
-        $(function () {
-            $('.input-group.date.fecha').datepicker({
-                format: "dd/mm/yyyy",
-                clearBtn: true,
-                language: "es",
-                autoclose: true,
-                todayHighlight: true,
-                toggleActive: true
-            });
+           $(function () {
+            $('#fecha1')
+                .datepicker({
+                    format: 'dd-mm-yyyy',
+                    clearBtn: true,
+                    language: "es",
+                    autoclose: true,
+                    todayHighlight: true,
+                    toggleActive: true
+                })
+                .on('changeDate', function (e) {
+                    // Revalidate the start date field
+                    $('#buscarDocs').formValidation('revalidateField', 'fecha1');
+                });
 
-            $('#hora').datetimepicker({
-                format: 'LT',
+            $('#fecha2')
+                .datepicker({
+                    format: 'dd-mm-yyyy',
+                    clearBtn: true,
+                    language: "es",
+                    autoclose: true,
+                    todayHighlight: true,
+                    toggleActive: true
+                })
+                .on('changeDate', function (e) {
+                    $('#buscarDocs').formValidation('revalidateField', 'fecha2');
+                });
+
+            $('#buscarDocs')
+                .formValidation({
+                    framework: 'bootstrap',
+                    icon: {
+                        valid: 'glyphicon glyphicon-ok',
+                        invalid: 'glyphicon glyphicon-remove',
+                        validating: 'glyphicon glyphicon-refresh'
+                    },
+                    fields: {
+                        tipoDocumento: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Seleccione un tipo de Documento'
+                                }
+                            }
+                        },
+                        fecha1: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Fecha de inicio requerida'
+                                },
+                                date: {
+                                    format: 'DD-MM-YYYY',
+                                    max: 'fecha2',
+                                    message: 'Fecha de inicio no puede ser mayor que fecha fin'
+                                }
+                            }
+                        },
+                        fecha2: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Fecha fin es requerida'
+                                },
+                                date: {
+                                    format: 'DD-MM-YYYY',
+                                    min: 'fecha1',
+                                    message: 'Fecha fin no puede ser menor que fecha inicio'
+                                }
+                            }
+                        }
+                    }
+                }).on('success.field.fv', function (e, data) {
+                if (data.field === 'startDate' && !data.fv.isValidField('endDate')) {
+                    // We need to revalidate the end date
+                    data.fv.revalidateField('endDate');
+                }
+
+                if (data.field === 'endDate' && !data.fv.isValidField('startDate')) {
+                    // We need to revalidate the start date
+                    data.fv.revalidateField('startDate');
+                }
             });
         });
     </script>

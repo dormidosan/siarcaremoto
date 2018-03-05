@@ -11,6 +11,7 @@ use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use App\TipoDocumento;
 use App\Documento;
+use Auth;
 use App\Http\Requests\DocumentoRequest;
 
 
@@ -23,7 +24,13 @@ class DocumentoController extends Controller
         $periodo = null;
         $descripcion = null;
         $disco = "../storage/documentos/";
-        $tipo_documentos = TipoDocumento::where('id', '!=', '0')->pluck('tipo', 'id');
+        
+        if (Auth::guest()) {
+            $tipo_documentos = TipoDocumento::where('tipo', '=', 'acuerdo')->orWhere('tipo', '=', 'acta')->pluck('tipo', 'id');
+        } else {
+            $tipo_documentos = TipoDocumento::where('id', '!=', '0')->pluck('tipo', 'id');
+        }
+        
         $periodos = Periodo::where('id', '!=', '0')->pluck('nombre_periodo', 'id');
         //$documentos = Documento::all();
 
