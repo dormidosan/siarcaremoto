@@ -472,7 +472,7 @@ $footer->addPreserveText('Pagina {PAGE} de {NUMPAGES}.', array('align'=>'right')
 $footer->addPreserveText('FINAL AVENIDA "Mártires Estudiantes del 30 de julio", Ciudad Universitaria
     Tel. Presidencia 2226-95950, Registro de Asociaciones Estudiantiles 2511-2057, Secretaria de la AGU 2225-7076,
     Unidad Financiera 2511-2022', array('align'=>'center'));
-dd('prueba dd');
+
 try {
       $objWriter =  \PhpOffice\PhpWord\IOFactory::createWriter($PHPWord, 'Word2007'); 
       $ruta=storage_path().'\app'.'\Acta_'.$fecha_agenda.'_'. $codigo_agenda.'_'.$periodo_nombre.'.docx';
