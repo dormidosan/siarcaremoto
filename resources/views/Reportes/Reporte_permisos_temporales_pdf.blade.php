@@ -147,7 +147,7 @@
                     <tbody>  <!-- CUERPO DE LA TABLA-->
                       @foreach($resultados as $result)
                           <tr>                                     
-                           <td>Asambleista: {{$result->primer_nombre}} {{$result->primer_apellido}}  <br/>Delego a: _____________</td>
+                           <td>Asambleista: {{$result->primer_nombre}} {{$result->primer_apellido}} </td>
                           
                           
                            <td>{{$result->entrada}} </td>

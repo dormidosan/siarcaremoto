@@ -77,7 +77,7 @@
 @foreach($resultados as $result)
                     <tr>                                     
                       <td>
-                        ASAMBLEISTAS DEL PERIO {{$result->nombre_periodo}}
+                        ASAMBLEISTAS DEL PERIODO {{$result->nombre_periodo}}
                       </td>
                       <td>{{$result->nombre_periodo}}</td>
                     

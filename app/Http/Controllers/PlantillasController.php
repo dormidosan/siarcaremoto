@@ -475,9 +475,12 @@ $footer->addPreserveText('FINAL AVENIDA "Mártires Estudiantes del 30 de julio",
 
 try {
       $objWriter =  \PhpOffice\PhpWord\IOFactory::createWriter($PHPWord, 'Word2007'); 
-      $ruta=storage_path().'\app'.'\Acta_'.$fecha_agenda.'_'. $codigo_agenda.'_'.$periodo_nombre.'.docx';
+      $nombre='Acta'.$fecha_agenda.$codigo_agenda.$periodo_nombre.'.docx';
+      $nombre = str_replace(' ', '', $nombre);
+      $nombre = str_replace('-', '', $nombre);
+      $nombre = str_replace('_', '', $nombre);
+      $ruta=storage_path().'\app'.'\\'.$nombre;
       //dd($ruta);
-      $nombre='Acta_'.$fecha_agenda.'_'. $codigo_agenda.'_'.$periodo_nombre.'.docx';
       $objWriter->save($ruta); // guarda los archivo en la carpeta public del proyecto
       $valor_retorno = $this->guardarDocumento($ruta, $nombre, 'temporales');
     } catch (Exception $e) {
@@ -487,7 +490,7 @@ try {
     
 //$this->descargar_documento($nombre);
 
-$ruta_documento=storage_path().'\temporales'.'\\'.$nombre;
+$ruta_documento=storage_path().'/temporales'.'/'.$nombre;
 return response()->download($ruta_documento);
 
 
@@ -573,7 +576,6 @@ $textrun = $section->addTextRun('p2Style');
 
 
 
-
 $header->addImage('images/Logo_UES.jpg', 
 array('width'=>75, 'height'=>75, 'align'=>'Left',
   'marginTop' => 0,
@@ -590,6 +592,7 @@ array('width'=>95, 'height'=>95, 'align'=>'right',
        'positioning' => 'absolute',     
        'posVerticalRel' => 'line'
        ));  //margen derecho
+
 
 
 
@@ -678,9 +681,14 @@ $footer->addPreserveText('FINAL AVENIDA "Mártires Estudiantes del 30 de julio",
 
 try {
       $objWriter =  \PhpOffice\PhpWord\IOFactory::createWriter($PHPWord, 'Word2007'); 
-      $ruta=storage_path().'\app'.'\Acuerdo_'.$codigo_agenda.'_'.$periodo_nombre.'.docx';
-      //dd($ruta);
+
       $nombre='Acuerdo_'.$codigo_agenda.'_'.$periodo_nombre.'.docx';
+      $nombre = str_replace(' ', '', $nombre);
+      $nombre = str_replace('-', '', $nombre);
+      $nombre = str_replace('_', '', $nombre);
+
+      $ruta=storage_path().'\app'.'\\'.$nombre;
+      //dd($ruta);
       $objWriter->save($ruta); // guarda los archivo en la carpeta public del proyecto
       $valor_retorno = $this->guardarDocumento($ruta, $nombre, 'temporales');
     } catch (Exception $e) {
@@ -688,7 +696,7 @@ try {
     }
 
     
-    $ruta_documento=storage_path().'\temporales'.'\\'.$nombre;
+    $ruta_documento=storage_path().'/temporales'.'/'.$nombre;
    return response()->download($ruta_documento);
 
 //return response()->download($ruta);

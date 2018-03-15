@@ -20,16 +20,8 @@ use App\Parametro;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Routing\Redirector;
 use DateTime;
-
 use Storage;
-use App\Http\Requests;
-use App\Http\Controllers\Controller;
-
-use Illuminate\Support\Facades\Hash;
-
-use App\Http\Requests\UsuarioRequest;
 use App\Http\Requests\PeriodoRequest;
 use Illuminate\Support\Facades\Auth;
 use Excel;
@@ -277,6 +269,13 @@ class AdministracionController extends Controller
     public function finalizar_periodo(Request $request)
     {
         if ($request->ajax()) {
+            $asambleistas = Asambleista::where("activo",1)->where("periodo_id",$request->get("periodo_id"))->get();
+
+            foreach ($asambleistas as $asambleista){
+                $asambleista->activo = 0;
+                $asambleista->save();
+            }
+
             $periodo = Periodo::find($request->get("periodo_id"));
             $periodo->activo = 0;
             $respuesta = new \stdClass();

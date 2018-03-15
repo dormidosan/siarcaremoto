@@ -960,8 +960,16 @@ class ReportesController extends Controller
             $cuenta++;
         }
 
+        $jefe=DB::table('asambleistas')
+        ->join('users','users.id','=','asambleistas.user_id')
+        ->join('personas','personas.id','=','users.persona_id')
+        ->join('cargos','cargos.asambleista_id','=','asambleistas.id')
+        ->where('cargos.cargo','=','Presidente')
+        ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
+                'personas.segundo_nombre')
+        ->first();
 
-        $view = \View::make('Reportes/Reporte_planilla_dieta_pdf', compact('busqueda', 'anio'))->render();
+        $view = \View::make('Reportes/Reporte_planilla_dieta_pdf', compact('busqueda', 'anio','jefe'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->loadHTML($view)->setPaper('letter', 'portrait')->setWarnings(false);
         $hoy = Carbon::now()->format('Y-m-d');

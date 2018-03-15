@@ -174,11 +174,11 @@ Por el pago de dietas de Junta Directiva de la AGU. del año {{$anio}}. son los 
  </div> 
 
 <div id="footer" style="text-align: center;">
-Licda. Josefina Sibrián de Rodríguez
+{{$jefe->primer_nombre}} {{$jefe->segundo_nombre}} {{$jefe->primer_apellido}} {{$jefe->segundo_apellido}}
  </div> 
 
 <div id="footer1" style="text-align: center;">
-Presidenta Asamblea General Universitaria
+Presidente/a Asamblea General Universitaria
  </div> 
 
 

@@ -150,7 +150,7 @@
 
  <div id="cp2" style="text-align: left;">
   Para: Señores Miembros de la Asamblea General Universitaria (Gestión: {{$periodo->nombre_periodo}})<br/>
-  De: Licda. Josefina Sibrián de Rodríguez -Presidenta<br/>
+  De: {{$jefe->primer_nombre}} {{$jefe->segundo_nombre}} {{$jefe->primer_apellido}} {{$jefe->segundo_apellido}} Presidente/a<br/>
   Asunto: Convocatoria a Sesión Plenaria para el {{$agenda->fecha}}<br/><br/><br/>
  </div>  
 
