@@ -31,33 +31,39 @@
                     <tbody>
                     @php $i = 1 @endphp
                     @if(empty($cargos) != true)
-                        @foreach($cargos as $cargo)
+                        @forelse($cargos as $cargo)
                             <tr>
                                 <td style="vertical-align: middle">{{ $i }}</td>
                                 <td>
                                     <div class="center-block">
                                         <img src="{!!$fotos!!}{!!$cargo->asambleista->user->persona->foto!!}"
-                                            class="img-responsives" width="70px"
-                                            style="margin-left: 25px !important; "
-                                            alt="User Image">
+                                             class="img-responsives" width="70px"
+                                             style="margin-left: 25px !important; "
+                                             alt="User Image">
                                     </div>
                                 </td>
                                 <td style="vertical-align: middle">{{ $cargo->asambleista->user->persona->primer_nombre . " " . $cargo->asambleista->user->persona->segundo_nombre . " " . $cargo->asambleista->user->persona->primer_apellido . " " . $cargo->asambleista->user->persona->segundo_apellido }}</td>
                                 <td style="vertical-align: middle">{{ $cargo->asambleista->sector->nombre }}</td>
                                 <td style="vertical-align: middle">{{ $cargo->cargo }}</td>
-                                <td style="vertical-align: middle">   
-                                         <a class="btn btn-info btn-xs"
-                                            href="<?= $disco . $cargo->asambleista->ruta; ?>"
-                                            role="button">Ver</a>
-                                         <!-- <a class="btn btn-success btn-xs"
-                                                       href="descargar_documento-/-<-?-= $asambleista->ruta; ?>"
-                                                       role="button">Descargar</a> -->
-                                      </td>
+                                <td style="vertical-align: middle">
+                                    <a class="btn btn-info btn-xs"
+                                       href="<?= $disco . $cargo->asambleista->ruta; ?>"
+                                       role="button">Ver</a>
+                                    <!-- <a class="btn btn-success btn-xs"
+                                                  href="descargar_documento-/-<-?-= $asambleista->ruta; ?>"
+                                                  role="button">Descargar</a> -->
+                                </td>
                             </tr>
                             @php $i++ @endphp
-                        @endforeach
+                        @empty
+                            <tr class="text-center">
+                                <td colspan="6">No cuenta con asambleistas</td>
+                            </tr>
+                        @endforelse
                     @else
-                        <tr class="text-center"><td colspan="6">No cuenta con asambleistas</td></tr>
+                        <tr class="text-center">
+                            <td colspan="6">No cuenta con asambleistas</td>
+                        </tr>
                     @endif
                     </tbody>
                 </table>

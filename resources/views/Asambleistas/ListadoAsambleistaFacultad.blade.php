@@ -49,33 +49,44 @@
 
 
                                         <tbody>
-                                        @if($facultad->asambleistas()->count() > 0) @foreach($asambleistas as $asambleista) @if($facultad->id == $asambleista->facultad->id)
-                                            <tr>
-                                                <td style="vertical-align: middle">{{ $i }}</td>
-                                                <td>
-                                                    <div class="center-block">
-                                                        <img src="{!!$fotos!!}{!!$asambleista->user->persona->foto!!}"
-                                                             class="img-responsives" width="70px"
-                                                             style="margin-left: 25px !important; " alt="User Image">
-                                                    </div>
-                                                </td>
-                                                <td style="vertical-align: middle">{{ $asambleista->user->persona->primer_nombre . " " . $asambleista->user->persona->segundo_nombre . " " . $asambleista->user->persona->primer_apellido . " " . $asambleista->user->persona->segundo_apellido }}</td>
-                                                <td style="vertical-align: middle">{{ $asambleista->sector->nombre }}</td>
-                                                @if($asambleista->propietario == 1)
-                                                    <td style="vertical-align: middle">Propetario</td>
-                                                @else
-                                                    <td style="vertical-align: middle">Suplente</td>
+                                        @if($facultad->asambleistas()->count() > 0)
+                                            @forelse($asambleistas as $asambleista)
+                                                @if($facultad->id == $asambleista->facultad->id)
+                                                    <tr>
+                                                        <td style="vertical-align: middle">{{ $i }}</td>
+                                                        <td>
+                                                            <div class="center-block">
+                                                                <img src="{!!$fotos!!}{!!$asambleista->user->persona->foto!!}"
+                                                                     class="img-responsives" width="70px"
+                                                                     style="margin-left: 25px !important; "
+                                                                     alt="User Image">
+                                                            </div>
+                                                        </td>
+                                                        <td style="vertical-align: middle">{{ $asambleista->user->persona->primer_nombre . " " . $asambleista->user->persona->segundo_nombre . " " . $asambleista->user->persona->primer_apellido . " " . $asambleista->user->persona->segundo_apellido }}</td>
+                                                        <td style="vertical-align: middle">{{ $asambleista->sector->nombre }}</td>
+                                                        @if($asambleista->propietario == 1)
+                                                            <td style="vertical-align: middle">Propetario</td>
+                                                        @else
+                                                            <td style="vertical-align: middle">Suplente</td>
+                                                        @endif
+                                                        <td style="vertical-align: middle">
+                                                            <a class="btn btn-info btn-xs"
+                                                               href="<?= $disco . $asambleista->ruta; ?>"
+                                                               role="button">Ver</a>
+                                                            <!-- <a class="btn btn-success btn-xs"
+                                                               href="descargar_documento-/-<-?-= $asambleista->ruta; ?>"
+                                                               role="button">Descargar</a> -->
+                                                        </td>
+                                                    </tr>
+                                                    @php $i++ @endphp
                                                 @endif
-                                                <td style="vertical-align: middle">
-                                                    <a class="btn btn-info btn-xs"
-                                                       href="<?= $disco . $asambleista->ruta; ?>"
-                                                       role="button">Ver</a>
-                                                    <!-- <a class="btn btn-success btn-xs"
-                                                       href="descargar_documento-/-<-?-= $asambleista->ruta; ?>"
-                                                       role="button">Descargar</a> -->
-                                                </td>
-                                            </tr>
-                                            @php $i++ @endphp @endif @endforeach @else
+                                            @empty
+                                                <tr>
+                                                    <td colspan="6" class="">Esta comision no cuenta con asambleistas
+                                                    </td>
+                                                </tr>
+                                            @endforelse
+                                        @else
                                             <tr>
                                                 <td colspan="6" class="">Esta comision no cuenta con asambleistas</td>
                                             </tr>

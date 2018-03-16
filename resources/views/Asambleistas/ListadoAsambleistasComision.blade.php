@@ -79,7 +79,7 @@
                                             @endforeach
                                             @if($integrantes == false)
                                                 <tr>
-                                                    <td colspan="5" class="">Esta comision no cuenta con asambleistas
+                                                    <td colspan="6" class="">Esta comision no cuenta con asambleistas
                                                     </td>
                                                 </tr>
                                             @endif

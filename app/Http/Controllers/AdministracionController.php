@@ -25,6 +25,7 @@ use Storage;
 use App\Http\Requests\PeriodoRequest;
 use Illuminate\Support\Facades\Auth;
 use Excel;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class AdministracionController extends Controller
 {
@@ -177,89 +178,133 @@ class AdministracionController extends Controller
                     $data = array_filter($data);
                     $datos = array();
 
-                    foreach ($data as $row){
-                        $row = array_diff($row,[" ","   ","",null]);
-                        if (count($row) != 0){
-                            array_push($datos,$row);
+                    foreach ($data as $row) {
+                        $row = array_diff($row, [" ", "   ", "", null]);
+                        if (count($row) != 0) {
+                            array_push($datos, $row);
                         }
                     }
 
-                    //$data = array_diff($data,[" "]);
-                    //if (!empty($data) && count($data) ) {
-                    if (!empty($datos) && count($datos) ) {
+                    $usuarios = User::all();
+                    $usuarios_correos = array();
+                    foreach ($usuarios as $usuario) {
+                        array_push($usuarios_correos, $usuario->email);
+                    }
+
+                    if (!empty($datos) && count($datos)) {
                         //dd($datos);
                         foreach ($datos as $row) {
-                            $persona = new Persona();
-                            if (array_key_exists('primer_nombre',$row))
-                                $persona->primer_nombre = trim($row["primer_nombre"]);
-                            if (array_key_exists('segundo_nombre',$row))
-                                $persona->segundo_nombre = trim($row["segundo_nombre"]);
-                            if (array_key_exists('primer_apellido',$row))
-                                $persona->primer_apellido = trim($row["primer_apellido"]);
-                            if (array_key_exists('segundo_apellido',$row))
-                                $persona->segundo_apellido = trim($row["segundo_apellido"]);
-                            if (array_key_exists('dui',$row))
-                                $persona->dui = trim($row["dui"]);
-                            if (array_key_exists('nit',$row))
-                                $persona->nit = trim($row["nit"]);
-                            if (array_key_exists('afp',$row))
-                                $persona->afp = trim($row["afp"]);
-                            if (array_key_exists('cuenta',$row))
-                                $persona->cuenta = trim($row["cuenta"]);
-                            $persona->save();
+                            /*
+                             * Al momento de ingresar un asambleista por medio del excel, si este ya se encuentra
+                             * realmente en el sistema se crea un record para el asambleista, en la tabla asambleista
+                             * y el usuario asociado a este se vuelve a activar
+                             */
+                            if (in_array(trim($row["correo"]), $usuarios_correos)) {
+                                if ($row["tipo_usuario"] == "Asambleista") {
+                                    $usuario_existente = User::where("email", trim($row["correo"]))->firstOrFail();
+                                    $usuario_existente->activo = 1;
+                                    $usuario_existente->save();
 
-                            $usuario = new User();
-                            switch ($row["tipo_usuario"]) {
-                                case "Administrador":
-                                    $usuario->rol_id = 1;
-                                    break;
-                                case "Secretario":
-                                    $usuario->rol_id = 2;
-                                    break;
-                                case "Asambleista":
-                                    $usuario->rol_id = 3;
-                                    break;
-                            }
+                                    $asambleista = new Asambleista();
+                                    $asambleista->user_id = $usuario_existente->id;
+                                    $asambleista->periodo_id = $periodo->id;
+                                    $asambleista->facultad_id = (Facultad::where("nombre", strtoupper($row["facultad"]))->first())->id;
+                                    $asambleista->sector_id = (Sector::where("nombre", $row["sector"])->first())->id;
 
-                            $usuario->persona_id = $persona->id;
-                            $usuario->name = $persona->primer_nombre . "." . $persona->primer_apellido;
-                            $usuario->password = bcrypt("ATB");
-                            $usuario->email = trim($row["correo"]);
-                            $usuario->activo = 1;
-                            $usuario->save();
+                                    switch (strtoupper($row["propetario"])) {
+                                        case "SI":
+                                            $asambleista->propietario = 1;
+                                            break;
+                                        case "NO":
+                                            $asambleista->propietario = 0;
+                                            break;
+                                    }
+                                    //setea al user como un asambleista activo
+                                    $asambleista->activo = 1;
 
-                            if ($row["tipo_usuario"] == "Asambleista") {
-                                $asambleista = new Asambleista();
-                                $asambleista->user_id = $usuario->id;
-                                $asambleista->periodo_id = $periodo->id;
-                                $asambleista->facultad_id = (Facultad::where("nombre", strtoupper($row["facultad"]))->first())->id;
-                                $asambleista->sector_id = (Sector::where("nombre", $row["sector"])->first())->id;
+                                    $hoy = Carbon::now();
+                                    $inicio_periodo = $periodo->inicio;
 
-                                switch (strtoupper($row["propetario"])) {
-                                    case "SI":
-                                        $asambleista->propietario = 1;
+                                    if ($hoy > $inicio_periodo) {
+                                        $asambleista->inicio = $hoy;
+                                    } else {
+                                        $asambleista->inicio = $inicio_periodo;
+                                    }
+                                    $asambleista->save();
+                                }
+                            } else {
+                                $persona = new Persona();
+                                if (array_key_exists('primer_nombre', $row))
+                                    $persona->primer_nombre = trim($row["primer_nombre"]);
+                                if (array_key_exists('segundo_nombre', $row))
+                                    $persona->segundo_nombre = trim($row["segundo_nombre"]);
+                                if (array_key_exists('primer_apellido', $row))
+                                    $persona->primer_apellido = trim($row["primer_apellido"]);
+                                if (array_key_exists('segundo_apellido', $row))
+                                    $persona->segundo_apellido = trim($row["segundo_apellido"]);
+                                if (array_key_exists('dui', $row))
+                                    $persona->dui = trim($row["dui"]);
+                                if (array_key_exists('nit', $row))
+                                    $persona->nit = trim($row["nit"]);
+                                if (array_key_exists('afp', $row))
+                                    $persona->afp = trim($row["afp"]);
+                                if (array_key_exists('cuenta', $row))
+                                    $persona->cuenta = trim($row["cuenta"]);
+                                $persona->save();
+
+                                $usuario = new User();
+                                switch ($row["tipo_usuario"]) {
+                                    case "Administrador":
+                                        $usuario->rol_id = 1;
                                         break;
-                                    case "NO":
-                                        $asambleista->propietario = 0;
+                                    case "Secretario":
+                                        $usuario->rol_id = 2;
+                                        break;
+                                    case "Asambleista":
+                                        $usuario->rol_id = 3;
                                         break;
                                 }
-                                //setea al user como un asambleista activo
-                                $asambleista->activo = 1;
 
-                                $hoy = Carbon::now();
-                                $inicio_periodo = $periodo->inicio;
+                                $usuario->persona_id = $persona->id;
+                                $usuario->name = $persona->primer_nombre . "." . $persona->primer_apellido;
+                                $usuario->password = bcrypt("ATB");
+                                $usuario->email = trim($row["correo"]);
+                                $usuario->activo = 1;
+                                $usuario->save();
 
-                                if ($hoy > $inicio_periodo) {
-                                    $asambleista->inicio = $hoy;
-                                } else {
-                                    $asambleista->inicio = $inicio_periodo;
+                                if ($row["tipo_usuario"] == "Asambleista") {
+                                    $asambleista = new Asambleista();
+                                    $asambleista->user_id = $usuario->id;
+                                    $asambleista->periodo_id = $periodo->id;
+                                    $asambleista->facultad_id = (Facultad::where("nombre", strtoupper($row["facultad"]))->first())->id;
+                                    $asambleista->sector_id = (Sector::where("nombre", $row["sector"])->first())->id;
+
+                                    switch (strtoupper($row["propetario"])) {
+                                        case "SI":
+                                            $asambleista->propietario = 1;
+                                            break;
+                                        case "NO":
+                                            $asambleista->propietario = 0;
+                                            break;
+                                    }
+                                    //setea al user como un asambleista activo
+                                    $asambleista->activo = 1;
+
+                                    $hoy = Carbon::now();
+                                    $inicio_periodo = $periodo->inicio;
+
+                                    if ($hoy > $inicio_periodo) {
+                                        $asambleista->inicio = $hoy;
+                                    } else {
+                                        $asambleista->inicio = $inicio_periodo;
+                                    }
+                                    $asambleista->save();
                                 }
-                                $asambleista->save();
                             }
-
                         }
                     }
                 }
+
             }
             $request->session()->flash("success", "Periodo creado con exito");
             return redirect()->route("periodos_agu");
@@ -269,12 +314,30 @@ class AdministracionController extends Controller
     public function finalizar_periodo(Request $request)
     {
         if ($request->ajax()) {
-            $asambleistas = Asambleista::where("activo",1)->where("periodo_id",$request->get("periodo_id"))->get();
+            $asambleistas = Asambleista::where("activo", 1)->where("periodo_id", $request->get("periodo_id"))->get();
+            $usuarios = User::all();
 
-            foreach ($asambleistas as $asambleista){
+
+            foreach ($asambleistas as $asambleista) {
                 $asambleista->activo = 0;
+                $asambleista->user->activo = 0;
                 $asambleista->save();
-            }
+
+                foreach ($usuarios as $usuario) {
+                    if ($usuario->id === $asambleista->user_id) {
+                        $usuario->activo = 0;
+                        $usuario->save();
+                    }
+                }//fin foreach usuario
+
+                try {
+                    $cargo_asambleisa = Cargo::where("asambleista_id", $asambleista->id)->firstOrFail();
+                    $cargo_asambleisa->activo = 0;
+                    $cargo_asambleisa->save();
+                } catch (ModelNotFoundException $e) {
+                    continue;
+                }//fin try
+            }//fin foreach asambleistas
 
             $periodo = Periodo::find($request->get("periodo_id"));
             $periodo->activo = 0;
@@ -284,7 +347,7 @@ class AdministracionController extends Controller
 
             //se genera la respuesta json
             return new JsonResponse($respuesta);
-        }
+        }//fin if ajax
     }
 
     public function parametros(Request $request)
@@ -322,7 +385,12 @@ class AdministracionController extends Controller
         $facultades = Facultad::all();
         //muestra incluso los asambleistas que no estan activos (0)
         $periodo = Periodo::where('activo', 1)->first();
-        $asambleistas = Asambleista::where('periodo_id', $periodo->id)->get();
+
+        if(is_null($periodo) != true){
+            $asambleistas = Asambleista::where('periodo_id', $periodo->id)->get();
+        }else{
+            $asambleistas = array();
+        }
 
         return view("Administracion.baja_asambleista", ["facultades" => $facultades, "asambleistas" => $asambleistas]);
     }
@@ -361,19 +429,16 @@ class AdministracionController extends Controller
     public function cambiar_perfiles()
     {
         $perfiles = Rol::all();
-        $periodo_activo = Periodo::where("activo", 1)->firstOrFail();
+        $periodo_activo = Periodo::where("activo", 1)->first();
 
-        /*
-         * Obtener la entidad del actual usuario logueado
-         * con el fin de filtrar el listado de asambleistas y no mostrarlo en dicha lista, con el proposito de evitar
-         * que el usuario logueado cambie su perfil
-         *
-         */
-        $current_user = Asambleista::where("periodo_id", $periodo_activo->id)->where("activo", 1)->where("id", Auth::user()->id)->firstOrFail();
-
-        //se genera el listado de asambleistas, sin incluir el actual logueado en el sistema
-        $asambleistas = Asambleista::where("periodo_id", $periodo_activo->id)->where("activo", 1)->where("id", "!=", $current_user->id)->get();
-
+        if (is_null($periodo_activo) != true){
+            //$current_user = Asambleista::where("periodo_id", $periodo_activo->id)->where("activo", 1)->where("id", Auth::user()->id)->firstOrFail();
+            $current_user = User::find(Auth::user()->id);
+            //se genera el listado de asambleistas, sin incluir el actual logueado en el sistema
+            $asambleistas = Asambleista::where("periodo_id", $periodo_activo->id)->where("activo", 1)->where("id", "!=", $current_user->id)->get();
+        }else{
+            $asambleistas = array();
+        }
         return view("Administracion.cambiar_perfiles", ["perfiles" => $perfiles, "asambleistas" => $asambleistas]);
 
     }
