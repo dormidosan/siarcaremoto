@@ -89,13 +89,16 @@
                         <tr>
                             <td>{{ $periodo->nombre_periodo }}</td>
                             <td>{{ substr($periodo->inicio,0,4) ." - ". substr($periodo->fin,0,4)}}</td>
-                            <td><a href="{{url("/Reporte_Asambleista_Periodo/2.$periodo->id")}}" class="btn btn-xs btn-info">Descargar</a></td>
+                            <td><a href="{{url("/Reporte_Asambleista_Periodo/2.$periodo->id")}}"
+                                   class="btn btn-xs btn-info">Descargar</a></td>
                             @if($periodo->activo)
                                 <td>
                                     <button type="button" class="btn btn-xs btn-danger"
                                             onclick="finalizar_periodo({{ $periodo->id }})">Finalizar
                                     </button>
                                 </td>
+                            @else
+                                <td></td>
                             @endif
                         </tr>
                     @endforeach
@@ -158,7 +161,43 @@
         });
 
         function finalizar_periodo(periodo_id) {
+            var valor = 0;
+            var exito = false;
+            var respuesta;
             $.ajax({
+                beforeSend: function () {
+                    Lobibox.progress({
+                        title: 'Por favor, espere',
+                        label: 'Finalizando Periodo ...',
+                        closeButton: false,
+                        closeOnEsc: false,
+                        progressTpl: '<div class="progress lobibox-progress-outer">\n\
+            <div class="progress-bar progress-bar-danger progress-bar-striped lobibox-progress-element" data-role="progress-text" role="progressbar"></div>\n\
+            </div>',
+                        onShow: function ($this) {
+                            var i = 0;
+                            var inter = setInterval(function () {
+
+                                if (i > 100) {
+                                    inter = clearInterval(inter);
+                                }
+                                i = i + 0.1;
+                                $this.setProgress(i);
+                            }, 10);
+                        },
+                        progressCompleted: function () {
+                            if (exito) {
+                                notificacion(respuesta.mensaje.titulo, respuesta.mensaje.contenido, respuesta.mensaje.tipo);
+                                var lobibox = $('.lobibox-progress').data('lobibox');
+                                lobibox.hide();
+                                setTimeout(function () {
+                                    window.location.href = "{{ route("periodos_agu") }}"
+                                }, 900);
+                            }
+
+                        }
+                    });
+                },
                 //se envia un token, como medida de seguridad ante posibles ataques
                 headers: {
                     'X-CSRF-TOKEN': "{{ csrf_token() }}"
@@ -167,12 +206,13 @@
                 url: "{{ route("finalizar_periodo") }}",
                 data: {"periodo_id": periodo_id},
                 success: function (response) {
-                    notificacion(response.mensaje.titulo, response.mensaje.contenido, response.mensaje.tipo);
-                    setTimeout(function () {
-                        window.location.href = "{{ route("periodos_agu") }}"
-                    }, 900);
-
-                }
+                    respuesta = response;
+                    exito = true;
+                },
+                complete: function () {
+                    if (valor >= 100)
+                        console.log(valor);
+                },
             });
 
         }
@@ -184,10 +224,12 @@
     @if(Session::has('error'))
         <script>
             notificacion("Error", "{{ Session::get('error') }}", "error");
+            {{ Session::forget('error') }}
         </script>
     @elseif(Session::has('success'))
         <script>
             notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
         </script>
     @endif
 @endsection
