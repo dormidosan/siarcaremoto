@@ -479,7 +479,7 @@ try {
       $nombre = str_replace(' ', '', $nombre);
       $nombre = str_replace('-', '', $nombre);
       $nombre = str_replace('_', '', $nombre);
-      $ruta=storage_path().'\app'.'\\'.$nombre;
+      $ruta=storage_path().'/app'.'/'.$nombre;
       //dd($ruta);
       $objWriter->save($ruta); // guarda los archivo en la carpeta public del proyecto
       $valor_retorno = $this->guardarDocumento($ruta, $nombre, 'temporales');
@@ -618,7 +618,7 @@ $textrun2 = $section->addTextRun('arial12');
 $textrun2->addText('Que en Acta de Sesión Ordinaria de Junta Directiva de la Asamblea General Universitaria ', 
 array('name'=>'Arial', 'size'=>10, 'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
 
-$textrun2->addText('Numero ##/JD-AGU'.$periodo_nombre.'.', 
+$textrun2->addText('Numero JD-AGU'.$periodo_nombre.'.', 
 array('name'=>'Arial', 'size'=>10, 'bold'=>true,'spaceBefore' => 0, 'spaceAfter' => 0, 'spacing' => 0));
 
 $textrun2->addText('Celebrada el dia '.$agendas->fecha.' Se encuentra el punto '.$puntos_agen->romano.': '.$puntos_agen->descripcion.' En el que consta el Acuerdo numero '.$puntos_agen->numero.': que literalmente dice: ', 
@@ -687,7 +687,7 @@ try {
       $nombre = str_replace('-', '', $nombre);
       $nombre = str_replace('_', '', $nombre);
 
-      $ruta=storage_path().'\app'.'\\'.$nombre;
+      $ruta=storage_path().'/app'.'/'.$nombre;
       //dd($ruta);
       $objWriter->save($ruta); // guarda los archivo en la carpeta public del proyecto
       $valor_retorno = $this->guardarDocumento($ruta, $nombre, 'temporales');
