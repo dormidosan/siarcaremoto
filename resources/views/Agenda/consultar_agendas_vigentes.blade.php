@@ -80,14 +80,20 @@
                                             <div class="col-lg-6">
                                                 {!! Form::open(['route'=>['sala_sesion_plenaria'],'method'=> 'POST']) !!}
                                                 <input type="hidden" name="id_agenda" id="id_agenda" value="{{$agenda->id}}">
+                                                @if( (Auth::user()->rol_id == 1) )
                                                 <button type="submit" id="iniciar" name="iniciar"
                                                         class="btn btn-primary btn-block"> Iniciar sesion plenaria
                                                 </button>
+                                                @else
+                                                <button type="submit" id="iniciar" name="iniciar"
+                                                        class="btn btn-primary btn-block" disabled="disabled"> Iniciar sesion plenaria
+                                                </button>
+                                                @endif
+                                                
                                                 {!! Form::close() !!}
                                             </div>
                                         </div>
                                     </div>
-                                    <!-- /.box-body -->
                                 </div>
 
                                 <div class="box-header with-border">
