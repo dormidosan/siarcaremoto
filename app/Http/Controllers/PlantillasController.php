@@ -475,14 +475,14 @@ $footer->addPreserveText('FINAL AVENIDA "Mártires Estudiantes del 30 de julio",
 
 try {
       $objWriter =  \PhpOffice\PhpWord\IOFactory::createWriter($PHPWord, 'Word2007'); 
-      $nombre='Acta'.$fecha_agenda.$codigo_agenda.$periodo_nombre.'.docx';
+      $nombre='Acta-'.$codigo_agenda.'-'.$fecha_agenda.'.docx';
       $nombre = str_replace(' ', '', $nombre);
       $nombre = str_replace('-', '', $nombre);
       $nombre = str_replace('_', '', $nombre);
-      $ruta=storage_path().'/app'.'/'.$nombre;
+      $ruta=storage_path().'/temporales'.'/'.$nombre;
       //dd($ruta);
       $objWriter->save($ruta); // guarda los archivo en la carpeta public del proyecto
-      $valor_retorno = $this->guardarDocumento($ruta, $nombre, 'temporales');
+      //$valor_retorno = $this->guardarDocumento($ruta, $nombre, 'temporales');
     } catch (Exception $e) {
 
     }
@@ -490,7 +490,9 @@ try {
     
 //$this->descargar_documento($nombre);
 
-$ruta_documento=storage_path().'/temporales'.'/'.$nombre;
+//$ruta_documento=storage_path().'/temporales'.'/'.$nombre;
+
+$ruta_documento=$ruta;
 return response()->download($ruta_documento);
 
 
@@ -557,7 +559,7 @@ return response()->download($ruta_documento);
       ->where('propuestas.id','=',$id_propuesta)
       ->first();
 
-
+      $romano_punto=$puntos_agen->romano;
        
 $PHPWord = new PHPWord();
 
@@ -682,21 +684,21 @@ $footer->addPreserveText('FINAL AVENIDA "Mártires Estudiantes del 30 de julio",
 try {
       $objWriter =  \PhpOffice\PhpWord\IOFactory::createWriter($PHPWord, 'Word2007'); 
 
-      $nombre='Acuerdo_'.$codigo_agenda.'_'.$periodo_nombre.'.docx';
+      $nombre='Acuerdo-'.$romano_punto.'-'.$codigo_agenda.'.docx';
       $nombre = str_replace(' ', '', $nombre);
       $nombre = str_replace('-', '', $nombre);
       $nombre = str_replace('_', '', $nombre);
 
-      $ruta=storage_path().'/app'.'/'.$nombre;
+      $ruta=storage_path().'/temporales'.'/'.$nombre;
       //dd($ruta);
       $objWriter->save($ruta); // guarda los archivo en la carpeta public del proyecto
-      $valor_retorno = $this->guardarDocumento($ruta, $nombre, 'temporales');
+      //$valor_retorno = $this->guardarDocumento($ruta, $nombre, 'temporales');
     } catch (Exception $e) {
 
     }
 
     
-    $ruta_documento=storage_path().'/temporales'.'/'.$nombre;
+    $ruta_documento=$ruta;
    return response()->download($ruta_documento);
 
 //return response()->download($ruta);
