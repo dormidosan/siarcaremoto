@@ -336,6 +336,7 @@ Route::group(['prefix' => 'administracion'], function () {
     Route::post('obtener_usuario', "AdministracionController@obtener_usuario")->name("obtener_usuario");
     Route::post('busqueda_dietas_asambleista', "AdministracionController@busqueda_dietas_asambleista")->name("busqueda_dietas_asambleista");
     Route::post('almacenar_dieta_asambleista', "AdministracionController@almacenar_dieta_asambleista")->name("almacenar_dieta_asambleista");
+    Route::post('restaurar_contraseña', "AdministracionController@restaurar_contraseña")->name("restaurar_contraseña");
 });
 
 /* Asambleistas */

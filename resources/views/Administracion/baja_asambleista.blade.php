@@ -68,7 +68,7 @@
                             <td>{{ $asambleista->sector->nombre }}</td>
                             <td>{{ $asambleista->propietario?'Propetario':'Suplente' }}</td>
                             <td class="row text-center">
-                                <div class="col-lg-6 col-sm-6 col-lg-push-1">
+                                <div class="col-lg-3 col-sm-4">
                                     @if($asambleista->baja == 0)
                                         <button class="btn btn-danger btn-xs btn-block"
                                                 onclick="modificar_estado({{ $asambleista->id }},1)"><i
@@ -83,7 +83,7 @@
                                         </button>
                                     @endif
                                 </div>
-                                <div class="col-lg-6 col-sm-6">
+                                <div class="col-lg-4 col-sm-4">
                                     @if($asambleista->activo == 1)
                                         <button class="btn btn-warning btn-xs btn-block"
                                                 onclick="modificar_estado({{ $asambleista->id }},3)"><i
@@ -92,11 +92,18 @@
                                         </button>
                                     @else
                                         <button class="btn btn-primary btn-xs btn-block"
-                                                onclick="modificar_estado({{ $asambleista->id }},4)">
+                                                onclick="modificar_estado({{$asambleista->id }},4)">
                                             <i class="fa fa-unlock"></i>
                                             Activar
                                         </button>
                                     @endif
+                                </div>
+                                <div class="col-lg-5 col-sm-4">
+                                    <button class="btn btn-primary btn-xs btn-block"
+                                            onclick="mostrar_restaurar_contraseña_modal({{$asambleista->id}})"><i
+                                                class="fa fa-key"></i>
+                                       Reset contraseña
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -106,7 +113,11 @@
             </div>
         </div>
     </div>
+
+    @include("Modal.RestaurarContraseñaModal")
+
 @endsection
+
 
 @section("js")
     <script src="{{ asset('libs/utils/utils.js') }}"></script>
@@ -203,6 +214,32 @@
                     }, 900);
                 }
             });
+        }
+
+        function mostrar_restaurar_contraseña_modal(id) {
+            $("#id_asambleista_modal").attr("value",id);
+            $("#restaurarContraseñaModal").modal('show');
+        }
+
+        function reset_contraseña() {
+            console.log("A");
+            var id_asambleista = $("#id_asambleista_modal").val();
+            $.ajax({
+                headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                type: 'POST',
+                url: "{{ route('restaurar_contraseña') }}",
+                data: {id_asambleista: id_asambleista},
+                success: function (response) {
+                    $("#restaurarContraseñaModal").modal('hide');
+                    notificacion(response.mensaje.titulo, response.mensaje.contenido, response.mensaje.tipo);
+                    setTimeout(function () {
+                        window.location.href = '{{ route("baja_asambleista") }}';
+                    }, 500);
+                }
+            });
+
         }
     </script>
 

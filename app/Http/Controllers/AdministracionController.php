@@ -85,6 +85,8 @@ class AdministracionController extends Controller
                         $archivo = $file->move($disco, $nombreArchivo);
                     }
 
+                }else{
+                    $persona->foto = 'default-user.png';
                 }
 
                 $persona->afp = $request->get("afp");
@@ -250,6 +252,7 @@ class AdministracionController extends Controller
                                     $persona->afp = trim($row["afp"]);
                                 if (array_key_exists('cuenta', $row))
                                     $persona->cuenta = trim($row["cuenta"]);
+                                $persona->foto = 'default-user.png';
                                 $persona->save();
 
                                 $usuario = new User();
@@ -1220,6 +1223,18 @@ class AdministracionController extends Controller
             "diciembre" => "diciembre",
         ];
         return $varMeses;
+    }
+
+    public function restaurar_contraseña(Request $request){
+        if ($request->ajax()){
+            $asambleista = Asambleista::find($request->id_asambleista);
+            $user = User::find($asambleista->user_id);
+            $user->password = bcrypt("ATB");
+            $user->save();
+            $respuesta = new \stdClass();
+            $respuesta->mensaje = (new Mensaje("Exito","Contraseña restaurada con exito","success"))->toArray();
+            return new JsonResponse($respuesta);
+        }
     }
 
 }

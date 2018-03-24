@@ -544,6 +544,7 @@ class ReportesController extends Controller
 
         //dd($request->all());
 
+        //$this->webservice();
 
         $mes = $this->numero_mes($request->mes);
 
@@ -1289,6 +1290,71 @@ class ReportesController extends Controller
 
         return view("Reportes.Reporte_permisos_permanentes", ['resultados' => NULL]);
     }
+
+    public function webservice(){
+
+        $mes='diciembre';
+        $anio='2018';
+
+           $array_multi = DB::table('asambleistas')
+            ->join('users', 'asambleistas.user_id', '=', 'users.id')
+            ->join('sectores', 'asambleistas.sector_id', '=', 'sectores.id')
+            ->join('personas', 'users.persona_id', '=', 'personas.id')
+            ->join('facultades','facultades.id','=','asambleistas.facultad_id')
+            ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
+                'personas.segundo_nombre', 'sectores.nombre as sector', 'personas.dui',
+                'personas.nit','personas.cuenta', 'personas.afp', 'personas.cuenta', 'asambleistas.id','asambleistas.propietario','facultades.nombre as facultad',
+                 DB::raw('0 AS dieta'), DB::raw('0 AS renta'),DB::raw('"'.$mes.'" AS mes_dieta'), DB::raw('"'.$anio.'" AS anio_dieta'))
+            ->get(); //todos los asambleistas
+
+        $renta = 0.0;
+        $monto_dieta = 0.0;
+
+
+        $parametros = DB::table('parametros')->get();
+
+        foreach ($parametros as $parametro) {
+            if ($parametro->nombre_parametro == 'renta') {
+                $renta = $parametro->valor;
+            }
+            if ($parametro->nombre_parametro == 'monto_dieta') {
+                $monto_dieta = $parametro->valor;
+            }
+        }
+
+        $cuenta = 0;
+        foreach ($array_multi as $busq) {
+
+            $dietas = DB::table('dietas')
+                ->selectRaw('sum(dietas.asistencia) as suma')
+                ->where('dietas.asambleista_id', '=', $array_multi[$cuenta]->id)
+                ->where('dietas.anio', '=', $anio)
+                ->where('dietas.mes','=',$mes)
+                ->first();
+
+                $suma_dieta=0;
+                if($dietas!=null){
+                    $suma_dieta=$dietas->suma;
+                }
+
+            $array_multi[$cuenta]->dieta = round($suma_dieta * $monto_dieta, 2);
+            $array_multi[$cuenta]->renta = round($array_multi[$cuenta]->dieta * $renta, 2);
+
+            if ($array_multi[$cuenta]->dieta == 0.0) {  //si no tiene se quita de el arreglo
+                unset($array_multi[$cuenta]);
+            }
+
+            $cuenta++;
+        }
+        dd($array_multi);
+        if(count($array_multi)==0){
+
+            return 'error';
+        }
+        return 0;
+    }
+
+
 
 
     public function index()

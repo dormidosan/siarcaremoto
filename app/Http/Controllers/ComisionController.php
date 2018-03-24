@@ -20,6 +20,7 @@ use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Storage;
 use DateTime;
+use Auth;
 
 
 class ComisionController extends Controller
@@ -70,9 +71,35 @@ class ComisionController extends Controller
     public function administrar_comisiones()
     {
         //obtener las comisiones, omitiendo la JD
-        $comisiones = Comision::where("activa", 1)
-            ->where("id", "!=", 1)
+        if (Auth::user()->rol_id == 1) {
+            $comisiones = Comision::where("activa", 1)
             ->get();
+        } else {
+
+            $id_asambleista = Asambleista::where('user_id','=',Auth::user()->id)->where('activo','=','1')->first()->id;
+
+            $comisiones = Comision::join("cargos", "cargos.comision_id", "=", "comisiones.id")
+                ->Where(function ($query) use ($id_asambleista) {
+                    $query->where("cargos.activo", "=", 1)
+                    ->where("comisiones.activa", "=", 1)
+                    ->where("cargos.asambleista_id", "=", $id_asambleista)
+                    ->where("cargos.cargo", "=", 'Coordinador');
+                })
+                ->orWhere(function ($query) use ($id_asambleista) {
+                    $query->where("cargos.activo", "=", 1)
+                    ->where("comisiones.activa", "=", 1)
+                    ->where("cargos.asambleista_id", "=", $id_asambleista)
+                    ->where("cargos.cargo", "=", 'Secretario');
+                })
+                //->where("asambleistas.id","=", $asambleista_id)
+                //->where("dietas.mes", "=", $mes)
+                //->where("dietas.anio", "=", $year)
+                ->select('comisiones.*')
+                ->get();
+        }
+        
+
+        
         $cargos = Cargo::all();
         return view("Comisiones.AdministrarComision", ['comisiones' => $comisiones, 'cargos' => $cargos]);
     }
