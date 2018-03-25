@@ -314,7 +314,7 @@ class AdministracionController extends Controller
         }
     }
 
-    public function finalizar_periodo(Request $request)
+    /*public function finalizar_periodo(Request $request)
     {
         if ($request->ajax()) {
             $asambleistas = Asambleista::where("activo", 1)->where("periodo_id", $request->get("periodo_id"))->get();
@@ -346,11 +346,47 @@ class AdministracionController extends Controller
             $periodo->activo = 0;
             $respuesta = new \stdClass();
             $respuesta->mensaje = (new Mensaje("Exito", "Periodo: " . $periodo->nombre_periodo . " finalizado", "success"))->toArray();
+            $respuesta->exito = true;
             $periodo->save();
 
             //se genera la respuesta json
             return new JsonResponse($respuesta);
         }//fin if ajax
+    }*/
+
+
+    public function finalizar_periodo(Request $request)
+    {
+        $asambleistas = Asambleista::where("activo", 1)->where("periodo_id", $request->get("periodo_id"))->get();
+        $usuarios = User::all();
+
+
+        foreach ($asambleistas as $asambleista) {
+            $asambleista->activo = 0;
+            $asambleista->user->activo = 0;
+            $asambleista->save();
+
+            foreach ($usuarios as $usuario) {
+                if ($usuario->id === $asambleista->user_id) {
+                    $usuario->activo = 0;
+                    $usuario->save();
+                }
+            }//fin foreach usuario
+
+            try {
+                $cargo_asambleisa = Cargo::where("asambleista_id", $asambleista->id)->firstOrFail();
+                $cargo_asambleisa->activo = 0;
+                $cargo_asambleisa->save();
+            } catch (ModelNotFoundException $e) {
+                continue;
+            }//fin try
+        }//fin foreach asambleistas
+
+        $periodo = Periodo::find($request->get("periodo_id"));
+        $periodo->activo = 0;
+        $periodo->save();
+        $request->session()->flash("success", "Periodo finalizado con exito");
+        return redirect()->route("periodos_agu");
     }
 
     public function parametros(Request $request)

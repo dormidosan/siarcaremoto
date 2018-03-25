@@ -6,6 +6,19 @@
     <link href="{{ asset('libs/file/css/fileinput.min.css') }}" rel="stylesheet">
     <link href="{{ asset('libs/file/themes/explorer/theme.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
+
+    <style>
+        #myProgress {
+            width: 100%;
+            background-color: grey;
+        }
+
+        #progressBar {
+            width: 1%;
+            height: 30px;
+            background-color: green;
+        }
+    </style>
 @endsection
 
 @section('breadcrumb')
@@ -58,7 +71,8 @@
                 </div>
                 <div class="row text-center">
                     <div class="col-lg-6 col-lg-offset-3">
-                        <button type="submit" class="btn btn-success btn-block">Aceptar</button>
+                        <button type="submit" class="btn btn-success btn-block" onclick="mostar_progeso(event)">Aceptar
+                        </button>
                     </div>
                 </div>
             </form>
@@ -93,9 +107,13 @@
                                    class="btn btn-xs btn-info">Descargar</a></td>
                             @if($periodo->activo)
                                 <td>
-                                    <button type="button" class="btn btn-xs btn-danger"
-                                            onclick="finalizar_periodo({{ $periodo->id }})">Finalizar
-                                    </button>
+                                    <form id="finalizar_periodo" method="post" action="{{ route("finalizar_periodo") }}">
+                                        {{ csrf_field() }}
+                                        <input type="text" id="periodo_id" name="periodo_id" class="hidden" value="{{$periodo->id}}">
+                                        <button type="submit" class="btn btn-xs btn-danger"
+                                                onclick="finalizar_periodo_modal()">Finalizar
+                                        </button>
+                                    </form>
                                 </td>
                             @else
                                 <td></td>
@@ -107,6 +125,25 @@
             </div>
         </div>
     </div>
+
+    <div id="modal_progress" class="modal fade" tabindex="-1" role="dialog" data-keyboard="false">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Modal title</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="progress">
+                        <div class="progress-bar progress-bar-striped active" id="progressBar" role="progressbar" aria-valuenow="0"
+                             aria-valuemin="100" aria-valuemax="100" style="width: 100%">
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
 @endsection
 
 
@@ -156,14 +193,13 @@
                 },
                 hideThumbnailContent: true
             });
-
-
         });
 
         function finalizar_periodo(periodo_id) {
             var valor = 0;
             var exito = false;
             var respuesta;
+            var lobibox;
             $.ajax({
                 beforeSend: function () {
                     Lobibox.progress({
@@ -171,14 +207,11 @@
                         label: 'Finalizando Periodo ...',
                         closeButton: false,
                         closeOnEsc: false,
-                        progressTpl: '<div class="progress lobibox-progress-outer">\n\
-            <div class="progress-bar progress-bar-danger progress-bar-striped lobibox-progress-element" data-role="progress-text" role="progressbar"></div>\n\
-            </div>',
+                        showProgressLabel: false,
                         onShow: function ($this) {
                             var i = 0;
                             var inter = setInterval(function () {
-
-                                if (i > 100) {
+                                if (i >= 100) {
                                     inter = clearInterval(inter);
                                 }
                                 i = i + 0.1;
@@ -186,15 +219,8 @@
                             }, 10);
                         },
                         progressCompleted: function () {
-                            if (exito) {
-                                notificacion(respuesta.mensaje.titulo, respuesta.mensaje.contenido, respuesta.mensaje.tipo);
-                                var lobibox = $('.lobibox-progress').data('lobibox');
-                                lobibox.hide();
-                                setTimeout(function () {
-                                    window.location.href = "{{ route("periodos_agu") }}"
-                                }, 900);
-                            }
-
+                            exito = true;
+                            lobibox = $('.lobibox-progress').data('lobibox');
                         }
                     });
                 },
@@ -205,16 +231,61 @@
                 type: 'POST',
                 url: "{{ route("finalizar_periodo") }}",
                 data: {"periodo_id": periodo_id},
-                success: function (response) {
-                    respuesta = response;
-                    exito = true;
-                },
-                complete: function () {
-                    if (valor >= 100)
-                        console.log(valor);
-                },
+            }).done(function (response) {
+                if (exito) {
+                    lobibox.hide();
+                    notificacion(response.mensaje.titulo, response.mensaje.contenido, response.mensaje.tipo);
+                    setTimeout(function () {
+                        window.location.href = "{{ route("periodos_agu") }}"
+                    }, 150);
+                }
+
             });
 
+        }
+
+        function mostar_progeso(event) {
+            Lobibox.progress({
+                title: 'Por favor, espere',
+                label: 'Creando Periodo...',
+                closeButton: false,
+                closeOnEsc: false,
+                showProgressLabel: false,
+                onShow: function ($this) {
+                    var i = 0;
+                    var inter = setInterval(function () {
+                        if (i > 100) {
+                            inter = clearInterval(inter);
+                        }
+                        i = i + 0.1;
+                        $this.setProgress(i);
+                    }, 10);
+                }
+            });
+        }
+
+        function finalizar_periodo_modal() {
+            Lobibox.progress({
+                title: 'Por favor, espere',
+                label: 'Finalizando Periodo ...',
+                closeButton: false,
+                closeOnEsc: false,
+                showProgressLabel: false,
+                onShow: function ($this) {
+                    var i = 0;
+                    var inter = setInterval(function () {
+                        if (i >= 100) {
+                            inter = clearInterval(inter);
+                        }
+                        i = i + 0.1;
+                        $this.setProgress(i);
+                    }, 10);
+                },
+                progressCompleted: function () {
+                    exito = true;
+                    lobibox = $('.lobibox-progress').data('lobibox');
+                }
+            });
         }
     </script>
 @endsection
