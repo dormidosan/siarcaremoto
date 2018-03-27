@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="{{ asset('libs/select2/css/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
+    <link rel="stylesheet"
+          href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
 
     <style>
         .dataTables_wrapper.form-inline.dt-bootstrap.no-footer > .row {

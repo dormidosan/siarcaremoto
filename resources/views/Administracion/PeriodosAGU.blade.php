@@ -6,6 +6,7 @@
     <link href="{{ asset('libs/file/css/fileinput.min.css') }}" rel="stylesheet">
     <link href="{{ asset('libs/file/themes/explorer/theme.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
 
     <style>
         #myProgress {
@@ -53,7 +54,7 @@
                     <div class="col-lg-4">
                         <div class="form-group {{ $errors->has('inicio') ? 'has-error' : '' }}">
                             <label for="inicio">Fecha</label>
-                            <div class="input-group date fecha">
+                            <div class="input-group date fecha" id="fecha_inicio">
                                 <input id="inicio" name="inicio" type="text" class="form-control"
                                        placeholder="dd-mm-yyyy"><span
                                         class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -71,8 +72,15 @@
                 </div>
                 <div class="row text-center">
                     <div class="col-lg-6 col-lg-offset-3">
-                        <button type="submit" class="btn btn-success btn-block" onclick="mostar_progeso(event)">Aceptar
-                        </button>
+                        @if($periodo_activo != 1)
+                            <button type="button" class="btn btn-success btn-block" onclick="mostar_progeso(event)">
+                                Aceptar
+                            </button>
+                        @else
+                            <button type="button" class="btn btn-success btn-block disabled" onclick="mostar_progeso(event)" disabled>
+                                Aceptar
+                            </button>
+                        @endif
                     </div>
                 </div>
             </form>
@@ -107,9 +115,11 @@
                                    class="btn btn-xs btn-info">Descargar</a></td>
                             @if($periodo->activo)
                                 <td>
-                                    <form id="finalizar_periodo" method="post" action="{{ route("finalizar_periodo") }}">
+                                    <form id="finalizar_periodo" method="post"
+                                          action="{{ route("finalizar_periodo") }}">
                                         {{ csrf_field() }}
-                                        <input type="text" id="periodo_id" name="periodo_id" class="hidden" value="{{$periodo->id}}">
+                                        <input type="text" id="periodo_id" name="periodo_id" class="hidden"
+                                               value="{{$periodo->id}}">
                                         <button type="submit" class="btn btn-xs btn-danger"
                                                 onclick="finalizar_periodo_modal()">Finalizar
                                         </button>
@@ -130,12 +140,14 @@
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
                     <h4 class="modal-title">Modal title</h4>
                 </div>
                 <div class="modal-body">
                     <div class="progress">
-                        <div class="progress-bar progress-bar-striped active" id="progressBar" role="progressbar" aria-valuenow="0"
+                        <div class="progress-bar progress-bar-striped active" id="progressBar" role="progressbar"
+                             aria-valuenow="0"
                              aria-valuemin="100" aria-valuemax="100" style="width: 100%">
                         </div>
                     </div>
@@ -157,21 +169,18 @@
     <script src="{{ asset('libs/file/js/locales/es.js') }}"></script>
     <script src="{{ asset('libs/utils/utils.js') }}"></script>
     <script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
 @endsection
 
 
 @section("scripts")
     <script type="text/javascript">
         $(function () {
+            //var today = new Date();
+            var nowDate = new Date();
+            var today = nowDate.getDate()+'-'+(nowDate.getMonth()+1)+'-'+nowDate.getFullYear();
 
-            $('.input-group.date.fecha').datepicker({
-                format: "d-m-yyyy",
-                clearBtn: true,
-                language: "es",
-                autoclose: true,
-                todayHighlight: true,
-                toggleActive: true
-            });
 
             $("#excel").fileinput({
                 browseClass: "btn btn-primary btn-block",
@@ -192,6 +201,53 @@
                     showDrag: false
                 },
                 hideThumbnailContent: true
+            });
+
+            $('#fecha_inicio')
+                .datepicker({
+                    format: 'dd-mm-yyyy',
+                    clearBtn: true,
+                    language: "es",
+                    autoclose: true,
+                    todayHighlight: true,
+                    toggleActive: true
+                })
+                .on('changeDate', function (e) {
+                    // Revalidate the start date field
+                    $('#periodo_agu').formValidation('revalidateField', 'inicio');
+                });
+
+
+            $('#periodo_agu').formValidation({
+                //initially validation for the fields with the option enabled as false is off, when the user type is
+                //Asambleista their status is gonna change to true and furthermore their validation will start working
+                framework: 'bootstrap',
+                icon: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    nombre_periodo: {
+                        validators: {
+                            notEmpty: {
+                                message: 'El nombre del periodo es requerido'
+                            }
+                        }
+                    },
+                    inicio: {
+                        validators: {
+                            notEmpty: {
+                                message: 'Fecha de inicio requerida'
+                            },
+                            date: {
+                                format: 'DD-MM-YYYY',
+                                min: today,
+                                message: 'Fecha de inicio no puede ser menor que hoy'
+                            }
+                        }
+                    }
+                }
             });
         });
 
@@ -245,23 +301,29 @@
         }
 
         function mostar_progeso(event) {
-            Lobibox.progress({
-                title: 'Por favor, espere',
-                label: 'Creando Periodo...',
-                closeButton: false,
-                closeOnEsc: false,
-                showProgressLabel: false,
-                onShow: function ($this) {
-                    var i = 0;
-                    var inter = setInterval(function () {
-                        if (i > 100) {
-                            inter = clearInterval(inter);
-                        }
-                        i = i + 0.1;
-                        $this.setProgress(i);
-                    }, 10);
-                }
-            });
+            var form = $("#periodo_agu").data('formValidation').validate();
+
+            if (form.isValid()) {
+                document.getElementById("periodo_agu").submit();
+                Lobibox.progress({
+                    title: 'Por favor, espere',
+                    label: 'Creando Periodo...',
+                    closeButton: false,
+                    closeOnEsc: false,
+                    showProgressLabel: false,
+                    onShow: function ($this) {
+                        var i = 0;
+                        var inter = setInterval(function () {
+                            if (i > 100) {
+                                inter = clearInterval(inter);
+                            }
+                            i = i + 0.1;
+                            $this.setProgress(i);
+                        }, 10);
+                    }
+                });
+            }
+
         }
 
         function finalizar_periodo_modal() {

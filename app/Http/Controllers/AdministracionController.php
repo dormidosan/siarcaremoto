@@ -85,7 +85,7 @@ class AdministracionController extends Controller
                         $archivo = $file->move($disco, $nombreArchivo);
                     }
 
-                }else{
+                } else {
                     $persona->foto = 'default-user.png';
                 }
 
@@ -152,10 +152,11 @@ class AdministracionController extends Controller
     public function mostrar_periodos_agu()
     {
         $periodos = Periodo::orderBy("id", "desc")->get();
-        return view("Administracion.PeriodosAGU", ["periodos" => $periodos]);
+        $periodo_activo = Periodo::where("activo",1)->count();
+        return view("Administracion.PeriodosAGU", ["periodos" => $periodos,"periodo_activo"=>$periodo_activo]);
     }
 
-    public function guardar_periodo(PeriodoRequest $request)
+    public function guardar_periodo(Request $request)
     {
         $periodo_activo = Periodo::where("activo", 1)->first();
         if ($periodo_activo) {
@@ -425,9 +426,9 @@ class AdministracionController extends Controller
         //muestra incluso los asambleistas que no estan activos (0)
         $periodo = Periodo::where('activo', 1)->first();
 
-        if(is_null($periodo) != true){
+        if (is_null($periodo) != true) {
             $asambleistas = Asambleista::where('periodo_id', $periodo->id)->get();
-        }else{
+        } else {
             $asambleistas = array();
         }
 
@@ -470,12 +471,12 @@ class AdministracionController extends Controller
         $perfiles = Rol::all();
         $periodo_activo = Periodo::where("activo", 1)->first();
 
-        if (is_null($periodo_activo) != true){
+        if (is_null($periodo_activo) != true) {
             //$current_user = Asambleista::where("periodo_id", $periodo_activo->id)->where("activo", 1)->where("id", Auth::user()->id)->firstOrFail();
             $current_user = User::find(Auth::user()->id);
             //se genera el listado de asambleistas, sin incluir el actual logueado en el sistema
             $asambleistas = Asambleista::where("periodo_id", $periodo_activo->id)->where("activo", 1)->where("id", "!=", $current_user->id)->get();
-        }else{
+        } else {
             $asambleistas = array();
         }
         return view("Administracion.cambiar_perfiles", ["perfiles" => $perfiles, "asambleistas" => $asambleistas]);
@@ -668,6 +669,7 @@ class AdministracionController extends Controller
 
     public function cambiar_cargos_junta_directiva()
     {
+        $cargos_jd = array("Presidente"=>"Presidente","Vicepresidente"=>"Vicepresidente","Secretario"=>"Secretario","Vocal 1"=>"Vocal 1","Vocal 2"=>"Vocal 2");
         $miembros_jd = Cargo::join("asambleistas", "cargos.asambleista_id", "=", "asambleistas.id")
             ->join("periodos", "asambleistas.periodo_id", "=", "periodos.id")
             ->where("cargos.comision_id", 1)
@@ -676,7 +678,7 @@ class AdministracionController extends Controller
             ->where("cargos.activo", 1)
             ->get();
 
-        return view("Administracion.cambiar_cargos_junta_directiva", ["miembros_jd" => $miembros_jd]);
+        return view("Administracion.cambiar_cargos_junta_directiva", ["miembros_jd" => $miembros_jd, "cargos_jd"=>$cargos_jd]);
     }
 
     public function actualizar_cargo_miembro_jd(Request $request)
@@ -941,7 +943,8 @@ class AdministracionController extends Controller
                                         <option value='Presidente'>Presidente</option>
                                         <option value='Vicepresidente'>Vicepresidente</option>
                                         <option value='Secretario'>Secretario</option>
-                                        <option value='Vocal'>Vocal</option>
+                                        <option value='Vocal 1'>Vocal 1</option>
+                                        <option value='Vocal 2'>Vocal 2</option>
                                     </select>
                                 </td>
                             </tr>";
@@ -1261,14 +1264,15 @@ class AdministracionController extends Controller
         return $varMeses;
     }
 
-    public function restaurar_contraseña(Request $request){
-        if ($request->ajax()){
+    public function restaurar_contraseña(Request $request)
+    {
+        if ($request->ajax()) {
             $asambleista = Asambleista::find($request->id_asambleista);
             $user = User::find($asambleista->user_id);
             $user->password = bcrypt("ATB");
             $user->save();
             $respuesta = new \stdClass();
-            $respuesta->mensaje = (new Mensaje("Exito","Contraseña restaurada con exito","success"))->toArray();
+            $respuesta->mensaje = (new Mensaje("Exito", "Contraseña restaurada con exito", "success"))->toArray();
             return new JsonResponse($respuesta);
         }
     }

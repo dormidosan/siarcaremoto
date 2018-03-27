@@ -39,7 +39,8 @@
         </div>
         <div class="box-body">
             <div class="table-responsive">
-                <table id='tabla_miembros_jd' class='table table-striped table-bordered table-condensed table-hover dataTable text-center'>
+                <table id='tabla_miembros_jd'
+                       class='table table-striped table-bordered table-condensed table-hover dataTable text-center'>
                     <thead>
                     <tr>
                         <th>Nombre</th>
@@ -53,12 +54,12 @@
                             <td>{{ $miembro->asambleista->user->persona->primer_nombre . ' ' . $miembro->asambleista->user->persona->segundo_nombre . ' ' . $miembro->asambleista->user->persona->primer_apellido . ' ' . $miembro->asambleista->user->persona->segundo_apellido }}</td>
                             <td>{{ $miembro->cargo }}</td>
                             <td>
-                                <select id="cargos_jd" name="cargos_jd" class="form-control" onchange="cambiar_cargo({{$miembro->asambleista->id}},this.value)">
+                                <select id="cargos_jd" name="cargos_jd" class="form-control"
+                                        onchange="cambiar_cargo({{$miembro->asambleista->id}},this.value)">
                                     <option>-- Seleccione un cargo --</option>
-                                    <option value="Presidente">Presidente</option>
-                                    <option value="Vicepresidente">Vicepresidente</option>
-                                    <option value="Secretario JD">Secretario</option>
-                                    <option value="Vocal">Vocal</option>
+                                    @foreach($cargos_jd as $cargo_key => $cargo_value)
+                                        <option value="{{$cargo_key}}">{{$cargo_value}}</option>
+                                    @endforeach
                                 </select>
                             </td>
                         </tr>
@@ -85,7 +86,7 @@
             inicializar_dataTable();
         });
 
-        function cambiar_cargo(idMiembroJD,nuevo_cargo) {
+        function cambiar_cargo(idMiembroJD, nuevo_cargo) {
             $.ajax({
                 //se envia un token, como medida de seguridad ante posibles ataques
                 headers: {
@@ -98,7 +99,7 @@
                     "nuevo_cargo": nuevo_cargo
                 }
             }).done(function (response) {
-                notificacion(response.mensaje.titulo,response.mensaje.contenido,response.mensaje.tipo);
+                notificacion(response.mensaje.titulo, response.mensaje.contenido, response.mensaje.tipo);
                 $('#tabla_miembros_jd').DataTable().destroy();
                 $("#tabla_miembros_jd").html(response.tabla);
                 inicializar_dataTable();
@@ -132,7 +133,7 @@
                     }
                 },
                 responsive: true,
-                columnDefs: [{orderable: false, targets: [0,1,2]}],
+                columnDefs: [{orderable: false, targets: [0, 1, 2]}],
                 //order: [[1, 'asc']]
             });
         }
