@@ -52,13 +52,13 @@
                     @foreach($miembros_jd as $miembro)
                         <tr>
                             <td>{{ $miembro->asambleista->user->persona->primer_nombre . ' ' . $miembro->asambleista->user->persona->segundo_nombre . ' ' . $miembro->asambleista->user->persona->primer_apellido . ' ' . $miembro->asambleista->user->persona->segundo_apellido }}</td>
-                            <td>{{ $miembro->cargo }}</td>
+                            <td>{{ $miembro->tipo_cargo->nombre_cargo }}</td>
                             <td>
                                 <select id="cargos_jd" name="cargos_jd" class="form-control"
                                         onchange="cambiar_cargo({{$miembro->asambleista->id}},this.value)">
                                     <option>-- Seleccione un cargo --</option>
-                                    @foreach($cargos_jd as $cargo_key => $cargo_value)
-                                        <option value="{{$cargo_key}}">{{$cargo_value}}</option>
+                                    @foreach($cargos_jd as $cargo)
+                                        <option value="{{$cargo->id}}">{{$cargo->nombre_cargo}}</option>
                                     @endforeach
                                 </select>
                             </td>
@@ -87,6 +87,7 @@
         });
 
         function cambiar_cargo(idMiembroJD, nuevo_cargo) {
+           console.log(idMiembroJD +"y" + nuevo_cargo);
             $.ajax({
                 //se envia un token, como medida de seguridad ante posibles ataques
                 headers: {

@@ -13,6 +13,7 @@ use App\Peticion;
 use App\Presente;
 use App\Reunion;
 use App\Seguimiento;
+use App\TipoCargo;
 use App\TipoDocumento;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
@@ -73,7 +74,7 @@ class ComisionController extends Controller
         //obtener las comisiones, omitiendo la JD
         if (Auth::user()->rol_id == 1) {
             $comisiones = Comision::where("activa", 1)
-            ->get();
+                ->get();
         } else {
 
             $id_asambleista = Asambleista::where('user_id','=',Auth::user()->id)->where('activo','=','1')->first()->id;
@@ -81,15 +82,15 @@ class ComisionController extends Controller
             $comisiones = Comision::join("cargos", "cargos.comision_id", "=", "comisiones.id")
                 ->Where(function ($query) use ($id_asambleista) {
                     $query->where("cargos.activo", "=", 1)
-                    ->where("comisiones.activa", "=", 1)
-                    ->where("cargos.asambleista_id", "=", $id_asambleista)
-                    ->where("cargos.cargo", "=", 'Coordinador');
+                        ->where("comisiones.activa", "=", 1)
+                        ->where("cargos.asambleista_id", "=", $id_asambleista)
+                        ->where("cargos.cargo", "=", 'Coordinador');
                 })
                 ->orWhere(function ($query) use ($id_asambleista) {
                     $query->where("cargos.activo", "=", 1)
-                    ->where("comisiones.activa", "=", 1)
-                    ->where("cargos.asambleista_id", "=", $id_asambleista)
-                    ->where("cargos.cargo", "=", 'Secretario');
+                        ->where("comisiones.activa", "=", 1)
+                        ->where("cargos.asambleista_id", "=", $id_asambleista)
+                        ->where("cargos.cargo", "=", 'Secretario');
                 })
                 //->where("asambleistas.id","=", $asambleista_id)
                 //->where("dietas.mes", "=", $mes)
@@ -97,9 +98,9 @@ class ComisionController extends Controller
                 ->select('comisiones.*')
                 ->get();
         }
-        
 
-        
+
+
         $cargos = Cargo::all();
         return view("Comisiones.AdministrarComision", ['comisiones' => $comisiones, 'cargos' => $cargos]);
     }
@@ -213,7 +214,7 @@ class ComisionController extends Controller
             $cargo->comision_id = $request->get("comision_id");
             $cargo->asambleista_id = $asambleista;
             $cargo->inicio = Carbon::now();
-            $cargo->cargo = "Asambleista";
+            $cargo->tipo_cargo_id = (TipoCargo::where("nombre_cargo","Asambleista")->first())->id;
             $cargo->activo = 1;
             $cargo->save();
         }

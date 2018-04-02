@@ -17,6 +17,7 @@ use App\Rol;
 use App\Sector;
 use App\User;
 use App\Parametro;
+use App\TipoCargo;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -591,36 +592,51 @@ class AdministracionController extends Controller
             $asambleista = Asambleista::find($request->get("idAsambleista"));
             //se obtienen todos los asambleistas de la comision, con el fin de identificar el anterior coordinador
             $cargos_comision = Cargo::where("comision_id", $comision->id)->where("activo", 1)->get();
+            $bandera_exito = false;
 
             foreach ($cargos_comision as $cargo) {
                 //se verifca quien es el coordinador actual y se le quita ese cargo, para asignarselo al nuevo coordinador
                 //y que no sea el asambleista nuevo
-                $cargo_asambleista = $cargo->cargo;
+                //$cargo_asambleista = $cargo->cargo;
+                $cargo_asambleista = $cargo->tipo_cargo->nombre_cargo;
                 switch ($cargo_asambleista) {
                     case "Coordinador":
                         if ($cargo->asambleista_id != $asambleista->id) {
-                            $cargo->cargo = "Asambleista";
+                            $nuevo_cargo = TipoCargo::where("nombre_cargo","Asambleista")->first();
+                            //$cargo->cargo = "Asambleista";
+                            $cargo->tipo_cargo_id = $nuevo_cargo->id;
                             $cargo->save();
-                        }
+                            $bandera_exito = true;
+                        }//si el id del asambleista actual es el que se le envia se le quita el cargo y se le pone el de asambleista
                         break;
                     case "Asambleista":
+                        $nuevo_cargo = TipoCargo::where("nombre_cargo","Coordinador")->first();
                         if ($cargo->asambleista_id == $asambleista->id) {
-                            $cargo->cargo = "Coordinador";
+                            //$cargo->cargo = "Coordinador";
+                            $cargo->tipo_cargo_id = $nuevo_cargo->id;
                             $cargo->save();
+                            $bandera_exito = true;
                         }
                         break;
                     case "Secretario":
+                        $nuevo_cargo = TipoCargo::where("nombre_cargo","Coordinador")->first();
                         if ($cargo->asambleista_id == $asambleista->id) {
-                            $cargo->cargo = "Coordinador";
+                            //$cargo->cargo = "Coordinador";
+                            $cargo->tipo_cargo_id = $nuevo_cargo->id;
                             $cargo->save();
+                            $bandera_exito = true;
                         }
                         break;
                 }
             }
 
             $respuesta = new \stdClass();
-            $respuesta->tabla = $this->generarTabla($comision->id);
-            $respuesta->mensaje = (new Mensaje("Exito", "Asignación de nuevo coordinador realizada con exito", "success"))->toArray();
+            if ($bandera_exito){
+                $respuesta->tabla = $this->generarTabla($comision->id);
+                $respuesta->mensaje = (new Mensaje("Exito", "Asignación de nuevo Coordinador realizada con exito", "success"))->toArray();
+            }else{
+                $respuesta->mensaje = (new Mensaje("Error", "Asignación de nuevo Coordinador no se pudo realizar", "error"))->toArray();
+            }
             return new JsonResponse($respuesta);
         }
     }
@@ -632,44 +648,59 @@ class AdministracionController extends Controller
             $asambleista = Asambleista::find($request->get("idAsambleista"));
             //se obtienen todos los asambleistas de la comision, con el fin de identificar el anterior coordinador
             $cargos_comision = Cargo::where("comision_id", $comision->id)->where("activo", 1)->get();
+            $bandera_exito = false;
 
             foreach ($cargos_comision as $cargo) {
                 //se verifca quien es el coordinador actual y se le quita ese cargo, para asignarselo al nuevo coordinador
                 //y que no sea el asambleista nuevo
-                $cargo_asambleista = $cargo->cargo;
+                $cargo_asambleista = $cargo->tipo_cargo->nombre_cargo;
                 switch ($cargo_asambleista) {
                     //si hay un anterior secretario, se le quita ese cargo
                     case "Secretario":
                         if ($cargo->asambleista_id != $asambleista->id) {
-                            $cargo->cargo = "Asambleista";
+                            $nuevo_cargo = TipoCargo::where("nombre_cargo","Asambleista")->first();
+                            $cargo->tipo_cargo_id = $nuevo_cargo->id;
                             $cargo->save();
+                            $bandera_exito = true;
                         }
                         break;
                     case "Asambleista":
+                        $nuevo_cargo = TipoCargo::where("nombre_cargo","Secretario")->first();
                         if ($cargo->asambleista_id == $asambleista->id) {
-                            $cargo->cargo = "Secretario";
+                            $cargo->tipo_cargo_id = $nuevo_cargo->id;
                             $cargo->save();
+                            $bandera_exito = true;
                         }
                         break;
                     case "Coordinador":
+                        $nuevo_cargo = TipoCargo::where("nombre_cargo","Secretario")->first();
                         if ($cargo->asambleista_id == $asambleista->id) {
-                            $cargo->cargo = "Secretario";
+                            $cargo->tipo_cargo_id = $nuevo_cargo->id;
                             $cargo->save();
+                            $bandera_exito = true;
                         }
                         break;
                 }
             }
 
             $respuesta = new \stdClass();
-            $respuesta->tabla = $this->generarTabla($comision->id);
-            $respuesta->mensaje = (new Mensaje("Exito", "Asignación de nuevo secretario realizada con exito", "success"))->toArray();
+            if ($bandera_exito){
+                $respuesta->tabla = $this->generarTabla($comision->id);
+                $respuesta->mensaje = (new Mensaje("Exito", "Asignación de nuevo Secretario realizada con exito", "success"))->toArray();
+            }else{
+                $respuesta->mensaje = (new Mensaje("Error", "Asignación de nuevo Secretario no se pudo realizar", "error"))->toArray();
+            }
+
             return new JsonResponse($respuesta);
         }
     }
 
     public function cambiar_cargos_junta_directiva()
     {
-        $cargos_jd = array("Presidente"=>"Presidente","Vicepresidente"=>"Vicepresidente","Secretario"=>"Secretario","Vocal 1"=>"Vocal 1","Vocal 2"=>"Vocal 2");
+        //$cargos_jd = array("Presidente"=>"Presidente","Vicepresidente"=>"Vicepresidente","Secretario"=>"Secretario","Vocal 1"=>"Vocal 1","Vocal 2"=>"Vocal 2");
+        $cargos_jd = TipoCargo::where('grupo','=','jd')->get();
+        //dd($cargos_jd2);
+
         $miembros_jd = Cargo::join("asambleistas", "cargos.asambleista_id", "=", "asambleistas.id")
             ->join("periodos", "asambleistas.periodo_id", "=", "periodos.id")
             ->where("cargos.comision_id", 1)
@@ -683,24 +714,27 @@ class AdministracionController extends Controller
 
     public function actualizar_cargo_miembro_jd(Request $request)
     {
-        $contador_vocales = 0;
         if ($request->ajax()) {
             $miembros_jd = Cargo::where("comision_id", 1)->where("activo", 1)->get();
+            $cargo = TipoCargo::find(intval($request->get("nuevo_cargo")));
+            $cargo_nulo = TipoCargo::where("nombre_cargo","Sin Cargo")->first();
             foreach ($miembros_jd as $miembro) {
-                if ($miembro->cargo == $request->get("nuevo_cargo")) {
-                    $miembro->cargo = "Sin cargo";
+                if ($miembro->tipo_cargo_id == $cargo->id) {
+                    $miembro->tipo_cargo_id = $cargo_nulo->id;
+                    //$miembro->cargo = $cargo_nulo->nombre_cargo;
                     $miembro->save();
                 }
 
                 if ($miembro->asambleista->id == $request->get("idMiembroJD")) {
-                    $miembro->cargo = $request->get("nuevo_cargo");
+                    $miembro->tipo_cargo_id = $cargo->id;
+                    //$miembro->cargo = $cargo->nombre_cargo;
                     $miembro->save();
                 }
             }
 
             $respuesta = new \stdClass();
             $respuesta->tabla = $this->generarTabla(1);
-            $respuesta->mensaje = (new Mensaje("Exito", "Asignación de nuevo cargo " . $request->get("nuevo_cargo") . " realizada con exito", "success"))->toArray();
+            $respuesta->mensaje = (new Mensaje("Exito", "Asignación de nuevo cargo " . $cargo->nombre_cargo . " realizada con exito", "success"))->toArray();
             return new JsonResponse($respuesta);
         }
     }
@@ -854,106 +888,6 @@ class AdministracionController extends Controller
             $respuesta->mensaje = (new Mensaje("Exito", "Retiro Temporal registrado con exito", "success"))->toArray();
             return new JsonResponse($respuesta);
         }
-    }
-
-    private function generarTabla($idComision)
-    {
-        $comision = Comision::find($idComision);
-
-        //obtener los integrantes de la comision y que esten activos en el periodo activo
-        $integrantes = Cargo::join("asambleistas", "cargos.asambleista_id", "=", "asambleistas.id")
-            ->join("periodos", "asambleistas.periodo_id", "=", "periodos.id")
-            ->where("cargos.comision_id", $idComision)
-            ->where("asambleistas.activo", 1)
-            ->where("periodos.activo", 1)
-            ->where("cargos.activo", 1)
-            ->get();
-
-        //si el id que se recibe no es el que pertenece a JD
-        if ($idComision != 1) {
-            $tabla =
-                "<table id='tabla_miembros' class='table table-striped table-bordered table-condensed table-hover dataTable text-center'>
-                    <thead>
-                        <tr>
-                            <th>Asambleista</th>
-                            <th>Cargo</th>
-                            <th>Coordinador</th>
-                            <th>Secretario</th>
-                        </tr>
-                    </thead>
-                    <tbody>";
-
-            foreach ($integrantes as $integrante) {
-                $tabla .= "<tr>
-                                <td>" . $integrante->asambleista->user->persona->primer_nombre . " " . $integrante->asambleista->user->persona->segundo_nombre . " " . $integrante->asambleista->user->persona->primer_apellido . " " . $integrante->asambleista->user->persona->segundo_apellido . "</td>
-                                <td>" . $integrante->cargo . "</td>";
-
-                if ($integrante->cargo == "Coordinador") {
-                    $tabla .= "<td>
-                                <div class='pretty p-icon p-curve'>
-                                    <input type='checkbox' checked disabled />
-                                    <div class='state p-success'><i class='icon mdi mdi-check'></i><label>Coordinador de Comision</label></div>
-                                </div>
-                          </td>";
-                } else {
-                    $tabla .= "<td>
-                                <div class='pretty p-icon p-curve'>
-                                    <input type='checkbox' onchange='actualizar_coordinador(" . $integrante->asambleista->id . ")'/>
-                                    <div class='state p-success'><i class='icon mdi mdi-check'></i><label></label></div></div>
-                           </td>";
-                }
-
-                if ($integrante->cargo == "Secretario") {
-                    $tabla .= "<td>
-                                <div class='pretty p-icon p-curve'>
-                                    <input type='checkbox' checked disabled />
-                                    <div class='state p-success'><i class='icon mdi mdi-check'></i><label>Secretario de Comision</label></div>
-                                </div>
-                          </td>";
-                } else {
-                    $tabla .= "<td>
-                                <div class='pretty p-icon p-curve'>
-                                    <input type='checkbox' onchange='actualizar_secretario(" . $integrante->asambleista->id . ")'/>
-                                    <div class='state p-success'><i class='icon mdi mdi-check'></i><label></label></div></div>
-                           </td>";
-                }
-
-            }
-
-            $tabla .= "</tr></tbody></table>";
-        } else { //si es JD
-            $tabla =
-                "<table id='tabla_miembros_jd' class='table table-striped table-bordered table-condensed table-hover dataTable text-center'>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Cargo Actual</th>
-                            <th>Nuevo Cargo</th>
-                        </tr>
-                    </thead>
-                    <tbody>";
-
-            foreach ($integrantes as $integrante) {
-                $tabla .= "<tr>
-                                <td>" . $integrante->asambleista->user->persona->primer_nombre . " " . $integrante->asambleista->user->persona->segundo_nombre . " " . $integrante->asambleista->user->persona->primer_apellido . " " . $integrante->asambleista->user->persona->segundo_apellido . "</td>
-                                <td>" . $integrante->cargo . "</td>
-                                <td>
-                                    <select id='cargos_jd' name='cargos_jd' class='form-control' onchange='cambiar_cargo(" . $integrante->asambleista->id . ",this.value)'>
-                                        <option>-- Seleccione un cargo --</option>
-                                        <option value='Presidente'>Presidente</option>
-                                        <option value='Vicepresidente'>Vicepresidente</option>
-                                        <option value='Secretario'>Secretario</option>
-                                        <option value='Vocal 1'>Vocal 1</option>
-                                        <option value='Vocal 2'>Vocal 2</option>
-                                    </select>
-                                </td>
-                            </tr>";
-            }
-
-            $tabla .= "</tbody></table>";
-        }
-
-        return $tabla;
     }
 
     public function guardarPlantilla($doc, $plantilla_id, $destino)
@@ -1243,6 +1177,104 @@ class AdministracionController extends Controller
             ->with('dietas', $dietas)
             ->with('getRangeYear', $getRangeYear)
             ->with('asambleistas_plenaria', $asambleistas_plenaria);
+    }
+
+    private function generarTabla($idComision)
+    {
+        $comision = Comision::find($idComision);
+
+        //obtener los integrantes de la comision y que esten activos en el periodo activo
+        $integrantes = Cargo::join("asambleistas", "cargos.asambleista_id", "=", "asambleistas.id")
+            ->join("periodos", "asambleistas.periodo_id", "=", "periodos.id")
+            ->where("cargos.comision_id", $idComision)
+            ->where("asambleistas.activo", 1)
+            ->where("periodos.activo", 1)
+            ->where("cargos.activo", 1)
+            ->get();
+
+        //si el id que se recibe no es el que pertenece a JD
+        if ($idComision != 1) {
+            $tabla =
+                "<table id='tabla_miembros' class='table table-striped table-bordered table-condensed table-hover dataTable text-center'>
+                    <thead>
+                        <tr>
+                            <th>Asambleista</th>
+                            <th>Cargo</th>
+                            <th>Coordinador</th>
+                            <th>Secretario</th>
+                        </tr>
+                    </thead>
+                    <tbody>";
+
+            foreach ($integrantes as $integrante) {
+                $tabla .= "<tr>
+                                <td>" . $integrante->asambleista->user->persona->primer_nombre . " " . $integrante->asambleista->user->persona->segundo_nombre . " " . $integrante->asambleista->user->persona->primer_apellido . " " . $integrante->asambleista->user->persona->segundo_apellido . "</td>
+                                <td>" . $integrante->tipo_cargo->nombre_cargo . "</td>";
+
+                if ($integrante->tipo_cargo->nombre_cargo == "Coordinador") {
+                    $tabla .= "<td>
+                                <div class='pretty p-icon p-curve'>
+                                    <input type='checkbox' checked disabled />
+                                    <div class='state p-success'><i class='icon mdi mdi-check'></i><label>Coordinador de Comision</label></div>
+                                </div>
+                          </td>";
+                } else {
+                    $tabla .= "<td>
+                                <div class='pretty p-icon p-curve'>
+                                    <input type='checkbox' onchange='actualizar_coordinador(" . $integrante->asambleista->id . ")'/>
+                                    <div class='state p-success'><i class='icon mdi mdi-check'></i><label></label></div></div>
+                           </td>";
+                }
+
+                if ($integrante->tipo_cargo->nombre_cargo == "Secretario") {
+                    $tabla .= "<td>
+                                <div class='pretty p-icon p-curve'>
+                                    <input type='checkbox' checked disabled />
+                                    <div class='state p-success'><i class='icon mdi mdi-check'></i><label>Secretario de Comision</label></div>
+                                </div>
+                          </td>";
+                } else {
+                    $tabla .= "<td>
+                                <div class='pretty p-icon p-curve'>
+                                    <input type='checkbox' onchange='actualizar_secretario(" . $integrante->asambleista->id . ")'/>
+                                    <div class='state p-success'><i class='icon mdi mdi-check'></i><label></label></div></div>
+                           </td>";
+                }
+
+            }
+
+            $tabla .= "</tr></tbody></table>";
+        } else { //si es JD
+            $cargos_jd = TipoCargo::where('grupo','=','jd')->get();
+            $tabla =
+                "<table id='tabla_miembros_jd' class='table table-striped table-bordered table-condensed table-hover dataTable text-center'>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Cargo Actual</th>
+                            <th>Nuevo Cargo</th>
+                        </tr>
+                    </thead>
+                    <tbody>";
+
+            foreach ($integrantes as $integrante) {
+                $tabla .= "<tr>
+                                <td>" . $integrante->asambleista->user->persona->primer_nombre . " " . $integrante->asambleista->user->persona->segundo_nombre . " " . $integrante->asambleista->user->persona->primer_apellido . " " . $integrante->asambleista->user->persona->segundo_apellido . "</td>
+                                <td>" . $integrante->tipo_cargo->nombre_cargo . "</td>
+                                <td>
+                                    <select id='cargos_jd' name='cargos_jd' class='form-control' onchange='cambiar_cargo(" . $integrante->asambleista->id . ",this.value)'>
+                                        <option>-- Seleccione un cargo --</option>";
+
+                foreach ($cargos_jd as $cargo){
+                    $tabla .= "<option value='".$cargo->id."'>". $cargo->nombre_cargo."</option>";
+                }
+                $tabla .= "</select></td></tr>";
+            }
+
+            $tabla .= "</tbody></table>";
+        }
+
+        return $tabla;
     }
 
     public function getMeses()

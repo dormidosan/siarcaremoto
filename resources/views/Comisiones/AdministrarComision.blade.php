@@ -65,7 +65,9 @@
                                       action="{{ route("trabajo_comision") }}">
                                     {{ csrf_field() }}
                                     <input class="hidden" id="comision_id" name="comision_id" value="{{$comision->id}}">
-                                    <button class="btn btn-success btn-xs">Acceder</button>
+                                    @if($comision->id != 1)
+                                        <button class="btn btn-success btn-xs">Acceder</button>
+                                    @endif
                                 </form>
                             </td>
                         </tr>

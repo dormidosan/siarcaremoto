@@ -17,14 +17,16 @@ class CreateCargosTable extends Migration
             $table->increments('id');
             $table->unsignedInteger('comision_id');
             $table->unsignedInteger('asambleista_id');
+            $table->unsignedInteger('tipo_cargo_id');
             $table->date('inicio')->nullable();
             $table->date('fin')->nullable();
-            $table->string('cargo', 15)->nullable();
             $table->boolean('activo')->nullable();
 
             $table->index(["asambleista_id"], 'fk_asambleista_comision_asambleistas1_idx');
 
             $table->index(["comision_id"], 'fk_asambleista_comision_comisiones1_idx');
+
+            $table->index(["tipo_cargo_id"], 'fk_asambleista_comision_tipo_cargo1_idx');
 
 
             $table->foreign('comision_id', 'fk_asambleista_comision_comisiones1_idx')
@@ -36,6 +38,12 @@ class CreateCargosTable extends Migration
                 ->references('id')->on('asambleistas')
                 ->onDelete('no action')
                 ->onUpdate('no action');
+
+            $table->foreign('tipo_cargo_id', 'fk_asambleista_comision_tipo_cargo1_idx')
+                ->references('id')->on('tipo_cargos')
+                ->onDelete('no action')
+                ->onUpdate('no action');
+
             $table->timestamps();
         });
     }
