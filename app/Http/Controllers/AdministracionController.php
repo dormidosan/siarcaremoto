@@ -1245,7 +1245,6 @@ class AdministracionController extends Controller
 
             $tabla .= "</tr></tbody></table>";
         } else { //si es JD
-            $cargos_jd = TipoCargo::where('grupo','=','jd')->get();
             $tabla =
                 "<table id='tabla_miembros_jd' class='table table-striped table-bordered table-condensed table-hover dataTable text-center'>
                     <thead>
