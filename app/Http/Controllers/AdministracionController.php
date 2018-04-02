@@ -698,6 +698,7 @@ class AdministracionController extends Controller
     public function cambiar_cargos_junta_directiva()
     {
         //$cargos_jd = array("Presidente"=>"Presidente","Vicepresidente"=>"Vicepresidente","Secretario"=>"Secretario","Vocal 1"=>"Vocal 1","Vocal 2"=>"Vocal 2");
+		dd("asdsa");
         $cargos_jd = TipoCargo::where('grupo','=','jd')->get();
         //dd($cargos_jd2);
 
@@ -1245,6 +1246,7 @@ class AdministracionController extends Controller
 
             $tabla .= "</tr></tbody></table>";
         } else { //si es JD
+            $cargos_jd = TipoCargo::where('grupo','=','jd')->get();
             $tabla =
                 "<table id='tabla_miembros_jd' class='table table-striped table-bordered table-condensed table-hover dataTable text-center'>
                     <thead>
