@@ -34,4 +34,9 @@ class Cargo extends Model
         return $this->belongsTo('App\Asambleista');
     }
 
+    public function tipo_cargo()
+    {
+        return $this->belongsTo('App\TipoCargo');
+    }
+
 }

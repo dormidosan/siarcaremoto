@@ -697,11 +697,9 @@ class AdministracionController extends Controller
 
     public function cambiar_cargos_junta_directiva()
     {
-        $cargos_jd2 = array("Presidente"=>"Presidente","Vicepresidente"=>"Vicepresidente","Secretario"=>"Secretario","Vocal 1"=>"Vocal 1","Vocal 2"=>"Vocal 2");
-		
+        //$cargos_jd = array("Presidente"=>"Presidente","Vicepresidente"=>"Vicepresidente","Secretario"=>"Secretario","Vocal 1"=>"Vocal 1","Vocal 2"=>"Vocal 2");
         $cargos_jd = TipoCargo::where('grupo','=','jd')->get();
-        dd($cargos_jd);
-		dd($cargos_jd2);
+        //dd($cargos_jd2);
 
         $miembros_jd = Cargo::join("asambleistas", "cargos.asambleista_id", "=", "asambleistas.id")
             ->join("periodos", "asambleistas.periodo_id", "=", "periodos.id")
