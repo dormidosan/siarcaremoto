@@ -214,7 +214,10 @@ class ComisionController extends Controller
             $cargo->comision_id = $request->get("comision_id");
             $cargo->asambleista_id = $asambleista;
             $cargo->inicio = Carbon::now();
-            $cargo->tipo_cargo_id = (TipoCargo::where("nombre_cargo","Asambleista")->first())->id;
+            //original sentence
+            //$cargo->tipo_cargo_id = (TipoCargo::where("nombre_cargo","Asambleista")->first())->id;
+            $tipo_cargo = TipoCargo::where("nombre_cargo","Asambleista")->first();
+            $cargo->tipo_cargo_id = $tipo_cargo->id;
             $cargo->activo = 1;
             $cargo->save();
         }
@@ -250,7 +253,37 @@ class ComisionController extends Controller
     public function trabajo_comision(Request $request)
     {
         $comision = Comision::find($request->get("comision_id"));
-        return view("Comisiones.TrabajoComision", ["comision" => $comision]);
+
+
+        $periodo_actual = Periodo::latest()->first()->id;
+        $resueltos = Seguimiento::where('comision_id', '=', $comision->id)->where('estado_seguimiento_id', '=', 2)->where('activo', '=', 0)->count(); //todos los resueltos
+        //$resueltos = Peticion::where('resuelto', '=', '1')->count(); 
+        $no_resueltos = Seguimiento::where('comision_id', '=', $comision->id)->where('estado_seguimiento_id', '=', 2)->where('activo', '=', 1)->count(); //todos los no resueltos
+        //$no_resueltos = Peticion::where('resuelto', '=', '0')->count(); 
+        $reuniones = Reunion::where('comision_id', '=', $comision->id) //YA************
+            //->where('periodo_id', '=', $periodo_actual)
+            ->where('vigente', '=', '0')
+            ->get();
+
+        $no_reuniones = $reuniones->count(); //YA************
+        //dd($no_reuniones);
+        $dic_reuniones = 0; //YA************
+        foreach ($reuniones as $reunion) {
+            foreach ($reunion->documentos as $documento) {
+                if ($documento->tipo_documento_id == 3) {
+                    $dic_reuniones++; //YA************
+                }
+            }
+        }
+
+
+
+        return view('Comisiones.TrabajoComision')
+            ->with('comision', $comision)
+            ->with('resueltos', $resueltos) //todos los  resueltos
+            ->with('no_resueltos', $no_resueltos) //todos los no resueltos
+            ->with('no_reuniones', $no_reuniones) //YA************
+            ->with('dic_reuniones', $dic_reuniones); //YA************
 
     }
 
@@ -526,6 +559,10 @@ class ComisionController extends Controller
 
         $seguimiento->descripcion = 'carga de ' . TipoDocumento::where('id', '=', $tipo_documento)->first()->tipo;
         $seguimiento->save();
+
+        if (!($is_reunion == 0)) {
+            $reunion->documentos()->attach($documento_comision);
+        }
 
         $seguimientos = Seguimiento::where('peticion_id', '=', $id_peticion)->where('activo', '=', 1)->get();
         $tipo_documentos = TipoDocumento::where('tipo', '=', 'atestado')->orWhere('tipo', '=', 'dictamen')->pluck('tipo', 'id');

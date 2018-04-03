@@ -82,12 +82,13 @@
                     </thead>
 
                     <tbody>
+
                     @foreach($integrantes as $integrante)
                         <tr>
                             <td>{{ $integrante->asambleista->user->persona->primer_nombre . " " . $integrante->asambleista->user->persona->segundo_nombre . " " . $integrante->asambleista->user->persona->primer_apellido . " " . $integrante->asambleista->user->persona->segundo_apellido }}</td>
                             <td>{{ $integrante->asambleista->sector->nombre }}</td>
                             <td>{{ $integrante->asambleista->facultad->nombre }}</td>
-                            <td>{{ $integrante->cargo }}</td>
+                            <td>{{ $integrante->tipo_cargo->nombre_cargo }}</td>
                             <td>
                                 <form id="retirar_asambleista" name="retirar_asambleista" method="post"
                                       action="{{ route("retirar_asambleista_comision") }}">
@@ -212,11 +213,15 @@
 @endsection
 
 @section("lobibox")
-
-    @if(Session::has('success'))
+    @if(Session::has('error'))
+        <script>
+            notificacion("Error", "{{ Session::get('error') }}", "error");
+            {{ Session::forget('error') }}
+        </script>
+    @elseif(Session::has('success'))
         <script>
             notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
         </script>
     @endif
-
 @endsection

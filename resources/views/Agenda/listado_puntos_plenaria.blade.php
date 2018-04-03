@@ -39,7 +39,7 @@
                     <input type="hidden" name="id_agenda" id="id_agenda" value="{{$agenda->id}}">
 
                     <button type="submit" id="iniciar" name="iniciar" class="btn btn-danger btn-block" >
-                    Finalizar plenaria
+                        Finalizar plenaria
                     </button>
                     {!! Form::close() !!}
                 </div>
@@ -61,7 +61,7 @@
                 </div>
                 <div class="col-lg-4 col-sm-12">
                     <!-- {-!-! Form::open(['route'=>['seguimiento_peticion_plenaria'],'method'=> 'POST','target' => '_blank']) !!} -->
-                    <!-- Al pausar sesion plenaria , regresara a la pantalla con el listado de todas las sesiones plenarias, 
+                    <!-- Al pausar sesion plenaria , regresara a la pantalla con el listado de todas las sesiones plenarias,
                     usar la pantalla de jonathan de consultar agenda vigente como ejemplo-->
                     {!! Form::open(['route'=>['pausar_sesion_plenaria'],'method'=> 'POST']) !!}
                     <input type="hidden" name="id_agenda" id="id_agenda" value="{{$agenda->id}}">
@@ -155,7 +155,7 @@
                                                 {!! Form::close() !!}
                                             </td>
                                             <td>
-                                                
+
                                             </td>
                                         @else
                                             <td>
@@ -211,6 +211,7 @@
     @if(Session::has('warning'))
         <script>
             notificacion("Error", "{{ Session::get('warning') }}", "warning");
+            {{ Session::forget('error') }}
         </script>
     @endif
 

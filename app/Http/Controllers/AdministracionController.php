@@ -75,7 +75,8 @@ class AdministracionController extends Controller
                 $persona->dui = $request->get("dui");
                 $persona->nit = $request->get("nit");
                 $persona->nacimiento = $request->get("fecha1");
-                $persona->nacimiento = (DateTime::createFromFormat('d-m-Y', $request->fecha1))->format('Y-m-d');
+                $fecha1 = DateTime::createFromFormat('d-m-Y', $request->fecha1);
+                $persona->nacimiento = $fecha1->format('Y-m-d');
 
                 if ($request->hasFile('foto')) {
                     $file = $request->files->get('foto');
@@ -212,8 +213,10 @@ class AdministracionController extends Controller
                                     $asambleista = new Asambleista();
                                     $asambleista->user_id = $usuario_existente->id;
                                     $asambleista->periodo_id = $periodo->id;
-                                    $asambleista->facultad_id = (Facultad::where("nombre", strtoupper($row["facultad"]))->first())->id;
-                                    $asambleista->sector_id = (Sector::where("nombre", $row["sector"])->first())->id;
+                                    $facultad_sql = Facultad::where("nombre", strtoupper($row["facultad"]))->first();
+                                    $asambleista->facultad_id = $facultad_sql->id;
+                                    $sector_sql = Sector::where("nombre", $row["sector"])->first();
+                                    $asambleista->sector_id = $sector_sql->id;
 
                                     switch (strtoupper($row["propetario"])) {
                                         case "SI":
@@ -281,8 +284,10 @@ class AdministracionController extends Controller
                                     $asambleista = new Asambleista();
                                     $asambleista->user_id = $usuario->id;
                                     $asambleista->periodo_id = $periodo->id;
-                                    $asambleista->facultad_id = (Facultad::where("nombre", strtoupper($row["facultad"]))->first())->id;
-                                    $asambleista->sector_id = (Sector::where("nombre", $row["sector"])->first())->id;
+                                    $facultad_sql = Facultad::where("nombre", strtoupper($row["facultad"]))->first();
+                                    $asambleista->facultad_id = $facultad_sql->id;
+                                    $sector_sql = Sector::where("nombre", $row["sector"])->first();
+                                    $asambleista->sector_id = $sector_sql->id;
 
                                     switch (strtoupper($row["propetario"])) {
                                         case "SI":
@@ -781,7 +786,8 @@ class AdministracionController extends Controller
         $rol = Rol::find($id_rol);
 
         //obtener los modulos que se encuentran en la tabla modulo_rol
-        $modulos_actuales = (Rol::find($id_rol))->modulos()->get();
+        $roles = Rol::find($id_rol);
+        $modulos_actuales = $roles->modulos()->get();
         //se remueven todos los modulos que tiene asociado el rol
         foreach ($modulos_actuales as $modulo) {
             $modulo->roles()->detach($rol->id);
@@ -924,7 +930,8 @@ class AdministracionController extends Controller
             $respuesta->correo = $usuario->email;
             $respuesta->dui = $usuario->persona->dui;
             $respuesta->nit = $usuario->persona->nit;
-            $respuesta->fecha = (DateTime::createFromFormat('Y-m-d', $usuario->persona->nacimiento))->format('d-m-Y');
+            $fecha_respuesta = DateTime::createFromFormat('Y-m-d', $usuario->persona->nacimiento);
+            $respuesta->fecha = $fecha_respuesta->format('d-m-Y');
             $respuesta->afp = $usuario->persona->afp;
             $respuesta->cuenta = $usuario->persona->cuenta;
             $respuesta->tipo = $usuario->rol_id;
@@ -976,7 +983,8 @@ class AdministracionController extends Controller
                 $persona->dui = $request->get("dui_actualizar");
                 $persona->nit = $request->get("nit_actualizar");
                 //$persona->nacimiento = $request->get("fecha1_actualizar");
-                $persona->nacimiento = (DateTime::createFromFormat('d-m-Y', $request->fecha1_actualizar))->format('Y-m-d');
+                $fecha1_actualizar = DateTime::createFromFormat('d-m-Y', $request->fecha1_actualizar);
+                $persona->nacimiento = $fecha1_actualizar->format('Y-m-d');
                 //sentencia para agregar la foto
                 //$persona->foto = $request->get("foto");
 

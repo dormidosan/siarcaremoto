@@ -112,7 +112,6 @@
 
         <div class="box-body table-responsive">
             <table id="trabajoComision" class="table table-bordered table-hover text-center">
-
                 <thead class="text-bold">
                 <tr>
                     <th>Puntos Pendientes</th>
@@ -121,16 +120,14 @@
                     <th>Sesiones Realizadas</th>
                 </tr>
                 </thead>
-
-                <tbody id="cuerpoTabla" class="text-red text-bold">
+                <tbody id="cuerpoTabla">
                 <tr>
-                    <td>4</td>
-                    <td>50</td>
-                    <td>30</td>
-                    <td>45</td>
+                    <td>{{$no_resueltos}}</td>
+                    <td>{{$resueltos}}</td>
+                    <td>{{$dic_reuniones}}</td>
+                    <td>{{$no_reuniones}}</td>
                 </tr>
                 </tbody>
-
             </table>
         </div>
     </div>

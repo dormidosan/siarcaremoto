@@ -9,9 +9,12 @@
             <li><a href="{{ route('inicio') }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Agenda</a></li>
             <li><a href="{{ route('consultar_agenda_vigentes') }}">Consultar Agendas Vigentes</a></li>
-            <li><a href="javascript:document.getElementById('sala_sesion_plenaria').submit();">Sesion Plenaria de Agenda {{ $agenda->codigo }}</a></li>
-            <li><a href="javascript:document.getElementById('iniciar_sesion_plenaria').submit();">Listado de Puntos</a></li>
-            <li><a  href="javascript:document.getElementById('regresar_discusion_punto').submit();"> Discusion de Punto de Plenaria</a></li>
+            <li><a href="javascript:document.getElementById('sala_sesion_plenaria').submit();">Sesion Plenaria de
+                    Agenda {{ $agenda->codigo }}</a></li>
+            <li><a href="javascript:document.getElementById('iniciar_sesion_plenaria').submit();">Listado de Puntos</a>
+            </li>
+            <li><a href="javascript:document.getElementById('regresar_discusion_punto').submit();"> Discusion de Punto
+                    de Plenaria</a></li>
             <li><a class="active">Asignacion a Comision</a></li>
         </ol>
     </section>

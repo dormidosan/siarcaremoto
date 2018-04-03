@@ -138,6 +138,7 @@
     @if(Session::has('success'))
         <script>
             notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
         </script>
     @endif
 @endsection

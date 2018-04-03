@@ -302,7 +302,7 @@
     @if(Session::has('warning'))
         <script>
             notificacion("Error", "{{ Session::get('warning') }}", "warning");
-            {{ Session::forget('success') }}
+            {{ Session::forget('error') }}
         </script>
     @endif
 

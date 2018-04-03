@@ -172,6 +172,7 @@
     @if(Session::has('warning_puntos'))
         <script>
             notificacion("Error", "{{ Session::get('warning_puntos') }}", "warning");
+            {{ Session::forget('error') }}
         </script>
     @endif
 

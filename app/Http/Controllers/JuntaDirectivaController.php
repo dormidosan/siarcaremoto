@@ -159,7 +159,8 @@ class JuntaDirectivaController extends Controller
             $agenda->codigo = $request->codigo;
             $agenda->periodo_id = Periodo::latest()->first()->id;
             $agenda->lugar = $request->lugar;
-            $agenda->fecha = (DateTime::createFromFormat('d-m-Y', $request->fecha))->format('Y-m-d');
+            $fecha_temporal = DateTime::createFromFormat('d-m-Y', $request->fecha);
+            $agenda->fecha = $fecha_temporal->format('Y-m-d');
             $agenda->inicio = DateTime::createFromFormat('d-m-Y h:i A', $request->fecha . ' ' . date('h:i A', strtotime($request->hora)))->format('Y-m-d H:i:s');
             $agenda->trascendental = 0;
             if ($request->trascendental == 'on')
@@ -818,6 +819,11 @@ class JuntaDirectivaController extends Controller
         $tipo_documento_nombre = TipoDocumento::where('id', '=', $tipo_documento)->first()->tipo;
         $seguimiento->descripcion = 'carga de ' .$tipo_documento_nombre;
         $seguimiento->save();
+
+        if (!($is_reunion == 0)) {
+            $reunion->documentos()->attach($documento_comision);
+        }
+        
         if ($tipo_documento_nombre == "acuerdo") {
             $acuerdo_creado = $this->correos_peticion_acuerdo($peticion,$seguimiento->inicio);   
         }
