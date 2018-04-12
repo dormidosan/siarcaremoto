@@ -65,7 +65,7 @@
                                                         <td style="vertical-align: middle">{{ $cargo->asambleista->sector->nombre }}</td>
                                                         <td style="vertical-align: middle">{{ $cargo->cargo }}</td>
                                                         <td style="vertical-align: middle">
-                                                            @if($asambleista->ruta)
+                                                            @if($cargo->asambleista->ruta)
                                                                <a  class="btn btn-success btn-xs"
                                                                href="<?= $disco . $cargo->asambleista->ruta; ?>"
                                                                role="button">Ver</a>
