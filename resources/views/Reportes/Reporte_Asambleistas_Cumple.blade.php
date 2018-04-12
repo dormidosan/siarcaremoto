@@ -7,6 +7,30 @@
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/toogle/css/bootstrap-toggle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
+    <link rel="stylesheet"
+          href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
+    <style>
+        .dataTables_wrapper.form-inline.dt-bootstrap.no-footer > .row {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        table.dataTable thead > tr > th {
+            padding-right: 0 !important;
+        }
+
+        table {
+            width: 100% !important;
+        }
+
+        table tbody tr.group td {
+            font-weight: bold;
+            text-align: left;
+            background: #ddd;
+        }
+
+    </style>
 @endsection
 
 @section('breadcrumb')
@@ -23,32 +47,27 @@
 
 @section('content')
 
-             
-
-
-
-
-<div class="box box-danger">
+    <div class="box box-danger">
         <div class="box-header with-border">
             <h3 class="box-title">Cumpleañeros del mes</h3>
         </div>
         <div class="box-body">
             <form id="buscarDocs" method="post" action="{{ url("buscar_asambleistas_cumple") }}">
-              {{ csrf_field() }}
+                {{ csrf_field() }}
                 <div class="row">
-                       <div class="col-lg-3 col-sm-12 col-md-3">
-                        <label>Periodo AGU</label>
+                    <div class="col-lg-3 col-sm-12 col-md-3">
+                        <label for="periodo">Periodo AGU</label>
                         {!! Form::select('periodo',$periodos,$periodo,['id'=>'periodo','name'=>'periodo','class'=>'form-control','requiered'=>'required','placeholder'=>'seleccione periodo']) !!}
                     </div>
-                   
 
-                      <div class="col-lg-4 col-sm-12 col-md-4">
+
+                    <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
                             <label for="mes">Mes</label>
 
-                          <!-- <div class="input-group date fecha">
-                                <input required="true" id="fecha1" name="fecha1" type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                            </div>-->
+                            <!-- <div class="input-group date fecha">
+                                  <input required="true" id="fecha1" name="fecha1" type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                              </div>-->
 
                             <select required="true" class="form-control" id="mes" name="mes">
                                 <option value="">Seleccione un mes</option>
@@ -68,10 +87,10 @@
 
                         </div>
                     </div>
-                   
+
                 </div>
 
-             
+
                 <div class="row">
                     <div class="col-lg-12 text-center">
                         <button type="submit" id="buscar" name="buscar" class="btn btn-primary">Buscar</button>
@@ -85,37 +104,41 @@
 
 
 
- <div class="box box-solid box-default">
+    <div class="box box-solid box-default">
         <div class="box-header with-border">
             <h3 class="box-title">Resultados de Busqueda</h3>
         </div>
         <div class="box-body">
-                  <table class="table table-hover">
-                   
-                    <thead><tr>
-                      
-                      <th>Nombre</th>
-                      
-                      <th>Nombre Periodo</th>
-                      
-                      <th>Ver</th>
-                      <th>Descargar</th>
-                    </tr></thead>
-                    <tbody>
-@if(!($resultados==NULL))
-@foreach($resultados as $result)
-                    <tr>                                     
-                      <td>
-                       Cumpleañeros del mes de {{$mesnom}}
-                      </td>
-                      <td>{{$result->nombre_periodo}}</td>
-                    
-                      <td><a href="{{url("/Reporte_Asambleistas_Cumple/1.$periodo.$mes")}}" class="btn btn-block btn-success btn-xs" >VER</a></td>
-                      <td><a href="{{url("/Reporte_Asambleistas_Cumple/2.$periodo.$mes")}}" class="btn btn-block btn-success btn-xs" >DESCARGAR</a></td>
-                    
-                    </tr>
-                    
-                 <!--    <tr>                                     
+            <table id="listado" class="table table-striped table-bordered table-hover text-center">
+
+                <thead>
+                <tr>
+
+                    <th>Nombre</th>
+
+                    <th>Nombre Periodo</th>
+
+                    <th>Ver</th>
+                    <th>Descargar</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if(!($resultados==NULL))
+                    @foreach($resultados as $result)
+                        <tr>
+                            <td>
+                                Cumpleañeros del mes de {{$mesnom}}
+                            </td>
+                            <td>{{$result->nombre_periodo}}</td>
+
+                            <td><a href="{{url("/Reporte_Asambleistas_Cumple/1.$periodo.$mes")}}"
+                                   class="btn btn-block btn-success btn-xs">VER</a></td>
+                            <td><a href="{{url("/Reporte_Asambleistas_Cumple/2.$periodo.$mes")}}"
+                                   class="btn btn-block btn-success btn-xs">DESCARGAR</a></td>
+
+                        </tr>
+
+                        <!--    <tr>
                       <td>
                         Inasistencias a Sesiones plenarias
                       </td>
@@ -127,22 +150,23 @@
                     </tr>
 
                     -->
-                 
-@endforeach 
-@endif
-                  </tbody></table>
-                </div><!-- /.box-body -->
-              </div><!-- /.box -->
-  
-   <script>
+
+                    @endforeach
+                @endif
+                </tbody>
+            </table>
+        </div><!-- /.box-body -->
+    </div><!-- /.box -->
+
+    <script>
 
 
-  </script>
-        
+    </script>
+
 @endsection
 
- 
- @section("js")
+
+@section("js")
     <script src="{{ asset('libs/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('libs/datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
     <script src="{{ asset('libs/datetimepicker/js/moment.min.js') }}"></script>
@@ -153,13 +177,50 @@
     <script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
     <script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
     <script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
+    <!-- Datatables -->
+    <script src="{{ asset('libs/adminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
 @endsection
 
 @section("scripts")
     <script type="text/javascript">
-        
-               $(function () {
-           
+
+        $(function () {
+
+            var table = $('#listado').DataTable({
+                language: {
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_ registros",
+                    "sZeroRecords": "No se encontraron resultados",
+                    "sEmptyTable": "Ningún dato disponible en esta tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
+                "columnDefs": [
+                    {"orderable": false, "targets": [1, 2, 3]}
+                ],
+                "searching": true,
+                "order": [[1, 'asc'], [2, 'asc']],
+                "displayLength": 25,
+                "paging": true,
+            });
+
             $('#buscarDocs')
                 .formValidation({
                     framework: 'bootstrap',
@@ -173,32 +234,32 @@
                         periodo: {
                             validators: {
                                 notEmpty: {
-                                    message: 'Seleccione un tipo de Documento'
+                                    message: 'Seleccione un periodo'
                                 }
                             }
                         },
-                          mes: {
+                        mes: {
                             validators: {
                                 notEmpty: {
                                     message: 'Seleccione mes'
                                 }
                             }
                         }
-                        
+
                     }
                 });
         });
     </script>
 @endsection
 @section("lobibox")
- @if(Session::has('success'))
-    <script>
-        notificacion("Exito", "{{ Session::get('success') }}", "success");
-    </script>
-@endif 
-@if(Session::has('warning'))
-    <script>
-        notificacion("Exito", "{{ Session::get('warning') }}", "warning");
-    </script>
-@endif 
+    @if(Session::has('success'))
+        <script>
+            notificacion("Exito", "{{ Session::get('success') }}", "success");
+        </script>
+    @endif
+    @if(Session::has('warning'))
+        <script>
+            notificacion("Exito", "{{ Session::get('warning') }}", "warning");
+        </script>
+    @endif
 @endsection

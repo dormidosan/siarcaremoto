@@ -70,9 +70,18 @@
                                                             <td style="vertical-align: middle">Suplente</td>
                                                         @endif
                                                         <td style="vertical-align: middle">
-                                                            <a class="btn btn-info btn-xs"
+                                                            @if($asambleista->ruta)
+                                                               <a  class="btn btn-success btn-xs"
                                                                href="<?= $disco . $asambleista->ruta; ?>"
                                                                role="button">Ver</a>
+                                                            @else
+                                                                <a disabled class="btn btn-info btn-xs"
+                                                               href="#"
+                                                               role="button">Ver</a>
+                                                            @endif
+                                                            
+                                                            
+                                                               
                                                             <!-- <a class="btn btn-success btn-xs"
                                                                href="descargar_documento-/-<-?-= $asambleista->ruta; ?>"
                                                                role="button">Descargar</a> -->

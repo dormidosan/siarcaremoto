@@ -78,16 +78,5 @@
         </div>
     </div>
     <br>
-    <div class="row">
-        <div class="col-md-6">
-           
-        </div>
-        <!-- ./col -->
-        <div class="col-md-6">
-           
-            <!-- /.box -->
-        </div>
-        <!-- ./col -->
-    </div>
 @endsection
 

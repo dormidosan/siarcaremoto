@@ -262,7 +262,7 @@ class MailController extends Controller
         ->join('users','users.id','=','asambleistas.user_id')
         ->join('personas','personas.id','=','users.persona_id')
         ->join('cargos','cargos.asambleista_id','=','asambleistas.id')
-        ->where('cargos.cargo','=','Presidente')
+        ->where('cargos.tipo_cargo_id','=',1)
         ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
                 'personas.segundo_nombre')
         ->first();

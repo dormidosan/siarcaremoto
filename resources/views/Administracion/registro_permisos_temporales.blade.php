@@ -161,10 +161,12 @@
 @section("js")
     <script src="{{ asset('libs/adminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+
     <script src="{{ asset('libs/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('libs/datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
     <script src="{{ asset('libs/datetimepicker/js/moment.min.js') }}"></script>
     <script src="{{ asset('libs/datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
+
     <script src="{{ asset('libs/utils/utils.js') }}"></script>
     <script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
     <script src="{{ asset('libs/select2/js/select2.min.js') }}"></script>
@@ -177,6 +179,9 @@
 @section("scripts")
     <script type="text/javascript">
         $(function () {
+
+            var nowDate = new Date();
+            var today = nowDate.getDate()+'-'+(nowDate.getMonth()+1)+'-'+nowDate.getFullYear();
 
             $('#startDatePicker')
                 .datepicker({

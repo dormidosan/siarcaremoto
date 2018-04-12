@@ -484,7 +484,7 @@ class ReportesController extends Controller
     {
       //dd($request->all());
 
-        $mes = $this->numero_mes($request->mes);
+        //$mes = $this->numero_mes($request->mes);
 
        
 
@@ -511,7 +511,7 @@ class ReportesController extends Controller
             ->join('users', 'asambleistas.user_id', '=', 'users.id')
             ->join('sectores', 'asambleistas.sector_id', '=', 'sectores.id')
             ->join('personas', 'users.persona_id', '=', 'personas.id')
-            ->where('dietas.mes', '=', $mes)
+           // ->where('dietas.mes', '=', $mes)
             ->where('dietas.anio', '=', $request->anio)
             ->where('sectores.id', '=', $tipodoc)
             ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
@@ -530,7 +530,7 @@ class ReportesController extends Controller
 
         return view("Reportes.Reporte_consolidados_renta")
             ->with('resultados', $resultados)
-            ->with('mes', $mes)
+           // ->with('mes', $mes)
             ->with('tipo', $request->tipoDocumento);
 
 
@@ -728,7 +728,7 @@ class ReportesController extends Controller
 
 /*
 
-       $agenda=DB::table('agendas')->where('agendas.id','=',4)->first();
+       $agenda=DB::table('agendas')->where('agendas.id','=',3)->first();
 
         $fecha_generado=Carbon::now()->format('Y-m-d');
 
@@ -744,7 +744,7 @@ class ReportesController extends Controller
         ->join('users','users.id','=','asambleistas.user_id')
         ->join('personas','personas.id','=','users.persona_id')
         ->join('cargos','cargos.asambleista_id','=','asambleistas.id')
-        ->where('cargos.cargo','=','Presidente')
+      ->where('cargos.tipo_cargo_id','=',1)
         ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
                 'personas.segundo_nombre')
         ->first();
@@ -965,7 +965,7 @@ class ReportesController extends Controller
         ->join('users','users.id','=','asambleistas.user_id')
         ->join('personas','personas.id','=','users.persona_id')
         ->join('cargos','cargos.asambleista_id','=','asambleistas.id')
-        ->where('cargos.cargo','=','Presidente')
+        ->where('cargos.tipo_cargo_id','=',1)
         ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
                 'personas.segundo_nombre')
         ->first();
@@ -1129,8 +1129,8 @@ class ReportesController extends Controller
         $parametros = explode('.', $tipo); //se reciben id asambleista mes y año de la dieta separados por un espacio
         $verdescar = $parametros[0];
         $sector = $parametros[1];
-        $mes = $parametros[2];
-        $anio = $parametros[3];
+        //$mes = $parametros[2];
+        $anio = $parametros[2];
 
 
         $monto_dieta = DB::table('parametros')
@@ -1152,7 +1152,7 @@ class ReportesController extends Controller
                 ->join('sectores', 'asambleistas.sector_id', '=', 'sectores.id')
                 ->join('personas', 'users.persona_id', '=', 'personas.id')
                 ->join('facultades', 'asambleistas.facultad_id', '=', 'facultades.id')
-                ->where('dietas.mes', '=', $mes)
+                //->where('dietas.mes', '=', $mes)
                 ->where('dietas.anio', '=', $anio)
                 ->where('sectores.id', '=', 1)//serctor 2 por ser profesional docente
                 ->select('asambleistas.id', 'personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
@@ -1170,7 +1170,7 @@ class ReportesController extends Controller
                 ->join('sectores', 'asambleistas.sector_id', '=', 'sectores.id')
                 ->join('personas', 'users.persona_id', '=', 'personas.id')
                 ->join('facultades', 'asambleistas.facultad_id', '=', 'facultades.id')
-                ->where('dietas.mes', '=', $mes)
+                //->where('dietas.mes', '=', $mes)
                 ->where('dietas.anio', '=', $anio)
                 ->where('sectores.id', '=', 2)//serctor 2 por ser profesional docente
                 ->select('asambleistas.id', 'personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
@@ -1189,7 +1189,7 @@ class ReportesController extends Controller
                 ->join('sectores', 'asambleistas.sector_id', '=', 'sectores.id')
                 ->join('personas', 'users.persona_id', '=', 'personas.id')
                 ->join('facultades', 'asambleistas.facultad_id', '=', 'facultades.id')
-                ->where('dietas.mes', '=', $mes)
+                //->where('dietas.mes', '=', $mes)
                 ->where('dietas.anio', '=', $anio)
                 ->where('sectores.id', '=', 3)//serctor 2 por ser profesional docente
                 ->select('asambleistas.id', 'personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
@@ -1200,22 +1200,22 @@ class ReportesController extends Controller
         }
 
 
-        $view = \View::make('Reportes/Reporte_consolidados_renta_pdf', compact('resultados', 'sector', 'monto_dieta', 'renta', 'mes', 'anio'))->render();
+        $view = \View::make('Reportes/Reporte_consolidados_renta_pdf', compact('resultados', 'sector', 'monto_dieta', 'renta', 'anio'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
         $pdf->loadHTML($view)->setPaper('letter', 'landscape')->setWarnings(false);
 
         $hoy = Carbon::now()->format('Y-m-d');
         if ($verdescar == 1) {
-            return $pdf->stream('Consolidado_Renta_' . $sector . '_' . $mes . '_' . $anio . '_' . $hoy . '.pdf');
+            return $pdf->stream('Consolidado_Renta_' . $sector  . '_' . $anio . '_' . $hoy . '.pdf');
         }
         if ($verdescar == 2) {
-            return $pdf->download('Consolidado_Renta_' . $sector . '_' . $mes . '_' . $anio . '_' . $hoy . '.pdf');
+            return $pdf->download('Consolidado_Renta_' . $sector . '_' . $anio . '_' . $hoy . '.pdf');
         }
         if ($verdescar == 3) {
 
 
-            Excel::create('Consolidado_Renta_' . $sector . '_' . $mes . '_' . $anio . '_' . $hoy, function ($excel) use ($resultados) {
+            Excel::create('Consolidado_Renta_' . $sector . '_' . $anio . '_' . $hoy, function ($excel) use ($resultados) {
                 $excel->sheet('Hoja1', function ($sheet) use ($resultados) {
                     $data = array();
 
@@ -1291,10 +1291,17 @@ class ReportesController extends Controller
         return view("Reportes.Reporte_permisos_permanentes", ['resultados' => NULL]);
     }
 
-    public function webservice(){
+    public function webservice($tipo){
 
-        $mes='diciembre';
-        $anio='2018';
+        //$mes='diciembre';
+        //$anio='2018';
+
+        $parametros = explode('.', $tipo); //se reciben id asambleista mes y año de la dieta separados por un espacio
+        $mesnum = $parametros[0];
+        $anio = $parametros[1];
+
+        $mes = $this->numero_mes($mesnum);
+
 
            $array_multi = DB::table('asambleistas')
             ->join('users', 'asambleistas.user_id', '=', 'users.id')
@@ -1346,12 +1353,12 @@ class ReportesController extends Controller
 
             $cuenta++;
         }
-        dd($array_multi);
+        //dd($array_multi);
         if(count($array_multi)==0){
 
             return 'error';
         }
-        return 0;
+        return $array_multi;
     }
 
 

@@ -39,10 +39,10 @@
 }
 
 #nt {
-  position: fixed;
+  position: absolute;
   font-family: "ARIAL", serif;
   font-size: 10pt;
-  
+  right: 50%;
   top: 15%;
 }
 
@@ -119,12 +119,12 @@
   <IMG SRC="{{ asset('images/agu_web.jpg') }}" width="15%" height="15%" >
 </div>                                     
                                                
- <div id="p" style="text-align: center;position: absolute;right: 15%;top: 3%">
+ <div id="p" style="text-align: center;position: absolute;right: 25%;top: 3%">
     CORRESPONDENCIA RECIBIDA SESIÓN ORDINARIA<br/>DE JUNTA DIRECTIVA DE LA
     ASAMBLEA GENERAL UNIVERSITARIA<br/>
     DEL {{$fechainicial}} AL {{$fechafinal}}   
   </div>   
-  <hr/>     
+    
 </head>
   <body>
  

@@ -431,16 +431,27 @@
         $(function () {
 
             $('#dui').mask("00000000-0", {placeholder: "99999999-9"});
+            $('#dui_actualizar').mask("00000000-0", {placeholder: "99999999-9"});
             $('#nit').mask("0000-000000-000-0", {placeholder: "9999-999999-999-9"});
+            $('#nit_actualizar').mask("0000-000000-000-0", {placeholder: "9999-999999-999-9"});
             $('#afp').mask("000000000000", {placeholder: "999999999999"});
+            $('#afp_actualizar').mask("000000000000", {placeholder: "999999999999"});
             $('#cuenta').mask("0000000000", {placeholder: "9999999999"});
+            $('#cuenta_actualizar').mask("0000000000", {placeholder: "9999999999"});
             $('#correo').mask('A', {
                 'translation': {
                     A: {pattern: /[\w@\-.+]/, recursive: true}
                 },
                 placeholder: "ejemplo@gmail.com"
             });
+            $('#correo_actualizar').mask('A', {
+                'translation': {
+                    A: {pattern: /[\w@\-.+]/, recursive: true}
+                },
+                placeholder: "ejemplo@gmail.com"
+            });
             $('#fecha1').mask("99-99-9999", {placeholder: "dd-mm-yyyy"});
+            $('#fecha1_actualizar').mask("99-99-9999", {placeholder: "dd-mm-yyyy"});
 
             $('#usuario').select2({
                 language: "es",

@@ -168,6 +168,7 @@ Route::get('/Reporte_constancias_renta_JD', function () {
 });
 Route::get('/Reporte_constancias_renta_JD/{tipo}', 'ReportesController@Reporte_constancias_renta_JD');
 
+Route::get('/webservice/{tipo}', 'ReportesController@webservice');
 
 // PLANTILLAS
 Route::group(['prefix' => 'plantillas'], function () {

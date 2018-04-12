@@ -1,13 +1,39 @@
 @extends('layouts.app')
 
 @section('styles')
-     <link rel="stylesheet" href="{{ asset('libs/datepicker/css/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/datepicker/css/bootstrap-datepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/datetimepicker/css/bootstrap-datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/icheck/skins/square/green.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/toogle/css/bootstrap-toggle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
-     <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
+
+    <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
+    <link rel="stylesheet"
+          href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
+    <style>
+        .dataTables_wrapper.form-inline.dt-bootstrap.no-footer > .row {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        table.dataTable thead > tr > th {
+            padding-right: 0 !important;
+        }
+
+        table {
+            width: 100% !important;
+        }
+
+        table tbody tr.group td {
+            font-weight: bold;
+            text-align: left;
+            background: #ddd;
+        }
+
+    </style>
 @endsection
+
 @section('breadcrumb')
     <section class="">
         <ol class="breadcrumb">
@@ -18,26 +44,23 @@
         </ol>
     </section>
 @endsection
+
 @section('content')
 
-             
-
-
-
-
-<div class="box box-danger">
+    <div class="box box-danger">
         <div class="box-header with-border">
             <h3 class="box-title">Reporte permisos permanentes</h3>
         </div>
         <div class="box-body">
             <form id="buscarDocs" method="post" action="{{ url("buscar_permisos_permanentes") }}">
-                 {{ csrf_field() }}
+                {{ csrf_field() }}
                 <div class="row">
-                     <div class="col-lg-4 col-sm-12 col-md-4">
+                    <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
                             <label for="fecha">Fecha inicial</label>
                             <div class="input-group date fecha">
-                                <input required="true" id="fecha1" name="fecha1" type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                <input required="true" id="fecha1" name="fecha1" type="text" class="form-control"><span
+                                        class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
                     </div>
@@ -45,16 +68,17 @@
                         <div class="form-group">
                             <label for="fecha">Fecha final</label>
                             <div class="input-group date fecha">
-                                <input required="true" id="fecha2" name="fecha2" type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                                <input required="true" id="fecha2" name="fecha2" type="text" class="form-control"><span
+                                        class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
                         </div>
                     </div>
-                   
+
                 </div>
 
                 <div class="row">
                     <div class="col-lg-12 text-center">
-                        <button  type="submit" id="buscar" name="buscar" class="btn btn-primary">Buscar</button>
+                        <button type="submit" id="buscar" name="buscar" class="btn btn-primary">Buscar</button>
                     </div>
                 </div>
             </form>
@@ -62,62 +86,47 @@
         <!-- /.box-body -->
     </div>
 
-
-
-
- <div class="box box-solid box-default">
+    <div class="box box-solid box-default">
         <div class="box-header with-border">
             <h3 class="box-title">Resultados de Busqueda</h3>
         </div>
         <div class="box-body">
-                  <table class="table table-hover">
-                   
-                    <thead><tr>
-                      
-                      <th>Nombre </th>
-                      
-                      <th>Fecha</th>
-                      
-                      <th>Ver</th>
-                      <th>Descargar</th>
-                    </tr></thead>
-                    <tbody>
-                @if(!($resultados==NULL))              
-                @foreach($resultados as $result)
-                    <tr>                                     
-                      <td>
-                        REPORTE PERMISOS PERMANENTES
-                      </td>
-                      <td>{{$fechainicial}} al {{$fechafinal}}</td>
-                    
-                      <td><a href="{{url("/Reporte_permisos_permanentes/1.$fechainicial.$fechafinal")}}" class="btn btn-block btn-success btn-xs" >VER</a></td>
-                      <td><a href="{{url("/Reporte_permisos_permanentes/2.$fechainicial.$fechafinal")}}" class="btn btn-block btn-success btn-xs" >DESCARGAR</a></td>
-                    
-                    </tr>
-                @endforeach
-                   @endif    
-                  </tbody>
-                 </table>
-                </div><!-- /.box-body -->
-              </div><!-- /.box -->
-  
-   <script>
-$('#fecha').datepicker({
-              format: "dd/mm/yyyy",
-                clearBtn: true,
-                language: "es",
-                autoclose: true,
-                todayHighlight: true
-            });
+            <table id="listado" class="table table-striped table-bordered table-hover text-center">
 
+                <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Fecha</th>
+                    <th>Ver</th>
+                    <th>Descargar</th>
+                </tr>
+                </thead>
+                <tbody>
+                @if(!($resultados==NULL))
+                    @foreach($resultados as $result)
+                        <tr>
+                            <td>
+                                REPORTE PERMISOS PERMANENTES
+                            </td>
+                            <td>{{$fechainicial}} al {{$fechafinal}}</td>
 
-  </script>
-        
+                            <td><a href="{{url("/Reporte_permisos_permanentes/1.$fechainicial.$fechafinal")}}"
+                                   class="btn btn-block btn-success btn-xs">VER</a></td>
+                            <td><a href="{{url("/Reporte_permisos_permanentes/2.$fechainicial.$fechafinal")}}"
+                                   class="btn btn-block btn-success btn-xs">DESCARGAR</a></td>
+
+                        </tr>
+                    @endforeach
+                @endif
+                </tbody>
+            </table>
+        </div><!-- /.box-body -->
+    </div><!-- /.box -->
 @endsection
 
- 
- @section("js")
-      <script src="{{ asset('libs/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+
+@section("js")
+    <script src="{{ asset('libs/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('libs/datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
     <script src="{{ asset('libs/datetimepicker/js/moment.min.js') }}"></script>
     <script src="{{ asset('libs/datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
@@ -125,13 +134,51 @@ $('#fecha').datepicker({
     <script src="{{ asset('libs/adminLTE/plugins/icheck/icheck.min.js') }}"></script>
     <script src="{{ asset('libs/adminLTE/plugins/toogle/js/bootstrap-toggle.min.js') }}"></script>
     <script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
-     <script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
     <script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
+    <!-- Datatables -->
+    <script src="{{ asset('libs/adminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
 @endsection
 
 @section("scripts")
     <script type="text/javascript">
         $(function () {
+
+            var table = $('#listado').DataTable({
+                language: {
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_ registros",
+                    "sZeroRecords": "No se encontraron resultados",
+                    "sEmptyTable": "Ningún dato disponible en esta tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
+                "columnDefs": [
+                    {"orderable": false, "targets": [1, 2, 3]}
+                ],
+                "searching": true,
+                "order": [ [1, 'asc'],[2, 'asc']],
+                "displayLength": 25,
+                "paging": true,
+            });
+
             $('#fecha1')
                 .datepicker({
                     format: 'dd-mm-yyyy',
@@ -215,14 +262,14 @@ $('#fecha').datepicker({
     </script>
 @endsection
 @section("lobibox")
- @if(Session::has('success'))
-    <script>
-        notificacion("Exito", "{{ Session::get('success') }}", "success");
-    </script>
-@endif 
-@if(Session::has('warning'))
-    <script>
-        notificacion("Exito", "{{ Session::get('warning') }}", "warning");
-    </script>
-@endif 
+    @if(Session::has('success'))
+        <script>
+            notificacion("Exito", "{{ Session::get('success') }}", "success");
+        </script>
+    @endif
+    @if(Session::has('warning'))
+        <script>
+            notificacion("Exito", "{{ Session::get('warning') }}", "warning");
+        </script>
+    @endif
 @endsection

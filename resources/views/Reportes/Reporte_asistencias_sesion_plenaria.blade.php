@@ -7,6 +7,30 @@
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/toogle/css/bootstrap-toggle.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
+    <link rel="stylesheet"
+          href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
+    <style>
+        .dataTables_wrapper.form-inline.dt-bootstrap.no-footer > .row {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+        table.dataTable thead > tr > th {
+            padding-right: 0 !important;
+        }
+
+        table {
+            width: 100% !important;
+        }
+
+        table tbody tr.group td {
+            font-weight: bold;
+            text-align: left;
+            background: #ddd;
+        }
+
+    </style>
 @endsection
 
 @section('breadcrumb')
@@ -77,7 +101,8 @@
             <h3 class="box-title">Resultados de Busqueda</h3>
         </div>
         <div class="box-body">
-            <table class="table table-hover">
+
+            <table id="listado" class="table table-striped table-bordered table-hover text-center">
 
                 <thead>
                 <tr>
@@ -101,7 +126,7 @@
                                 <a href="{{url("/Reporte_asistencias_sesion_plenaria/1.$tipo.$result->id.$result->fecha.$result->periodo_id")}}"
                                    class="btn btn-block btn-success btn-xs">VER</a></td>
                             <td>
-                                <a href="{{url("/Reporte_asistencias_sesion_plenaria/2_$tipo.$result->id.$result->fecha.$result->periodo_id")}}"
+                                <a href="{{url("/Reporte_asistencias_sesion_plenaria/2.$tipo.$result->id.$result->fecha.$result->periodo_id")}}"
                                    class="btn btn-block btn-success btn-xs">DESCARGAR</a></td>
 
                         </tr>
@@ -125,12 +150,49 @@
     <script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
     <script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
     <script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
+    <!-- Datatables -->
+    <script src="{{ asset('libs/adminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
 @endsection
 
 @section("scripts")
 
     <script type="text/javascript">
         $(function () {
+            var table = $('#listado').DataTable({
+                language: {
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_ registros",
+                    "sZeroRecords": "No se encontraron resultados",
+                    "sEmptyTable": "Ningún dato disponible en esta tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
+                "columnDefs": [
+                    {"orderable": false, "targets": [1, 2, 3]}
+                ],
+                "searching": true,
+                "order": [ [1, 'asc'],[2, 'asc']],
+                "displayLength": 25,
+                "paging": true,
+            });
+
             $('#fecha1')
                 .datepicker({
                     format: 'dd-mm-yyyy',

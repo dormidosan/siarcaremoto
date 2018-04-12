@@ -455,7 +455,7 @@ $section->addText('Y para su conocimiento y efectos legales consiguientes, trans
         ->join('users','users.id','=','asambleistas.user_id')
         ->join('personas','personas.id','=','users.persona_id')
         ->join('cargos','cargos.asambleista_id','=','asambleistas.id')
-        ->where('cargos.cargo','=','Secretario JD') //secretario/a
+        ->where('cargos.tipo_cargo_id','=',3)// 3 para secretario
         ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
                 'personas.segundo_nombre')
         ->first();
@@ -662,7 +662,7 @@ $secretario=DB::table('asambleistas')
         ->join('users','users.id','=','asambleistas.user_id')
         ->join('personas','personas.id','=','users.persona_id')
         ->join('cargos','cargos.asambleista_id','=','asambleistas.id')
-        ->where('cargos.cargo','=','Secretario JD') //secretario/a
+        ->where('cargos.tipo_cargo_id','=',3) //secretario/a
         ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
                 'personas.segundo_nombre')
         ->first();

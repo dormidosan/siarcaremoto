@@ -42,6 +42,7 @@
                 <h3 class="box-title">Acceso a Modulos</h3>
             </div>
             <div class="box-body">
+
                 <td class="table-responsive">
                     <table class="table">
                         <thead>
@@ -66,8 +67,6 @@
                                                 @if($modulos_hijo->modulo_padre == $modulos_padre->id)
                                                     <div>
                                                         @php $searchedRole = array_search($id_rol->nombre_rol,$modulos_hijo->roles->pluck('nombre_rol')->toArray()); @endphp
-
-                                                        {{-- @if($modulos_hijo->roles[$searchedRole]->id == $id_rol->id) --}}
                                                         @if(in_array($modulos_hijo->id,$modulosArray))
                                                             <div class="pretty p-icon p-smooth">
                                                                 <input type="checkbox" name="modulos[]"
@@ -95,6 +94,29 @@
                                         </td>
                                     </tr>
                                 @else
+                                    <tr class="hidden">
+                                        <td class="text-center text-bold">{{$modulos_padre->nombre_modulo}}</td>
+                                        <td class="col-lg-6">
+                                            @foreach($modulos_hijos as $modulos_hijo)
+                                                @if($modulos_hijo->modulo_padre == $modulos_padre->id)
+                                                    <div>
+                                                        @php $searchedRole = array_search($id_rol->nombre_rol,$modulos_hijo->roles->pluck('nombre_rol')->toArray()); @endphp
+                                                        @if(in_array($modulos_hijo->id,$modulosArray))
+                                                            <div class="pretty p-icon p-smooth">
+                                                                <input type="checkbox" name="modulos[]"
+                                                                       value="{{ $modulos_hijo->id }}" checked
+                                                                       onchange="habilitar_button()"/>
+                                                                <div class="state p-success">
+                                                                    <i class="icon mdi mdi-check"></i>
+                                                                    <label>{{$modulos_hijo->nombre_modulo}}</label>
+                                                                </div>
+                                                            </div>
+                                                        @endif
+                                                    </div>
+                                                @endif
+                                            @endforeach
+                                        </td>
+                                    </tr>
                                 @endif
                             @endforeach
                             <tr class="text-center">
@@ -125,6 +147,10 @@
     <script type="text/javascript">
         $(function () {
             habilitar_button();
+
+            $("#checkAll").click(function(){
+                $('input:checkbox').not(this).prop('checked', this.checked);
+            });
         });
 
         function habilitar_button() {

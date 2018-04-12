@@ -35,8 +35,7 @@
         <ol class="breadcrumb">
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Administracion</a></li>
-            <li><a>Gestionar Usuarios</a></li>
-            <li class="active">Estados Asambleistas</li>
+            <li class="active">Dietas Asambleistas</li>
         </ol>
     </section>
 @endsection
@@ -44,7 +43,7 @@
 @section("content")
     <div class="box box-danger ">
         <div class="box-header with-border">
-            <h3 class="box-title">Listado de Asambleistas</h3>
+            <h3 class="box-title">Dietas de Asambleistas</h3>
         </div>
         <div class="box-body">
 
@@ -82,9 +81,9 @@
             <br>
 
             <div class="table-responsive">
-                <table class="table" id="listadoo">
+                <table id="listado" class="table table-striped table-bordered table-hover text-center">
                     <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th class="text-center" style="padding-right: 20px !important;">Numero</th>
                         <th class="text-center">Nombre</th>
                         <th class="text-center">Mes</th>
@@ -112,7 +111,7 @@
                         </tr>
                     {!! Form::close() !!}
                     @empty
-                        <p style="color: red ;">No hay criterios de busqueda</p>
+
                     @endforelse
                     </tbody>
                 </table>

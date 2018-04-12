@@ -74,7 +74,7 @@
                             <tr>
                                 <td>{{$contador}}</td>
                                 <td>{{ $cargo->asambleista->user->persona->primer_nombre . ' ' . $cargo->asambleista->user->persona->segundo_nombre . ' ' . $cargo->asambleista->user->persona->primer_apellido . ' ' .  $cargo->asambleista->user->persona->segundo_apellido}}</td>
-                                <td>{{ $cargo->cargo }}</td>
+                                <td>{{ $cargo->tipo_cargo->nombre_cargo }}</td>
                                 @foreach($asistencias as $asistencia)
                                     @if($asistencia->cargo->id == $cargo->id)
                                         @php $encontrado = true @endphp
