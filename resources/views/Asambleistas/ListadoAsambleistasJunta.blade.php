@@ -46,12 +46,21 @@
                                 <td style="vertical-align: middle">{{ $cargo->asambleista->sector->nombre }}</td>
                                 <td style="vertical-align: middle">{{ $cargo->cargo }}</td>
                                 <td style="vertical-align: middle">
-                                    <a class="btn btn-info btn-xs"
-                                       href="<?= $disco . $cargo->asambleista->ruta; ?>"
-                                       role="button">Ver</a>
-                                    <!-- <a class="btn btn-success btn-xs"
-                                                  href="descargar_documento-/-<-?-= $asambleista->ruta; ?>"
-                                                  role="button">Descargar</a> -->
+                                                            @if($asambleista->ruta)
+                                                               <a  class="btn btn-success btn-xs"
+                                                               href="<?= $disco . $cargo->asambleista->ruta; ?>"
+                                                               role="button">Ver</a>
+                                                            @else
+                                                                <a disabled class="btn btn-info btn-xs"
+                                                               href="#"
+                                                               role="button">Ver</a>
+                                                            @endif
+                                                            
+                                                            
+                                                               
+                                                            <!-- <a class="btn btn-success btn-xs"
+                                                               href="descargar_documento-/-<-?-= $asambleista->ruta; ?>"
+                                                               role="button">Descargar</a> -->
                                 </td>
                             </tr>
                             @php $i++ @endphp

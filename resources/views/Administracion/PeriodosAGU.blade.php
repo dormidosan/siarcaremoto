@@ -77,7 +77,7 @@
                                 Aceptar
                             </button>
                         @else
-                            <button type="button" class="btn btn-success btn-block disabled" onclick="mostar_progeso(event)" disabled>
+                            <button type="button" class="btn btn-success btn-block disabled" disabled>
                                 Aceptar
                             </button>
                         @endif
@@ -120,7 +120,7 @@
                                         {{ csrf_field() }}
                                         <input type="text" id="periodo_id" name="periodo_id" class="hidden"
                                                value="{{$periodo->id}}">
-                                        <button type="submit" class="btn btn-xs btn-danger"
+                                        <button type="button" class="btn btn-xs btn-danger"
                                                 onclick="finalizar_periodo_modal()">Finalizar
                                         </button>
                                     </form>
@@ -150,6 +150,31 @@
                              aria-valuenow="0"
                              aria-valuemin="100" aria-valuemax="100" style="width: 100%">
                         </div>
+                    </div>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
+    <div id="modal_fin_periodo" class="modal fade" tabindex="-1" role="dialog" data-keyboard="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                                aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Finalizar Periodo</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="row text-center">
+                        <div class="col-lg-12">
+                            <p class="text-bold">¿Desea finalizar el periodo seleccionado?</p>
+                        </div>
+                        <div class="col-lg-12">
+                            <button type="button" id="fin_periodo" class="btn btn-primary" onclick="finalizar_periodo()">Aceptar</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        </div>
+
                     </div>
                 </div>
             </div><!-- /.modal-content -->
@@ -251,54 +276,7 @@
             });
         });
 
-        function finalizar_periodo(periodo_id) {
-            var valor = 0;
-            var exito = false;
-            var respuesta;
-            var lobibox;
-            $.ajax({
-                beforeSend: function () {
-                    Lobibox.progress({
-                        title: 'Por favor, espere',
-                        label: 'Finalizando Periodo ...',
-                        closeButton: false,
-                        closeOnEsc: false,
-                        showProgressLabel: false,
-                        onShow: function ($this) {
-                            var i = 0;
-                            var inter = setInterval(function () {
-                                if (i >= 100) {
-                                    inter = clearInterval(inter);
-                                }
-                                i = i + 0.1;
-                                $this.setProgress(i);
-                            }, 10);
-                        },
-                        progressCompleted: function () {
-                            exito = true;
-                            lobibox = $('.lobibox-progress').data('lobibox');
-                        }
-                    });
-                },
-                //se envia un token, como medida de seguridad ante posibles ataques
-                headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                },
-                type: 'POST',
-                url: "{{ route("finalizar_periodo") }}",
-                data: {"periodo_id": periodo_id},
-            }).done(function (response) {
-                if (exito) {
-                    lobibox.hide();
-                    notificacion(response.mensaje.titulo, response.mensaje.contenido, response.mensaje.tipo);
-                    setTimeout(function () {
-                        window.location.href = "{{ route("periodos_agu") }}"
-                    }, 150);
-                }
 
-            });
-
-        }
 
         function mostar_progeso(event) {
             var form = $("#periodo_agu").data('formValidation').validate();
@@ -326,7 +304,37 @@
 
         }
 
+        /*function finalizar_periodo_modal() {
+            Lobibox.progress({
+                title: 'Por favor, espere',
+                label: 'Finalizando Periodo ...',
+                closeButton: false,
+                closeOnEsc: false,
+                showProgressLabel: false,
+                onShow: function ($this) {
+                    var i = 0;
+                    var inter = setInterval(function () {
+                        if (i >= 100) {
+                            inter = clearInterval(inter);
+                        }
+                        i = i + 0.1;
+                        $this.setProgress(i);
+                    }, 10);
+                },
+                progressCompleted: function () {
+                    exito = true;
+                    lobibox = $('.lobibox-progress').data('lobibox');
+                }
+            });
+        }*/
+
         function finalizar_periodo_modal() {
+            //$("#nombre_periodo_span").html($("#nombre_periodo_cell").html());
+            $("#modal_fin_periodo").modal('show');
+        }
+
+        function finalizar_periodo() {
+            document.getElementById("finalizar_periodo").submit();
             Lobibox.progress({
                 title: 'Por favor, espere',
                 label: 'Finalizando Periodo ...',
