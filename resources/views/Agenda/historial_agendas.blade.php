@@ -76,8 +76,8 @@
                                        role="button" target="_blank"><i class="fa fa-eye"></i> Ver</a>
                             </td>
                             <td>
-                                    <a class="btn btn-success btn-xs btn-block"
-                                       href="descargar_documento/<?= $ultimo_documento->id; ?>" role="button">
+                                    <a class="btn btn-success btn-xs btn-block" 
+                                    href="{{ route('descargar_documento',['id' =>  $ultimo_documento->id] ) }}" role="button">
                                         <i class="fa fa-download"></i> Descargar</a>
                             </td>
                             @else

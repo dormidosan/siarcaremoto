@@ -109,7 +109,7 @@
                                                role="button">Ver</a>
 
                                             <a class="btn btn-success btn-xs"
-                                               href="descargar_documento/<?= $seguimiento->documento->id; ?>"
+                                               href="{{ route('descargar_documento',['id' =>  $seguimiento->documento->id] ) }}"
                                                role="button">Descargar</a>
                                         </td>
                                     @else

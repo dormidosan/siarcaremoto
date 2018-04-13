@@ -404,7 +404,6 @@ Route::get('descargar_documento/{id}', 'DocumentoController@descargar_documento'
 Route::resource('photo', 'PhotoController');
 Route::auth();
 
-Route::get('/home', 'HomeController@index');
 
 Route::get('mostrar_datos_usuario','UsuarioController@mostrar_datos_usuario')->name('mostrar_datos_usuario');
 Route::post('actualizar_contraseña','UsuarioController@actualizar_contraseña')->name('actualizar_contraseña');

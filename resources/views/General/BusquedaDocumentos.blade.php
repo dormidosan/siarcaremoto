@@ -109,9 +109,8 @@
                                 <a class="btn btn-primary btn-xs "
                                    href="{{ asset($disco.''.$documento->path) }}"
                                    role="button" target="_blank"><i class="fa fa-eye"></i> Ver</a>
-                                <a class="btn btn-success btn-xs"
-                                   href="descargar_documento/<?= $documento->id; ?>" role="button">
-                                    <i class="fa fa-download"></i> Descargar</a>
+                                <a class="btn btn-success btn-xs" href="{{ route('descargar_documento',['id' =>  $documento->id] ) }}" role="button">
+                                <i class="fa fa-download"></i> Descargar</a>
                             </td>
                             @endif
                         </tr>

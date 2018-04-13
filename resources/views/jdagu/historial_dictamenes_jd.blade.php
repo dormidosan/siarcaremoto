@@ -79,7 +79,7 @@
                                 </div>
                                 <div class="col-lg-6 col-sm-6 col-md-6">
                                     <a class="btn btn-success btn-xs btn-block"
-                                       href="descargar_documento/<?= $seguimiento->documento->id; ?>" role="button">
+                                       href="{{ route('descargar_documento',['id' =>  $seguimiento->documento->id] ) }}" role="button">
                                         <i class="fa fa-download"></i> Descargar</a>
                                 </div>
                             </div>

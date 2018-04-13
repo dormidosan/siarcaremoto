@@ -130,21 +130,27 @@ class ComisionController extends Controller
         //obtengo una comision
         //dd($request->all());
         $comision = Comision::where('id', '=', $request->id_comision)->first();
-
+        //dd($peticion->comisiones->count());
         $seguimiento = Seguimiento::where('estado_seguimiento_id', '=', 2)
             ->where('peticion_id', '=', $peticion->id)
             ->where('comision_id', '=', $comision->id)
             ->where('activo', '=', 1)
             ->first();
 
-        // estado seguimiento 2 es el metodo de control para decir que esta en transito en esta comision, y no debe cambiar
-        //hay que consultar los seguimientos de esta peticion en esta comision que esten activos, y proceder a inactivarlo por que ya paso por esta comision
+        // estado seguimiento 2 es el metodo de control para decir que estuvo en transito en esta comision, y no debe ser eliminado
+        //hay que consultar los seguimientos de esta peticion en esta comision que esten activos, y proceder a inactivarlos, por que ya paso por esta comision
         $seguimiento->activo = 0;
         $seguimiento->fin = Carbon::now();
         $seguimiento->save();
 
         //dd($comision);
-        $comision->peticiones()->detach($peticion->id);
+        //$comision->peticiones()->detach($peticion->id);
+        $peticion->comisiones()->detach($comision->id);
+        if (($peticion->comisiones->count()) == 0) {
+            $peticion->comision = 0;
+            $peticion->save();
+        }
+
         //dd($seguimiento);
         //dd($comision->peticiones());
         $request->session()->flash("success", "Peticion: " . $peticion->codigo . " retirada de la comision: ");

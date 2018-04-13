@@ -231,7 +231,7 @@
                                     </td>
                                     <td>
                                         <a class="btn btn-success btn-xs btn-block"
-                                           href="descargar_documento/<?= $documento->id; ?>"
+                                           href="{{ route('descargar_documento',['id' =>  $documento->id] ) }}"
                                            role="button"><i class="fa fa-download"></i> Descargar</a>
                                     </td>
                                 </tr>

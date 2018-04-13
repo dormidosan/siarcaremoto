@@ -102,7 +102,7 @@
                                                    role="button"><i class="fa fa-eye"></i> Ver</a>
 
                                                 <a class="btn btn-success btn-xs"
-                                                   href="descargar_documento/<?= $seguimiento->documento->id; ?>"
+                                                   href="{{ route('descargar_documento',['id' =>  $seguimiento->documento->id] ) }}"
                                                    role="button"><i class="fa fa-download"></i> Descargar</a>
 
                                             </td>

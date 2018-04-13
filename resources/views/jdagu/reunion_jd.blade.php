@@ -176,7 +176,7 @@
                                                         disabled="disabled">Agendar Plenaria
                                                 </button>
                                             @elseif($peticion->agendado == 1)
-                                                @if($peticion->asignado_agenda == 1 OR $peticion->resuelto == 1)
+                                                @if($peticion->asignado_agenda == 1 )
                                                     <button type="submit" class="btn btn-danger btn-xs"
                                                             disabled="disabled">Retirar Plenaria
                                                     </button>

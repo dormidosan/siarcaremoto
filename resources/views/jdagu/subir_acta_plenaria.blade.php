@@ -91,7 +91,7 @@
                                            href="{{ asset($disco.''.$documento->path) }}"
                                            role="button" target="_blank ">Ver</a>
                                         <a class="btn btn-success btn-xs"
-                                           href="descargar_documento/<?= $documento->id; ?>"
+                                           href="{{ route('descargar_documento',['id' =>  $documento->id] ) }}"
                                            role="button">Descargar</a>
                                     </td>
 
