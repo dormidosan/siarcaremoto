@@ -6,13 +6,43 @@
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Junta Directiva</a></li>
             <li><a href="{{ route("trabajo_junta_directiva") }}">Trabajo Junta Directiva</a></li>
-            <li><a href="{{ route("listado_peticiones_jd") }}">Listado de Peticiones</a></li>
-            <li class="active">Peticion {{ $peticion->codigo }}</li>
+            @if($es_reunion == 1)
+                <li><a href="{{ route("listado_reuniones_jd") }}">Reuniones</a></li>
+                <li><a href="javascript:document.getElementById('continuar').submit();">Reunion {{ $reunion->codigo }}</a></li>
+                <li class="active">Peticion {{ $peticion->codigo }}</li>
+            @else
+                <li><a href="{{ route("listado_peticiones_jd") }}">Listado de Peticiones JD</a></li>
+                <li class="active">Peticion {{ $peticion->codigo }}</li>
+            @endif
         </ol>
     </section>
+
 @endsection
 
 @section("content")
+
+    @if($es_reunion == 1)
+        <div class="hidden">
+            {!! Form::open(['route'=>['iniciar_reunion_jd'],'method'=> 'POST','id'=>'continuar']) !!}
+            <input type="hidden" name="id_comision" id="id_comision"
+                   value="{{$reunion->comision_id}}">
+            <input type="hidden" name="id_reunion" id="id_reunion" value="{{$reunion->id}}">
+            @if($reunion->activa == 0)
+                <td>
+                    <button type="submit" class="btn btn-success btn-xs btn-block"><i
+                                class="fa fa-arrow-right"></i> Iniciar
+                    </button>
+                </td>
+            @else
+                <td>
+                    <button type="submit" class="btn btn-success btn-xs btn-block"><i
+                                class="fa fa-arrow-right"></i> Continuar
+                    </button>
+                </td>
+            @endif
+            {!! Form::close() !!}
+        </div>
+    @endif
 
 
     <div class="box box-danger">
