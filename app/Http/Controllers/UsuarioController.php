@@ -20,7 +20,7 @@ class UsuarioController extends Controller
     public function mostrar_datos_usuario()
     {
         $user = User::find(Auth::user()->id);
-        $asambleista = Asambleista::where('user_id','=',$user->id)->where('activo','=',1)->first();
+        $asambleista = Asambleista::where('user_id','=',$user->id)->first();
         $disco = "../storage/documentos/";
         return view("Usuario.administrar_datos_usuario", ['usuario' => $user,"asambleista" => $asambleista,"disco"=>$disco]);
     }
