@@ -15,9 +15,8 @@
     <section>
         <ol class="breadcrumb">
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
-            <li><a>Junta Directiva</a></li>
-            <li><a href="{{ route("trabajo_junta_directiva") }}">Trabajo Junta Directiva</a></li>
-            <li><a class="active">Listado de Peticiones JD</a></li>
+            <li><a>Peticiones</a></li>
+            <li><a class="active">Listado de Peticiones</a></li>
         </ol>
     </section>
 @endsection

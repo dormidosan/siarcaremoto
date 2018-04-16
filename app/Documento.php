@@ -35,6 +35,7 @@ class Documento extends Model
     {
         return $this->hasOne('App\Seguimiento');
     }
+
 	
     //LLAVES FORANEAS
 	public function tipo_documento()

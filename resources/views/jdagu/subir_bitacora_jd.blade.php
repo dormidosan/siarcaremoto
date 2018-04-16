@@ -27,8 +27,8 @@
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Junta Directiva</a></li>
             <li><a href="{{ route("trabajo_junta_directiva") }}">Trabajo Junta Directiva</a></li>
-            <li><a href="{{ route("listado_reuniones_jd") }}">Listado de Reuniones</a></li>
-            <li class="active">Subir Bitacora</li>
+            <li><a href="{{ route("listado_reuniones_jd") }}">Reuniones</a></li>
+            <li class="active">Subir Bitacora - Reunion {{ $reunion->codigo }}</li>
         </ol>
     </section>
 @endsection
@@ -39,6 +39,9 @@
             <h3 class="box-title">Subir Bitacora</h3>
         </div>
         <div class="box-body">
+            <div class="text-center">
+                <h4>Reunion {{$reunion->codigo}}</h4>
+            </div>
             <form class="form-group" id="guardar_bitacora_jd" name="guardar_bitacora_jd" method="post"
                   action="{{ route('guardar_bitacora_jd') }}" enctype="multipart/form-data">
                 {{ csrf_field() }}

@@ -7,7 +7,7 @@
             <li><a>Comisiones</a></li>
             <li><a href="{{ route("administrar_comisiones") }}">Listado de Comisiones</a></li>
             <li><a href="javascript:document.getElementById('trabajo_comision').submit();">Trabajo de Comision</a></li>
-            <li class="active">Listado de Reuniones</li>
+            <li class="active">Reuniones</li>
         </ol>
     </section>
 @endsection

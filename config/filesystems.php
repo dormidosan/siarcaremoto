@@ -63,7 +63,12 @@ return [
             'driver' => 'local',
             'root' => storage_path('plantillas'),
         ],
-		
+
+        'hojas_vida' => [
+            'driver' => 'local',
+            'root' => storage_path('hojas_vida'),
+        ],
+
 		'fotos' => [
             'driver' => 'local',
             'root' => storage_path('fotos'),

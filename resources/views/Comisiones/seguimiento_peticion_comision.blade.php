@@ -8,12 +8,11 @@
             <li><a href="{{ route("administrar_comisiones") }}">Listado de Comisiones</a></li>
             <li><a href="javascript:document.getElementById('trabajo_comision').submit();">Trabajo de Comision</a></li>
             @if(!empty($reunion))
-                <li><a href="javascript:document.getElementById('listado_reuniones_comision').submit();">Listado de
-                        Reuniones</a></li>
+                <li><a href="javascript:document.getElementById('listado_reuniones_comision').submit();">Reuniones</a></li>
                 <li>
                     <a href="javascript:document.getElementById('iniciar_reunion_comision').submit();">Reunion {{$reunion->codigo}}</a>
                 </li>
-                <li class="active">Punto de Reunion</li>
+                <li class="active">Peticion {{ $peticion->codigo }}</li>
             @else
                 <li><a href="javascript:document.getElementById('listado_peticiones_comision').submit();">Listado de
                         Peticiones</a></li>

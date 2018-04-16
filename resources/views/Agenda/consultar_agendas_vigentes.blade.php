@@ -80,7 +80,16 @@
                                             <div class="col-lg-6">
                                                 {!! Form::open(['route'=>['sala_sesion_plenaria'],'method'=> 'POST']) !!}
                                                 <input type="hidden" name="id_agenda" id="id_agenda" value="{{$agenda->id}}">
-                                                @if( (Auth::user()->rol_id == 1) )
+                                                @php $j = 0 @endphp
+                                                @forelse($cargos as $cargo)
+                                                    @if(Auth::user()->id == $cargo->asambleista->user->id)
+                                                        @php $jd = 1 @endphp
+                                                    @endif
+                                                @empty
+                                                @endforelse
+
+                                                <!-- @-i-f-( (Auth::user()->rol_id == 3) and ($jd == 1) ) -->
+                                                @if( (Auth::user()->rol_id == 4)  )
                                                 <button type="submit" id="iniciar" name="iniciar"
                                                         class="btn btn-primary btn-block"> Iniciar sesion plenaria
                                                 </button>

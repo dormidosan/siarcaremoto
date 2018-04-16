@@ -63,12 +63,12 @@
                                                         </td>
                                                         <td style="vertical-align: middle">{{ $cargo->asambleista->user->persona->primer_nombre . " " . $cargo->asambleista->user->persona->segundo_nombre . " " . $cargo->asambleista->user->persona->primer_apellido . " " . $cargo->asambleista->user->persona->segundo_apellido }}</td>
                                                         <td style="vertical-align: middle">{{ $cargo->asambleista->sector->nombre }}</td>
-                                                        <td style="vertical-align: middle">{{ $cargo->cargo }}</td>
+                                                        <td style="vertical-align: middle">{{ $cargo->tipo_cargo->nombre_cargo }}</td>
                                                         <td style="vertical-align: middle">
-                                                            @if($cargo->asambleista->ruta)
+                                                            @if($cargo->asambleista->hoja_id)
                                                                <a  class="btn btn-success btn-xs"
-                                                               href="<?= $disco . $cargo->asambleista->ruta; ?>"
-                                                               role="button">Ver</a>
+                                                               href="<?= $disco . $cargo->asambleista->hoja->path; ?>"
+                                                               role="button" target="_blank">Ver</a>
                                                             @else
                                                                 <a disabled class="btn btn-info btn-xs"
                                                                href="#"

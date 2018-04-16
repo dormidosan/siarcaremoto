@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
-@section('styles')
+@section("styles")
+    <!-- Datatables-->
+    <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
+    <link rel="stylesheet"
+          href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
+
     <style>
         .dataTables_wrapper.form-inline.dt-bootstrap.no-footer > .row {
             margin-right: 0;
@@ -11,13 +16,8 @@
             padding-right: 0 !important;
         }
 
-
     </style>
-    <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
-    <link rel="stylesheet"
-          href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
 @endsection
-
 
 @section('breadcrumb')
     <section>
@@ -49,7 +49,8 @@
                         <th>Peticionario</th>
                         <th>Ultima asignacion</th>
                         <th>Visto anteriormente por</th>
-                        <th colspan="2">Acción</th>
+                        <th>Estado</th>
+                        <th>Acción</th>
                     </tr>
                     </thead>
                     <tbody id="cuerpoTabla" class="table-hover">
@@ -96,7 +97,34 @@
                                 @endforeach
                                 {!! $i !!}
                             </td>
-                            <td >
+                                @if($peticion->resuelto == 1)
+                                    <td class="success">
+                                        Resuelto
+                                    </td>
+                                @else
+                                    @if($peticion->comision == 1)
+                                        <td class="warning">
+                                        En comision
+                                        </td>
+                                    @else
+                                        @if($peticion->asignado_agenda == 1)
+                                            <td class="info">
+                                            Agendado
+                                            </td>
+                                        @else
+                                            <td class="danger">
+                                            No revisado
+                                            </td>
+                                        @endif
+                                    @endif
+                                    
+                                @endif
+                                
+
+                                
+                            
+                            <td class="row">
+                                <div class="col-lg-3 col-md-12 col-sm-12">
                                     {!! Form::open(['route'=>['seguimiento_peticion_jd'],'method'=> 'POST','id'=>$peticion->id.'1']) !!}
                                     <input type="hidden" name="id_peticion" id="id_peticion" value="{{$peticion->id}}">
                                     <input type="hidden" name="es_reunion" id="es_reunion" value="0">
@@ -104,8 +132,8 @@
                                         <i class="fa fa-eye"></i> Ver
                                     </button>
                                     {!! Form::close() !!}
-                            </td>
-                            <td>
+                                </div>
+                                <div class="col-lg-3 col-md-12 col-sm-12">
                                     {!! Form::open(['route'=>['subir_documento_jd'],'method'=> 'POST','id'=>$peticion->id.'2']) !!}
                                     <input type="hidden" name="id_comision" id="id_comision" value="1">
                                     <input type="hidden" name="id_peticion" id="id_peticion" value="{{$peticion->id}}">
@@ -113,7 +141,7 @@
                                         <i class="fa fa-upload"></i> Subir documentacion
                                     </button>
                                     {!! Form::close() !!}
-                                
+                                </div>
                             </td>
                         </tr>
 
@@ -128,6 +156,7 @@
 @endsection
 
 @section("js")
+    <!-- Datatables -->
     <script src="{{ asset('libs/adminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
 @endsection
@@ -164,7 +193,7 @@
                 responsive: true,
                 /*searching: false,
                 paging: false,*/
-                columnDefs: [{orderable: false, targets: [1,2,3,4,5,6,7]}],
+                columnDefs: [{orderable: false, targets: [1, 2, 3, 4, 5, 6, 7]}],
                 order: [[0, 'asc']]
             });
         });

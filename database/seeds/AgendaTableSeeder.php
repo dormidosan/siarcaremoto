@@ -260,6 +260,34 @@ class AgendaTableSeeder extends Seeder
             'updated_at' => Carbon::now()->addSeconds(4)->format('Y-m-d H:i:s')
         ));
 
+        \DB::table('reuniones')->insert(array(
+            'comision_id' => '1',
+            'periodo_id' => '2',
+            'codigo' => 'JD 27',
+            'lugar' => 'sala de reuniones',
+            'convocatoria' => Carbon::create(2017, 11, 10, 8, 0)->subDay()->format('Y-m-d H:i:s'),
+            //'inicio'  => Carbon::create(2017, 11,10, 8, 0)->format('Y-m-d H:i:s'),
+            //'fin'     => Carbon::create(2017, 11,10, 8, 0)->addHours(5)->format('Y-m-d H:i:s'),
+            'vigente' => '1',
+            'activa' => '0',
+            'created_at' => Carbon::now()->addSeconds(5)->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->addSeconds(5)->format('Y-m-d H:i:s')
+        ));
+
+        \DB::table('reuniones')->insert(array(
+            'comision_id' => '1',
+            'periodo_id' => '2',
+            'codigo' => 'JD 28',
+            'lugar' => 'sala de reuniones',
+            'convocatoria' => Carbon::create(2017, 11, 10, 8, 0)->subDay()->format('Y-m-d H:i:s'),
+            //'inicio'  => Carbon::create(2017, 11,10, 8, 0)->format('Y-m-d H:i:s'),
+            //'fin'     => Carbon::create(2017, 11,10, 8, 0)->addHours(5)->format('Y-m-d H:i:s'),
+            'vigente' => '1',
+            'activa' => '0',
+            'created_at' => Carbon::now()->addSeconds(6)->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->addSeconds(6)->format('Y-m-d H:i:s')
+        ));
+
         //////////////////
 
 

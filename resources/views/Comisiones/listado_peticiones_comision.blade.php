@@ -42,7 +42,7 @@
                         <th>Peticionario</th>
                         <th>Ultima asignacion</th>
                         <th>Visto anteriormente por</th>
-                        <th colspan="2">Acción</th>
+                        <th colspan="3">Acción</th>
                     </tr>
                     </thead>
                     <tbody>

@@ -11,7 +11,7 @@
             <li><a>Comisiones</a></li>
             <li><a href="{{ route("administrar_comisiones") }}">Listado de Comisiones</a></li>
             <li><a href="javascript:document.getElementById('trabajo_comision').submit();">Trabajo de Comision</a></li>
-            <li><a href="javascript:document.getElementById('listado_reuniones_comision').submit();">Listado de Reuniones</a></li>
+            <li><a href="javascript:document.getElementById('listado_reuniones_comision').submit();">Reuniones</a></li>
             <li><a href="javascript:document.getElementById('iniciar_reunion_comision').submit();">Reunion {{$reunion->codigo}}</a></li>
             <li class="active">Asistencia a Reunion</li>
         </ol>
@@ -79,7 +79,7 @@
                             <tr>
                                 <td>{{$contador}}</td>
                                 <td>{{ $cargo->asambleista->user->persona->primer_nombre . ' ' . $cargo->asambleista->user->persona->segundo_nombre . ' ' . $cargo->asambleista->user->persona->primer_apellido . ' ' .  $cargo->asambleista->user->persona->segundo_apellido}}</td>
-                                <td>{{ $cargo->cargo }}</td>
+                                <td>{{ $cargo->tipo_cargo->nombre_cargo }}</td>
                                 <td></td>
                                 <td>
                                     <form id="registar_asistencia_comision" name="registrar_asistencia_comision"

@@ -1362,6 +1362,24 @@ class ReportesController extends Controller
     }
 
 
+        public function ReportePetion($tipo){
+
+        $codigo=$tipo;
+
+        $peticion = DB::table('peticiones')
+        ->where('peticiones.codigo','=',$codigo)
+        ->first();
+        //dd($tipo);
+        $view = \View::make('Reportes/Reporte_Peticion_pdf', compact('peticion'))->render();
+        $pdf = \App::make('dompdf.wrapper');    
+         $pdf->getDomPDF()->set_option("enable_php", true);  
+        $pdf->loadHTML($view)->setPaper('letter', 'portrait')->setWarnings(false);
+        $hoy = Carbon::now()->format('Y-m-d');
+
+
+        return $pdf->stream('Peticion'.$hoy.'.pdf');
+        
+        }
 
 
     public function index()

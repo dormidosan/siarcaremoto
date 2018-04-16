@@ -127,7 +127,7 @@ class PeticionController extends Controller
         $seguimiento->fin = Carbon::now();
         $seguimiento->activo = '0';
         $seguimiento->agendado = '0';
-        $seguimiento->descripcion = "Inicio de control en: JD";
+        $seguimiento->descripcion = "Control en: JD";
         $seguimiento->save();
 
 

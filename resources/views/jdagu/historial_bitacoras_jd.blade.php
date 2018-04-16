@@ -72,12 +72,8 @@
                         @endif
                     @empty
                         <!-- <p style="color: red ;">No hay criterios de busqueda</p> -->
-                        <?php $text1 = 1; ?>
                     @endforelse
                 @empty
-                    @if($text1 == 1)
-                        <p style="color: red ;">No hay criterios de busqueda</p>
-                    @endif
                 @endforelse
 
                 </tbody>

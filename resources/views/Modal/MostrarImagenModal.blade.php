@@ -15,15 +15,6 @@
     <form id="actualizar_imagen" name="actualizar_imagen" method="post"
           action="{{ route("actualizar_imagen") }}" enctype="multipart/form-data">
         {{ csrf_field() }}
-
-        <!--<div class="row hidden">
-            <div class="col-lg-12">
-                <div class="form-group">
-                    <label for="plantilla">ID Plantilla</label>
-                    <input type="text" id="plantilla_id" name="plantilla_id" value="">
-                </div>
-            </div>
-        </div>-->
         <div class="row">
             <div class="col-lg-12">
                 <div class="form-group">

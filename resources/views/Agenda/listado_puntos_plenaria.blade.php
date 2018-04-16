@@ -87,7 +87,7 @@
                         <th>Descripcion</th>
                         <th>Peticionario</th>
                         <th>Fecha peticion</th>
-                        <th>Retirado</th>
+                        <th>Estado</th>
                         <th colspan="3">Accion</th>
                     </tr>
                     </thead>
@@ -110,7 +110,19 @@
                                 @if($punto->peticion_id)
                                     <td>{!! $punto->peticion->peticionario !!}</td>
                                     <td>{!! $punto->peticion->fecha !!}</td>
-                                    <td>{!! $punto->retirado !!}</td>
+                                    @if($punto->retirado == 0 and $punto->activo == 1)
+                                    <td class="warning">
+                                        No Discutido
+                                    </td>
+                                    @elseif($punto->retirado == 0 and $punto->activo == 0)
+                                    <td class="success">
+                                        Discutido
+                                    </td>
+                                    @else
+                                    <td class="danger">
+                                        Retirado
+                                    </td>
+                                    @endif
                                     <td>
                                         {!! Form::open(['route'=>['seguimiento_peticion_plenaria'],'method'=> 'POST']) !!}
                                         <input type="hidden" name="id_punto" id="id_punto" value="{{$punto->id}}">
@@ -211,7 +223,7 @@
     @if(Session::has('warning'))
         <script>
             notificacion("Error", "{{ Session::get('warning') }}", "warning");
-            {{ Session::forget('error') }}
+            {{ Session::forget('warning') }}
         </script>
     @endif
 

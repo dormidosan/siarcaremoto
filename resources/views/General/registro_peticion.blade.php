@@ -91,10 +91,10 @@
                             <div class="form-group">
                                 <label for="documento">Seleccione peticion (1)</label>
                                 <div class="file-loading">
-
+                                    <!--<input id="documento_peticion" name="documento_peticion" type="file"
+                                           required="required" accept=".doc, .docx, .pdf, .xls, .xlsx">-->
                                     <input id="documento_peticion" name="documento_peticion" type="file"
-                                           required="required" accept=".doc, .docx, .pdf, .xls, .xlsx">
-
+                                           required="required" accept=".pdf">
                                 </div>
 
                             </div>
@@ -109,10 +109,10 @@
                             <div class="form-group">
                                 <label for="documento">Seleccione atestados (1-3)</label>
                                 <div class="file-loading">
-
+                                    <!--<input id="documento_atestado" name="documento_atestado[]" type="file" multiple
+                                           required="required" accept=".doc, .docx, .pdf, .xls, .xlsx">-->
                                     <input id="documento_atestado" name="documento_atestado[]" type="file" multiple
-                                           required="required" accept=".doc, .docx, .pdf, .xls, .xlsx">
-
+                                           required="required" accept=".pdf">
                                 </div>
 
                             </div>
@@ -129,9 +129,14 @@
             @else
 
                 <div class="row text-center">
-                    <div class="col-lg-12 col-sm-12 col-md-12">
-                        <a class="btn btn-danger" href="{{ route('registrar_peticion') }}" role="button" id="btn">Crear
-                            nueva peticion</a>
+                    <div class="col-lg-6 col-sm-12 col-md-12">
+                        <a class="btn btn-block btn-primary btn-sm" href="{{ route('registrar_peticion') }}" role="button" id="btn">
+                            <i class="fa fa-plus"></i> Crear nueva peticion</a>
+                    </div>
+                    <div class="col-lg-6 col-sm-12 col-md-12">
+                        <a href="{{url("/ReportePetion/$peticion->codigo")}}"
+                           class="btn btn-block btn-success btn-sm" target="_blank">
+                            <i class="fa fa-print"></i> Imprimir Peticion</a>
                     </div>
                 </div>
                 <br>
@@ -150,6 +155,7 @@
                                                style="color: #000000; font-family: Verdana; font-weight: bold; font-size: 12px; background-color: #95C9A3;">
                                     </div>
                                 </div>
+
                             </div>
 
                             <div class="row">
@@ -226,7 +232,7 @@
                                     </td>
                                     <td>
                                         <a class="btn btn-info btn-xs btn-block"
-                                           href="{{ asset($disco.''.$documento->path) }}"
+                                           href="{{ asset($disco.''.$documento->path) }}" target="_blankgit"
                                            role="button"><i class="fa fa-eye"></i> Ver</a>
                                     </td>
                                     <td>
@@ -267,7 +273,8 @@
         $(function () {
             $("#documento_peticion").fileinput({
                 theme: "explorer",
-                previewFileType: "pdf, xls, xlsx, doc, docx",
+                //previewFileType: "pdf, xls, xlsx, doc, docx",
+                previewFileType: "pdf",
                 language: "es",
                 //minFileCount: 1,
                 maxFileCount: 3,
@@ -292,7 +299,8 @@
                 language: "es",
                 //minFileCount: 1,
                 maxFileCount: 3,
-                allowedFileExtensions: ['docx', 'doc', 'pdf', 'xls', 'xlsx'],
+                //allowedFileExtensions: ['docx', 'doc', 'pdf', 'xls', 'xlsx'],
+                allowedFileExtensions: ['pdf'],
                 showUpload: false,
                 fileActionSettings: {
                     showRemove: true,

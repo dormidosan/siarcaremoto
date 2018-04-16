@@ -59,7 +59,7 @@
                         <div class="form-group">
                             <label>Tipo </label>
 
-                            <select required="true" class="form-control" id="tipoDocumento" name="tipoDocumento">
+                            <select required="true" class="form-control" id="tipoDocumento" name="tipoDocumento" onchange="mostrar(this.value)">
                                 <option value="{{old("tipoDocumento")}}">Seleccione una opcion</option>
                                 <option value="A">Por Asambleista</option>
                                 <option value="E">Consolidados Estudiantil</option>
@@ -254,6 +254,10 @@
 
 @section("scripts")
     <script type="text/javascript">
+
+      
+
+
         $(function () {
             var table = $('#listado').DataTable({
                 language: {
@@ -335,6 +339,32 @@
                     }
                 });
         });
+
+            function mostrar(idComision) {
+            $.ajax({
+                //se envia un token, como medida de seguridad ante posibles ataques
+               /* headers: {
+                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
+                },
+                type: 'POST',
+                url: "{{ route('mostrar_asambleistas_comision_post') }}",
+                data: {
+                    "idComision": idComision
+                }*/
+                if(idComision=='A'){
+                
+                   $("#mes").hide();
+                }
+                else{
+
+                    $("#mes").show();
+                }
+            }).done(function (response) {
+               // $("#idComision").val(response.comision);
+                //$("#mes").html(response.mes);
+                //inicializar_dataTable();
+            });
+        };
     </script>
 @endsection
 

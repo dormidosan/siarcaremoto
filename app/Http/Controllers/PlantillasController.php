@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Http\Requests\ActasRequest;
 use Storage;
+use App\Plantilla;
 class PlantillasController extends Controller
 {
     /**
@@ -870,6 +871,21 @@ return response()->download('C:\xampp\htdocs\siarcaf\public\Dictamen_'.$fecha_ag
 
         return $fechainicial;
     }
+
+    public function plantillas(){
+
+      $plantillas = Plantilla::all();
+      return view("Plantillas.MenuPlantilla", ["plantillas" => $plantillas]);
+
+    }
+
+       public function descargar_plantilla($id)
+    {
+        $plantilla = Plantilla::find($id);
+        $ruta_plantilla = "../storage/plantillas/" . $plantilla->path;
+        return response()->download($ruta_plantilla);
+    }
+
 
     public function index()
     {

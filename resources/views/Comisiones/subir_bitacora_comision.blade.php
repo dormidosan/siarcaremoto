@@ -28,8 +28,8 @@
             <li><a>Comisiones</a></li>
             <li><a href="{{ route("administrar_comisiones") }}">Listado de Comisiones</a></li>
             <li><a href="javascript:document.getElementById('trabajo_comision').submit();">Trabajo de Comision</a></li>
-            <li><a href="javascript:document.getElementById('listado_reuniones_comision').submit();">Listado de Reuniones</a></li>
-            <li>Subir Documento</li>
+            <li><a href="javascript:document.getElementById('listado_reuniones_comision').submit();">Reuniones</a></li>
+            <li>Reunion {{ $reunion->codigo }} - Subir Bitacora</li>
         </ol>
     </section>
 @endsection

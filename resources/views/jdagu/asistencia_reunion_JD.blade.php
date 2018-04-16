@@ -10,7 +10,7 @@
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Junta Directiva</a></li>
             <li><a href="{{ route("trabajo_junta_directiva") }}">Trabajo Junta Directiva</a></li>
-            <li><a href="{{ route("listado_reuniones_jd") }}">Listado de Reuniones</a></li>
+            <li><a href="{{ route("listado_reuniones_jd") }}">Reuniones</a></li>
             <li><a href="javascript:document.getElementById('iniciar_reunion_jd').submit();">Reunion {{ $reunion->codigo }}</a></li>
             <li class="active">Asistencia Reunion JD</li>
         </ol>
@@ -51,7 +51,7 @@
                             <tr>
                                 <td>{{$contador}}</td>
                                 <td>{{ $cargo->asambleista->user->persona->primer_nombre . ' ' . $cargo->asambleista->user->persona->segundo_nombre . ' ' . $cargo->asambleista->user->persona->primer_apellido . ' ' .  $cargo->asambleista->user->persona->segundo_apellido}}</td>
-                                <td>{{ $cargo->cargo }}</td>
+                                <td>{{ $cargo->tipo_cargo->nombre_cargo }}</td>
                                 <td></td>
                                 <td>
                                     <form id="registar_asistencia" name="registrar_asistencia"

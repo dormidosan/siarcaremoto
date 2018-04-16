@@ -78,6 +78,17 @@ class VariablesTableSeeder extends Seeder
 
         ));
 
+        \DB::table('roles')->insert(array(
+            'nombre_rol' => 'junta'
+
+        ));
+
+        \DB::table('roles')->insert(array(
+            'nombre_rol' => 'empleado'
+
+        ));
+
+
 
         \DB::table('comisiones')->insert(array(
             'codigo' => 'jda',
@@ -91,10 +102,10 @@ class VariablesTableSeeder extends Seeder
         ));
 
         \DB::table('comisiones')->insert(array(
-            'codigo' => 'aso',
-            'nombre' => 'comision asociaciones',
+            'codigo' => 'cge',
+            'nombre' => 'Comision de Genero',
             'permanente' => '1',
-            'descripcion' => 'comision de creacion de asociaciones',
+            'descripcion' => 'comision para defensa de Genero',
             'activa' => '1',
             'especial' => '0',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -102,10 +113,10 @@ class VariablesTableSeeder extends Seeder
         ));
 
         \DB::table('comisiones')->insert(array(
-            'codigo' => 'reg',
-            'nombre' => 'comision reglamentos',
+            'codigo' => 'clg',
+            'nombre' => 'Comisión de legislación',
             'permanente' => '1',
-            'descripcion' => 'comision de creacion de reglamentos',
+            'descripcion' => 'comision de estudio de legislación',
             'activa' => '1',
             'especial' => '0',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -113,10 +124,10 @@ class VariablesTableSeeder extends Seeder
         ));
 
         \DB::table('comisiones')->insert(array(
-            'codigo' => 'leg',
-            'nombre' => 'comision legislacion',
-            'permanente' => '0',
-            'descripcion' => 'comision de legislar la ues',
+            'codigo' => 'ccn',
+            'nombre' => 'Comisión de convenios',
+            'permanente' => '1',
+            'descripcion' => 'comision de trata de convenios',
             'activa' => '1',
             'especial' => '0',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -124,11 +135,77 @@ class VariablesTableSeeder extends Seeder
         ));
 
         \DB::table('comisiones')->insert(array(
-            'codigo' => 'pre',
-            'nombre' => 'comision presupuestos',
-            'permanente' => '0',
+            'codigo' => 'cdc',
+            'nombre' => 'Comisión de comunicaciones',
+            'permanente' => '1',
+            'descripcion' => 'comision de fomento de comunicaciones',
+            'activa' => '1',
+            'especial' => '0',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ));
+
+        \DB::table('comisiones')->insert(array(
+            'codigo' => 'ccu',
+            'nombre' => 'Comisión de cultura',
+            'permanente' => '1',
+            'descripcion' => 'comision de proteccion de cultura',
+            'activa' => '1',
+            'especial' => '0',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ));
+
+        \DB::table('comisiones')->insert(array(
+            'codigo' => 'cds',
+            'nombre' => 'Comisión de salud',
+            'permanente' => '1',
+            'descripcion' => 'comision de cuido de salud estudiantil',
+            'activa' => '1',
+            'especial' => '0',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ));
+
+        \DB::table('comisiones')->insert(array(
+            'codigo' => 'cse',
+            'nombre' => 'Comisión de seguimiento de las autoridades electas',
+            'permanente' => '1',
+            'descripcion' => 'comision para control de elecciones',
+            'activa' => '1',
+            'especial' => '0',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ));
+
+        \DB::table('comisiones')->insert(array(
+            'codigo' => 'cae',
+            'nombre' => 'Comisión de asociaciones estudiantiles',
+            'permanente' => '1',
+            'descripcion' => 'comision de estudio de asociaciones',
+            'activa' => '1',
+            'especial' => '0',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ));
+
+        \DB::table('comisiones')->insert(array(
+            'codigo' => 'cpr',
+            'nombre' => 'Comisión de presupuesto',
+            'permanente' => '1',
             'descripcion' => 'comision de prespuesto y dinero',
-            'activa' => '0',
+            'activa' => '1',
+            'especial' => '0',
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ));
+
+        \DB::table('comisiones')->insert(array(
+            'codigo' => 'cma',
+            'nombre' => 'Comisión de medio ambiente',
+            'permanente' => '0',
+            'descripcion' => 'comision control de medio ambiente',
+            'activa' => '1',
             'especial' => '0',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
@@ -238,7 +315,7 @@ class VariablesTableSeeder extends Seeder
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ));
-
+/*
         for ($i = 0; $i < 5; $i++) {
             \DB::table('plantillas')->insert(array(
                 'codigo' => 'pla' . $i,
@@ -249,6 +326,54 @@ class VariablesTableSeeder extends Seeder
             ));
 
         }
+*/
+        \DB::table('plantillas')->insert(array(
+                'codigo' => 'pla1',
+                'nombre' => 'dictamen',
+                'path' => '0b17d8a78c9516c900892e6a0ad52809.pdf',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ));
+
+        \DB::table('plantillas')->insert(array(
+                'codigo' => 'pla1',
+                'nombre' => 'acuerdo',
+                'path' => '0b17d8a78c9516c900892e6a0ad52809.pdf',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ));
+
+        \DB::table('plantillas')->insert(array(
+                'codigo' => 'pla1',
+                'nombre' => 'bitacora',
+                'path' => '0b17d8a78c9516c900892e6a0ad52809.pdf',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ));
+
+        \DB::table('plantillas')->insert(array(
+                'codigo' => 'pla1',
+                'nombre' => 'bitacora_jd',
+                'path' => '0b17d8a78c9516c900892e6a0ad52809.pdf',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ));
+
+        \DB::table('plantillas')->insert(array(
+                'codigo' => 'pla1',
+                'nombre' => 'atestado',
+                'path' => '0b17d8a78c9516c900892e6a0ad52809.pdf',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ));
+
+
+        \DB::table('hojas')->insert(array(
+                'nombre' => 'documento hoja de vida',
+                'path' => '0b17d8a78c9516c900892e6a0ad52808.pdf',
+                'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+                'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+            ));
     }
 
 }

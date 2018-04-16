@@ -30,6 +30,7 @@ use App\Facultad;
 use App\Tiempo;
 use App\Parametro;
 use App\Dieta;
+use App\Cargo;
 
 class AgendaController extends Controller
 {
@@ -110,7 +111,9 @@ class AgendaController extends Controller
             $agendas = Agenda::where('vigente','=','1')->orderBy('created_at', 'ASC')->get();
             $request->session()->flash("warning_puntos", 'La agenda "'.$agenda->codigo.'"  contiene 0 PUNTOS asociados');
 
+            $cargos = Cargo::where('comision_id','=','1')->where('activo','=','1')->get();
             return view('Agenda.consultar_agendas_vigentes')
+            ->with('cargos',$cargos)
             ->with('agendas',$agendas);
         }
 
@@ -472,7 +475,9 @@ class AgendaController extends Controller
             // ###############################################################################
             // ##################   INSERTAR CODIGO AQUI JAIME ###############################
             // ###############################################################################
+            $cargos = Cargo::where('comision_id','=','1')->where('activo','=','1')->get();
             return view('Agenda.consultar_agendas_vigentes')
+            ->with('cargos',$cargos)
             ->with('agendas',$agendas);
 
         } 
@@ -496,7 +501,9 @@ class AgendaController extends Controller
         
         $agendas = Agenda::where('vigente','=','1')->orderBy('created_at', 'ASC')->get();
         //$puntos = Punto::all();
+        $cargos = Cargo::where('comision_id','=','1')->where('activo','=','1')->get();
         return view('Agenda.consultar_agendas_vigentes')
+        ->with('cargos',$cargos)
         ->with('agendas',$agendas);
     }
 
@@ -542,6 +549,23 @@ class AgendaController extends Controller
 
         if (!$peticion->comisiones->contains($id_comision)) {
 
+            if (($peticion->comisiones->count()) == 0) {
+                //$agenda = Agenda::where('id', '=', $request->id_agenda)->first();
+                $seguimiento = new Seguimiento();
+                $seguimiento->peticion_id = $peticion->id;
+                $seguimiento->comision_id = '1';
+                $seguimiento->estado_seguimiento_id = EstadoSeguimiento::where('estado', '=', "dp")->first()->id; // dp discutido en plenaria
+                //$seguimiento->documento_id = null;
+                //$seguimiento->reunion_id = null;
+                $seguimiento->inicio = Carbon::now();
+                $seguimiento->fin = Carbon::now();
+                $seguimiento->activo = '0';
+                $seguimiento->agendado = '0';
+                //$seguimiento->descripcion = Parametro::where('parametro','=','des_nuevo_seguimiento')->get('valor');
+                $seguimiento->descripcion = "Se remite a comision/es en la plenaria ".$agenda->codigo." el ".Carbon::now()->toDateString()." a las ".Carbon::now()->toTimeString();
+                $seguimiento->save();
+                }
+
             $seguimiento = new Seguimiento();
             $seguimiento->peticion_id = $peticion->id;
             $seguimiento->comision_id = $comision->id;
@@ -551,7 +575,7 @@ class AgendaController extends Controller
             $seguimiento->activo = '1';
             $seguimiento->agendado = '0';
             //$seguimiento->descripcion = Parametro::where('parametro','=','des_nuevo_seguimiento')->get('valor');
-            $seguimiento->descripcion = "Inicio de control en: " . $comision->nombre . " - " . $descripcion;
+            $seguimiento->descripcion = "Control en: " . $comision->nombre . " - " . $descripcion;
             $guardado = $seguimiento->save();
             if ($guardado) {
                 $peticion->comisiones()->attach($id_comision);
@@ -578,6 +602,8 @@ class AgendaController extends Controller
             $peticion->asignado_agenda = 0;
             $peticion->estado_peticion_id = EstadoPeticion::where('estado', '=', "co")->first()->id; // AS Asignado
             $peticion->save();
+
+
 
         }
 
@@ -852,7 +878,7 @@ class AgendaController extends Controller
         $id_peticion = $punto->peticion->id;
 
 
-        $peticion = Peticion::where('id', '=', $id_peticion)->firstOrFail(); //->paginate(10); para obtener todos los resultados  o null
+        $peticion = Peticion::where('id', '=', $id_peticion)->first(); //->paginate(10); para obtener todos los resultados  o null
         // ******* CUERPO DEL METODO
 
         $disco = "../storage/documentos/";
@@ -868,15 +894,31 @@ class AgendaController extends Controller
     public function retirar_punto_plenaria(Request $request, Redirector $redirect)
     {
 
-
+        
         // ******* CUERPO DEL METODO
         $punto = Punto::where('id', '=', $request->id_punto)->first();
+        
+        $peticion = Peticion::where('id', '=', $punto->peticion_id)->first();
+        //$peticion->estado_peticion_id = EstadoPeticion::where('estado', '=', 'jd')->first()->id;
+        $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
+        $seguimiento = new Seguimiento();
+        $seguimiento->peticion_id = $peticion->id;
+        $seguimiento->comision_id = '1';
+        $seguimiento->estado_seguimiento_id = EstadoSeguimiento::where('estado', '=', "dp")->first()->id; // dp discutido en plenaria
+        //$seguimiento->documento_id = null;
+        //$seguimiento->reunion_id = null;
+        $seguimiento->inicio = Carbon::now();
+        $seguimiento->fin = Carbon::now();
+        $seguimiento->activo = '0';
+        $seguimiento->agendado = '0';
+        //$seguimiento->descripcion = Parametro::where('parametro','=','des_nuevo_seguimiento')->get('valor');
+        $seguimiento->descripcion = "Punto retirado de agenda ".$agenda->codigo." el ".Carbon::now()->toDateString()." a las ".Carbon::now()->toTimeString();
+        $seguimiento->save();
+        $agenda = null ;
+
         $punto->activo = '0';
         $punto->retirado = '1';
         $punto->save();
-        //$peticion = Peticion::where('id', '=', $punto->peticion_id)->first();
-        //$peticion->estado_peticion_id = EstadoPeticion::where('estado', '=', 'jd')->first()->id;
-
         // ******* CUERPO DEL METODO
 
 
@@ -891,7 +933,26 @@ class AgendaController extends Controller
 
     public function resolver_punto_plenaria(Request $request, Redirector $redirect)
     {
+        // ** CUERPO DEL METODO
+        $punto = Punto::where('id', '=', $request->id_punto)->first();
+        $peticion = Peticion::where('id', '=', $punto->peticion_id)->first();
+        $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
 
+        $seguimiento = new Seguimiento();
+        $seguimiento->peticion_id = $peticion->id;
+        $seguimiento->comision_id = '1';
+        $seguimiento->estado_seguimiento_id = EstadoSeguimiento::where('estado', '=', "dp")->first()->id; // dp discutido en plenaria
+        //$seguimiento->documento_id = null;
+        //$seguimiento->reunion_id = null;
+        $seguimiento->inicio = Carbon::now();
+        $seguimiento->fin = Carbon::now();
+        $seguimiento->activo = '0';
+        $seguimiento->agendado = '0';
+        //$seguimiento->descripcion = Parametro::where('parametro','=','des_nuevo_seguimiento')->get('valor');
+        $seguimiento->descripcion = "Punto resuelto en agenda ".$agenda->codigo." el ".Carbon::now()->toDateString()." a las ".Carbon::now()->toTimeString();
+        $seguimiento->save();
+        $agenda = null ;
+        // ** CUERPO DEL METODO
         return $this->resolverPunto($request->id_punto,$request->id_agenda);
         
     }
@@ -960,7 +1021,9 @@ class AgendaController extends Controller
     {
         $agendas = Agenda::where('vigente','=','1')->orderBy('created_at', 'ASC')->get();
         //$puntos = Punto::all();
+        $cargos = Cargo::where('comision_id','=','1')->where('activo','=','1')->get();
         return view('Agenda.consultar_agendas_vigentes')
+        ->with('cargos',$cargos)
         ->with('agendas',$agendas);
     }
 
@@ -1022,26 +1085,15 @@ class AgendaController extends Controller
                         //dd("ya estaba");
                 }
         }
-                                    //dd($propietarios);
-
-        //$request->session()->flash("success", "Asambleista(s) agregado(s) con exito " .$cargo->id);
         $request->session()->flash("success", "Asambleista(s) agregado(s) con exito ");
 
         //$agenda = Agenda::where('id', '=', $request->agenda_id)->first();
         $periodo_activo = Periodo::where('activo','=','1')->first();
 
         $array_asambleistas_sesion = Asistencia::where('agenda_id','=',$agenda->id)->pluck('asambleista_id')->toArray();
-        /*dd($asistencias);
-        $array_asambleistas_sesion = array();
-        foreach ($asistencias as $asistencia){
-            array_push($array_asambleistas_sesion,$asistencia->asambleista_id);
-        }
-        */
-        //dd($array_asambleistas_sesion);
         //remover del select los asambleistas ya ingresas
         $asambleistas = Asambleista::where('activo','=', 1)
             ->where('periodo_id','=',$periodo_activo->id)
-            //->where('facultad_id','=','5')
             ->whereNotIn('id',$array_asambleistas_sesion)
             ->get();
 

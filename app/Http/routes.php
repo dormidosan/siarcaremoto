@@ -170,6 +170,10 @@ Route::get('/Reporte_constancias_renta_JD/{tipo}', 'ReportesController@Reporte_c
 
 Route::get('/webservice/{tipo}', 'ReportesController@webservice');
 
+Route::get('/ReportePetion/{tipo}', 'ReportesController@ReportePetion');
+
+
+Route::get('/descargar_plantilla2/{tipo}', 'PlantillasController@descargar_plantilla');
 // PLANTILLAS
 Route::group(['prefix' => 'plantillas'], function () {
 // &&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&
@@ -209,9 +213,12 @@ Route::get('/Menu_reportes', function () {
     return view('Reportes.MenuReportes');
 });
 
-Route::get('/Menu_plantillas', function () {
+/*Route::get('/Menu_plantillas', function () {
     return view('Plantillas.MenuPlantilla');
 });
+*/
+
+Route::get('/Menu_plantillas', 'PlantillasController@plantillas');
 
 Route::get('/Reporte_Convocatorias_pdf/{tipo}', 'ReportesController@Reporte_Convocatorias');
 Route::get('/Reporte_Convocatorias', function () {
@@ -408,6 +415,10 @@ Route::auth();
 Route::get('mostrar_datos_usuario','UsuarioController@mostrar_datos_usuario')->name('mostrar_datos_usuario');
 Route::post('actualizar_contraseña','UsuarioController@actualizar_contraseña')->name('actualizar_contraseña');
 Route::post('actualizar_imagen','UsuarioController@actualizar_imagen')->name('actualizar_imagen');
+Route::post('actualizar_datos','UsuarioController@actualizar_datos')->name('actualizar_datos');
+Route::post('actualizar_hoja','UsuarioController@actualizar_hoja')->name('actualizar_hoja');
+
+
 
 /*
 Route::post('/correo', function () {
@@ -421,3 +432,6 @@ Route::post('enviar_correo', array('as' => 'enviar_correo', 'uses' => 'MailContr
 Route::get('error', function () {
     abort(404);
 });
+Route::any('{query}', 
+  function() { return redirect('/'); })
+  ->where('query', '.*');

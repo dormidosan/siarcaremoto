@@ -66,6 +66,11 @@ class Asambleista extends Model
         return $this->belongsTo('App\Facultad');
     }
 
+    public function hoja()
+    {
+        return $this->belongsTo('App\Hoja');
+    }
+
 
 
 }

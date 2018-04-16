@@ -84,13 +84,13 @@ class ComisionController extends Controller
                     $query->where("cargos.activo", "=", 1)
                         ->where("comisiones.activa", "=", 1)
                         ->where("cargos.asambleista_id", "=", $id_asambleista)
-                        ->where("cargos.cargo", "=", 'Coordinador');
+                        ->where("cargos.tipo_cargo_id", "=", '7');
                 })
                 ->orWhere(function ($query) use ($id_asambleista) {
                     $query->where("cargos.activo", "=", 1)
                         ->where("comisiones.activa", "=", 1)
                         ->where("cargos.asambleista_id", "=", $id_asambleista)
-                        ->where("cargos.cargo", "=", 'Secretario');
+                        ->where("cargos.tipo_cargo_id", "=", '8');
                 })
                 //->where("asambleistas.id","=", $asambleista_id)
                 //->where("dietas.mes", "=", $mes)

@@ -13,7 +13,7 @@
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Junta Directiva</a></li>
             <li><a href="{{ route("trabajo_junta_directiva") }}">Trabajo Junta Directiva</a></li>
-            <li><a href="{{ route("listado_reuniones_jd") }}">Listado de Reuniones</a></li>
+            <li><a href="{{ route("listado_reuniones_jd") }}">Reuniones</a></li>
             <li><a href="javascript:document.getElementById('iniciar_reunion_jd').submit();">Reunion {{ $reunion->codigo }}</a></li>
             <li><a href="javascript:document.getElementById('listado_sesion_plenaria').submit();">Listado de Sesiones Plenarias</a></li>
             <li class="active">Asignacion Puntos</li>

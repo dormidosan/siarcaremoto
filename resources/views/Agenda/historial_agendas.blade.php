@@ -29,8 +29,8 @@
     <section class="">
         <ol class="breadcrumb">
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
-            <li><a href="{{ route("trabajo_junta_directiva") }}">Junta Directiva</a></li>
-            <li class="active">Generar Agenda Plenaria</li>
+            <li><a>Agenda</a></li>
+            <li class="active">Historial de Agendas</li>
         </ol>
     </section>
 @endsection

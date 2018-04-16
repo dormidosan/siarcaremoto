@@ -14,8 +14,17 @@
             <li><a>Comisiones</a></li>
             <li><a href="{{ route("administrar_comisiones") }}">Listado de Comisiones</a></li>
             <li><a href="javascript:document.getElementById('trabajo_comision').submit();">Trabajo de Comision</a></li>
-            <li><a href="javascript:document.getElementById('listado_peticiones_comision').submit();">Listado de Peticiones</a></li>
-            <li class="active">Subir Documento</li>
+            @if(!empty($reunion))
+                <li><a href="javascript:document.getElementById('listado_reuniones_comision').submit();">Reuniones</a></li>
+                <li>
+                    <a href="javascript:document.getElementById('iniciar_reunion_comision').submit();">Reunion {{$reunion->codigo}}</a>
+                </li>
+                <li class="active">Peticion {{ $peticion->codigo }} - Subir Documentacion</li>
+            @else
+                <li><a href="javascript:document.getElementById('listado_peticiones_comision').submit();">Listado de
+                        Peticiones</a></li>
+                <li class="active">Peticion {{ $peticion->codigo }}</li>
+            @endif
         </ol>
     </section>
 @endsection
@@ -30,16 +39,38 @@
             <button class="btn btn-success btn-xs">Acceder</button>
         </form>
 
-        <form id="listado_peticiones_comision" name="listado_peticiones_comision"
-              method="post" action="{{ route("listado_peticiones_comision") }}">
-            {{ csrf_field() }}
-            <div class="text-center">
-                <i class="fa fa-file-text-o fa-4x text-info"></i>
-            </div>
-            <h3 class="profile-username text-center">Peticiones</h3>
-            <input class="hidden" id="comision_id" name="comision_id" value="{{$comision->id}}">
-            <button type="submit" class="btn btn-info btn-block btn-sm"><b>Acceder</b></button>
-        </form>
+        @if(!empty($reunion))
+            <form id="listado_reuniones_comision" name="listado_reuniones_comision"
+                  method="post" action="{{ route("listado_reuniones_comision") }}" {{-- target="_blank" --}}>
+                {{ csrf_field() }}
+                <input class="hidden" id="comision_id" name="comision_id" value="{{$comision->id}}">
+                <button type="submit" class="btn bg-maroon btn-block btn-sm"><b>Acceder</b></button>
+            </form>
+            <form id="iniciar_reunion_comision" name="iniciar_reunion_comision" method="post"
+                  action="{{ route("iniciar_reunion_comision") }}" class="text-center">
+                <tr>
+                    <td class="hidden">{{ csrf_field() }}</td>
+                    <td class="hidden">
+                        <input type="hidden" id="id_reunion" name="id_reunion" value="{{ $reunion->id }}">
+                    </td>
+                    <td class="hidden">
+                        <input type="hidden" id="id_comision" name="id_comision" value="{{ $comision->id }}">
+                    </td>
+                    <button type="submit" class="btn bg-maroon btn-block btn-sm"><b>Acceder</b></button>
+                </tr>
+            </form>
+        @else
+            <form id="listado_peticiones_comision" name="listado_peticiones_comision"
+                  method="post" action="{{ route("listado_peticiones_comision") }}">
+                {{ csrf_field() }}
+                <div class="text-center">
+                    <i class="fa fa-file-text-o fa-4x text-info"></i>
+                </div>
+                <h3 class="profile-username text-center">Peticiones</h3>
+                <input class="hidden" id="comision_id" name="comision_id" value="{{$comision->id}}">
+                <button type="submit" class="btn btn-info btn-block btn-sm"><b>Acceder</b></button>
+            </form>
+        @endif
     </div>
 
     <div class="box box-danger">

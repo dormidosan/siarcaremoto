@@ -43,7 +43,6 @@
         <ol class="breadcrumb">
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Administracion</a></li>
-            <li><a>Gestionar Usuarios</a></li>
             <li><a href="{{route("administracion_usuario")}}">Administrar Usuarios</a></li>
             <li class="active">Usuarios</li>
         </ol>
@@ -430,6 +429,9 @@
 
         $(function () {
 
+            var nowDate = new Date();
+            var today = nowDate.getDate()+'-'+(nowDate.getMonth()+1)+'-'+nowDate.getFullYear();
+
             $('#dui').mask("00000000-0", {placeholder: "99999999-9"});
             $('#dui_actualizar').mask("00000000-0", {placeholder: "99999999-9"});
             $('#nit').mask("0000-000000-000-0", {placeholder: "9999-999999-999-9"});
@@ -611,6 +613,11 @@
                         validators: {
                             notEmpty: {
                                 message: 'La fecha de nacimiento es requerida'
+                            },
+                            date: {
+                                format: 'DD-MM-YYYY',
+                                max: today,
+                                message: 'Fecha de inicio no puede ser mayor que '+today
                             }
                         }
                     },
@@ -765,6 +772,11 @@
                         validators: {
                             notEmpty: {
                                 message: 'La fecha de nacimiento es requerida'
+                            },
+                            date: {
+                                format: 'DD-MM-YYYY',
+                                max: today,
+                                message: 'Fecha de inicio no puede ser mayor que '+today
                             }
                         }
                     },

@@ -43,75 +43,155 @@
         <div class="box-header with-border">
             <h3 class="box-title">Registro Permisos Temporales</h3>
         </div>
-        <div class="box-body">
-            <form id="registro_permisos_temporales" name="registro_permisos_temporales" class="form">
-                {{ csrf_field() }}
-                <div class="row">
-                    <div class="col-lg-3 col-md-3 col-sm-12">
-                        <div class="form-group">
-                            <label for="asambleista">Asambleista</label>
-                            <select id="asambleista" name="asambleista" class="form-control"
-                                    onchange="mostrar_delegados(this.value)">
-                                <option value="">-- Seleccione un asambleista --</option>
-                                @foreach($asambleistas as $asambleista)
-                                    <option value="{{$asambleista->id}}">{{ $asambleista->user->persona->primer_nombre . ' ' .$asambleista->user->persona->segundo_nombre . ' ' . $asambleista->user->persona->primer_apellido . ' ' . $asambleista->user->persona->segundo_apellido }}</option>
-                                @endforeach
-                            </select>
+        @if(empty($permisos) && empty($asambleistas))
+            <div class="box-body">
+                <div class="alert alert-warning">
+                    <h4><i class="icon fa fa-ban"></i> Alerta!</h4>
+                    No es posible registrar permisos temporales debido a que no existe un periodo activo.
+                    Por favor, agregue un periodo al sistema.
+                    Ir a <span class="text-bold"><a href="{{ route("periodos_agu") }}">Periodos AGU</a></span>
+                </div>
+                <form id="registro_permisos_temporales_A" name="registro_permisos_temporales_A" class="form">
+                    {{ csrf_field() }}
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <label for="asambleista">Asambleista</label>
+                                <select id="asambleista" name="asambleista" class="form-control"
+                                        onchange="mostrar_delegados(this.value)" disabled>
+                                    <option value="">-- Seleccione un asambleista --</option>
+                                    @foreach($asambleistas as $asambleista)
+                                        <option value="{{$asambleista->id}}">{{ $asambleista->user->persona->primer_nombre . ' ' .$asambleista->user->persona->segundo_nombre . ' ' . $asambleista->user->persona->primer_apellido . ' ' . $asambleista->user->persona->segundo_apellido }}</option>
+                                    @endforeach
+                                </select>
 
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-lg-3 col-md-3 col-sm-12 hidden" id="delegados">
-                        <div class="form-group">
-                            <label for="delegado">Delegado</label>
-                            <select id="delegado" name="delegado" class="form-control">
-                            </select>
+                        <div class="col-lg-3 col-md-3 col-sm-12 hidden" id="delegados">
+                            <div class="form-group">
+                                <label for="delegado">Delegado</label>
+                                <select id="delegado" name="delegado" class="form-control">
+                                </select>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="col-lg-3 col-md-3 col-sm-12">
-                        <div class="form-group">
-                            <label class="control-label">Inicio</label>
-                            <div class="input-group input-append date" id="startDatePicker">
-                                <input type="text" class="form-control" name="startDate" placeholder="d-m-yyyy"/>
-                                <span class="input-group-addon add-on"><span
-                                            class="glyphicon glyphicon-calendar"></span></span>
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label">Inicio</label>
+                                <div class="input-group input-append date" id="startDatePicker">
+                                    <input type="text" class="form-control" name="startDate" placeholder="d-m-yyyy" disabled/>
+                                    <span class="input-group-addon add-on"><span
+                                                class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label">Fin</label>
+                                <div class="input-group input-append date" id="endDatePicker">
+                                    <input type="text" class="form-control" name="endDate" placeholder="d-m-yyyy" disabled/>
+                                    <span class="input-group-addon add-on"><span
+                                                class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-lg-3 col-md-3 col-sm-12">
-                        <div class="form-group">
-                            <label class="control-label">Fin</label>
-                            <div class="input-group input-append date" id="endDatePicker">
-                                <input type="text" class="form-control" name="endDate" placeholder="d-m-yyyy"/>
-                                <span class="input-group-addon add-on"><span
-                                            class="glyphicon glyphicon-calendar"></span></span>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="motivo">Razon del Permiso</label>
+                                <textarea type="text" class="form-control" id="motivo" name="motivo" rows="4"
+                                          maxlength="50" disabled></textarea>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-lg-12 col-md-12 col-sm-12">
-                        <div class="form-group">
-                            <label for="motivo">Razon del Permiso</label>
-                            <textarea type="text" class="form-control" id="motivo" name="motivo" rows="4"
-                                      maxlength="50"></textarea>
+                    <div class="row text-center">
+                        <div class="col-lg-12">
+                            <button type="submit" id="aceptar" name="aceptar" class="btn btn-primary"
+                                    onclick="enviar()" disabled>
+                                Aceptar
+                            </button>
                         </div>
                     </div>
-                </div>
 
-                <div class="row text-center">
-                    <div class="col-lg-12">
-                        <button type="submit" id="aceptar" name="aceptar" class="btn btn-primary" onclick="enviar()">
-                            Aceptar
-                        </button>
+                </form>
+            </div>
+        @else
+            <div class="box-body">
+                <form id="registro_permisos_temporales" name="registro_permisos_temporales" class="form">
+                    {{ csrf_field() }}
+                    <div class="row">
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <label for="asambleista">Asambleista</label>
+                                <select id="asambleista" name="asambleista" class="form-control"
+                                        onchange="mostrar_delegados(this.value)">
+                                    <option value="">-- Seleccione un asambleista --</option>
+                                    @foreach($asambleistas as $asambleista)
+                                        <option value="{{$asambleista->id}}">{{ $asambleista->user->persona->primer_nombre . ' ' .$asambleista->user->persona->segundo_nombre . ' ' . $asambleista->user->persona->primer_apellido . ' ' . $asambleista->user->persona->segundo_apellido }}</option>
+                                    @endforeach
+                                </select>
+
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-12 hidden" id="delegados">
+                            <div class="form-group">
+                                <label for="delegado">Delegado</label>
+                                <select id="delegado" name="delegado" class="form-control">
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label">Inicio</label>
+                                <div class="input-group input-append date" id="startDatePicker">
+                                    <input type="text" class="form-control" name="startDate" placeholder="d-m-yyyy"/>
+                                    <span class="input-group-addon add-on"><span
+                                                class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-3 col-md-3 col-sm-12">
+                            <div class="form-group">
+                                <label class="control-label">Fin</label>
+                                <div class="input-group input-append date" id="endDatePicker">
+                                    <input type="text" class="form-control" name="endDate" placeholder="d-m-yyyy"/>
+                                    <span class="input-group-addon add-on"><span
+                                                class="glyphicon glyphicon-calendar"></span></span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-            </form>
-        </div>
+                    <div class="row">
+                        <div class="col-lg-12 col-md-12 col-sm-12">
+                            <div class="form-group">
+                                <label for="motivo">Razon del Permiso</label>
+                                <textarea type="text" class="form-control" id="motivo" name="motivo" rows="4"
+                                          maxlength="50"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row text-center">
+                        <div class="col-lg-12">
+                            <button type="submit" id="aceptar" name="aceptar" class="btn btn-primary"
+                                    onclick="enviar()">
+                                Aceptar
+                            </button>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+        @endif
     </div>
 
     <div class="box box-default">
@@ -181,7 +261,7 @@
         $(function () {
 
             var nowDate = new Date();
-            var today = nowDate.getDate()+'-'+(nowDate.getMonth()+1)+'-'+nowDate.getFullYear();
+            var today = nowDate.getDate() + '-' + (nowDate.getMonth() + 1) + '-' + nowDate.getFullYear();
 
             $('#startDatePicker')
                 .datepicker({
@@ -354,7 +434,7 @@
             placeholder: 'Seleccione un asambleista',
             language: "es",
             width: '100%'
-        }).on();
+        });
 
         function mostrar_delegados(id_asambleista) {
             $.ajax({

@@ -13,13 +13,15 @@
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Junta Directiva</a></li>
             <li><a href="{{ route("trabajo_junta_directiva") }}">Trabajo Junta Directiva</a></li>
-            <li><a href="{{route('listado_peticiones_jd')}}">Listado de Peticiones JD</a></li>
-            <li class="active">Subir Documento</li>
+            <li><a href="{{ route("listado_peticiones_jd") }}">Listado de Peticiones</a></li>
+            <li class="active">Subir Documento - Peticion {{ $peticion->codigo }}</li>
         </ol>
     </section>
 @endsection
 
 @section("content")
+
+
     <div class="box box-danger">
         <div class="box-header">
             <h3 class="box-title">Subir documento</h3>

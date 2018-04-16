@@ -19,12 +19,13 @@ class CreateAsambleistasTable extends Migration
             $table->unsignedInteger('periodo_id');
             $table->unsignedInteger('facultad_id');
             $table->unsignedInteger('sector_id');
+            $table->unsignedInteger('hoja_id')->nullable();
             $table->string('propietario', 10)->nullable();
             $table->date('inicio')->nullable();
             $table->date('fin')->nullable();
             $table->integer('activo')->nullable();
             $table->integer('baja')->nullable();
-            $table->string('ruta', 45)->nullable();
+            //$table->string('ruta', 45)->nullable();
 
             $table->index(["facultad_id"], 'fk_asambleistas_facultades1_idx');
 
@@ -33,6 +34,8 @@ class CreateAsambleistasTable extends Migration
             $table->index(["periodo_id"], 'fk_asambleistas_periodos1_idx');
 
             $table->index(["sector_id"], 'fk_asambleistas_sectores1_idx');
+
+            $table->index(["hoja_id"], 'fk_asambleistas_hojas1_idx');
 
 
             $table->foreign('user_id', 'fk_asambleistas_users1_idx')
@@ -52,6 +55,11 @@ class CreateAsambleistasTable extends Migration
 
             $table->foreign('sector_id', 'fk_asambleistas_sectores1_idx')
                 ->references('id')->on('sectores')
+                ->onDelete('no action')
+                ->onUpdate('no action');
+
+            $table->foreign('hoja_id', 'fk_asambleistas_hojas1_idx')
+                ->references('id')->on('hojas')
                 ->onDelete('no action')
                 ->onUpdate('no action');
             $table->timestamps();

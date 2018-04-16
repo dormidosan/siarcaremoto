@@ -70,10 +70,11 @@
                                                             <td style="vertical-align: middle">Suplente</td>
                                                         @endif
                                                         <td style="vertical-align: middle">
-                                                            @if($asambleista->ruta)
+                                                            @if($asambleista->hoja_id)
                                                                <a  class="btn btn-success btn-xs"
-                                                               href="<?= $disco . $asambleista->ruta; ?>"
-                                                               role="button">Ver</a>
+                                                               href="<?= $disco . $asambleista->hoja->path; ?>"
+                                                               role="button" target="_blank">Ver</a>
+
                                                             @else
                                                                 <a disabled class="btn btn-info btn-xs"
                                                                href="#"

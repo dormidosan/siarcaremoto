@@ -30,7 +30,7 @@
             <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
             <li><a>Administracion</a></li>
             <li><a href="{{ route("gestionar_perfiles") }}">Gestionar Perfiles</a></li>
-            <li><a class="active">Acceso a Modulos</a></li>
+            <li class="active">Acceso a Modulos</li>
         </ol>
     </section>
 @endsection
@@ -42,7 +42,9 @@
                 <h3 class="box-title">Acceso a Modulos</h3>
             </div>
             <div class="box-body">
-
+                <div class="text-center">
+                    <h4>Modulos - Perfil {{ ucfirst($id_rol->nombre_rol) }}</h4>
+                </div>
                 <td class="table-responsive">
                     <table class="table">
                         <thead>
