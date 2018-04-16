@@ -221,7 +221,11 @@
                     </thead>
                     <tbody id="cuerpoTabla">
                         <tr>
-                            <td width="10%">{{ $asambleista->hoja->nombre }}</td>
+                            @if($asambleista->hoja_id)
+                                <td width="10%">{{ $asambleista->hoja->nombre }}</td>
+                            @else
+                                <td width="10%">N/A</td>
+                            @endif
                             <td>{{ $asambleista->user->persona->primer_nombre . " " . $asambleista->user->persona->segundo_nombre . " " . $asambleista->user->persona->primer_apellido . " " . $asambleista->user->persona->segundo_apellido }}</td>
                             <td>
                                 @if($asambleista->hoja_id)
