@@ -110,6 +110,7 @@
         });
     </script>
 @endsection
+
 @section("lobibox")
 
     @if(Session::has('success'))

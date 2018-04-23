@@ -32,6 +32,7 @@
                        class="table table-striped table-bordered table-condensed table-hover dataTable text-center">
                     <thead>
                     <tr>
+                        <th>Codigo de Comision</th>
                         <th>Nombre de Comision</th>
                         <th>Numero Integrantes</th>
                         <th>Integrantes</th>
@@ -48,6 +49,7 @@
                             @endif
                         @endforeach
                         <tr>
+                            <td>{{ strtoupper($comision->codigo) }}</td>
                             <td>{{ $comision->nombre }}</td>
                             <td>
                                 {{ $contador }}

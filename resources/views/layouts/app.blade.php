@@ -2,7 +2,7 @@
 <html lang="{{ app()->getLocale() }}">
 <head>
     <link rel="icon" href="{{ asset("images/favicon1.ico") }}" type="image/ico">
-    <!-- link rel="icon" href="{{ asset("images/favicon1.png") }}" type="image/ico" Se ve mejor con este-->
+<!-- link rel="icon" href="{{ asset("images/favicon1.png") }}" type="image/ico" Se ve mejor con este-->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -12,7 +12,6 @@
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/css/AdminLTE.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/css/skins/_all-skins.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/font-awesome-4.7.0/css/font-awesome.min.css') }}">
-
 @yield("styles")
 <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
@@ -26,10 +25,39 @@
         @if(is_null($modulo->modulo_padre))
             @if(in_array($modulo,$modulos_padre) == false)
                 @php(array_push($modulos_padre,$modulo))
-           @endif
+            @endif
         @endif
     @endforeach
     {{-- dd($modulos_padre) --}}
+    @php
+        $total = 0;
+        $comision_peticion = [];
+        try{
+            if (Auth::user()->rol_id == 4){
+                $peticiones = \App\Peticion::where("estado_peticion_id",1)->where("comision","==",0)->get();
+                $trabajo = $peticiones->count();
+                if ($trabajo > 0){
+                    array_push($comision_peticion,["Junta",$trabajo]);
+                    $total++;
+                }
+            }else{
+                $asambleista = \App\Asambleista::where("user_id",Auth::user()->id)->where("activo",1)->first();
+                $asambleista_comision = \App\Cargo::where("asambleista_id",$asambleista->id)->where("activo",1)->get();
+                //dd($asambleista_comision);
+                foreach ($asambleista_comision as $comision){
+                    $trabajo = $comision->comision->peticiones->count();
+                    if ($trabajo > 0){
+                        array_push($comision_peticion,[$comision->comision->codigo,$trabajo]);
+                        $total++;
+                    }
+                }
+            }
+         }catch (ErrorException $e){
+            echo 'Excepción capturada: ',  $e->getMessage(), "\n";
+        }
+    @endphp
+
+
 @endif
 
 
@@ -57,18 +85,51 @@
             <!-- Navbar Right Menu -->
             <div class="navbar-custom-menu">
                 <ul class="nav navbar-nav">
-                    <!-- User Account Menu -->
+                    @if(Auth::guest() == false)
+                        @if(Auth::user()->rol_id != 1)
+                            <li class="dropdown notifications-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="fa fa-bell-o"></i>
+                                    @if($total != 0)
+                                        <span class="label label-warning">{{ $total }}</span>
+                                    @endif
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li class="header">Tienes {{ $total }} notificaciones</li>
+                                    @if($comision_peticion)
+                                        <li>
+                                            <!-- inner menu: contains the actual data -->
+                                            <ul class="menu">
+                                                @foreach($comision_peticion as $trabajo)
+                                                    <li>
+                                                        <a href="#">
+                                                            <i class="fa fa-users text-aqua"></i> {{ strtoupper($trabajo[0]) }}
+                                                            tiene {{ $trabajo[1] }} peticiones pendientes
+                                                        </a>
+                                                    </li>
+                                                @endforeach
+                                            </ul>
+                                        </li>
+                                    @endif
+                                </ul>
+                            </li>
+                    @endif
+                @endif
+                <!-- User Account Menu -->
                     <li class="dropdown user user-menu">
                         <!-- Menu Toggle Button -->
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <!-- The user image in the navbar-->
-                            
+
                             <!-- hidden-xs hides the username on small devices so only the image appears. -->
                             @if(Auth::guest())
-                                <img src="{{ asset('images/default-user.png') }}" class="user-image" alt="User Image">
+                                <img src="{{ asset('images/default-user.png') }}" class="user-image"
+                                     alt="User Image">
                                 <span class="hidden-xs">Usuario Invitado</span>
                             @else
-                                <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="user-image" alt="User Image" onerror="this.onerror=null;this.src='../../storage/fotos/{!!Auth::user()->persona->foto!!}'">
+                                <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="user-image"
+                                     alt="User Image"
+                                     onerror="this.onerror=null;this.src='../../storage/fotos/{!!Auth::user()->persona->foto!!}'">
 
                                 <span class="hidden-xs">{{ Auth::user()->name }}</span>
                             @endif
@@ -76,16 +137,19 @@
                         <ul class="dropdown-menu">
                             <!-- The user image in the menu -->
                             <li class="user-header">
-                                
+
                                 @if(Auth::guest())
-                                    <img src="{{ asset('images/default-user.png') }}" class="img-circle" alt="User Image">
+                                    <img src="{{ asset('images/default-user.png') }}" class="img-circle"
+                                         alt="User Image">
                                     <p>
                                         Usuario Invitado
                                         <!--<small>ROL</small>-->
                                     </p>
                                 @else
-                                    <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="img-circle" alt="User Image" onerror="this.onerror=null;this.src='../../storage/fotos/{!!Auth::user()->persona->foto!!}'">
-                                    <p>                                    
+                                    <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="img-circle"
+                                         alt="User Image"
+                                         onerror="this.onerror=null;this.src='../../storage/fotos/{!!Auth::user()->persona->foto!!}'">
+                                    <p>
                                     <!-- <img src="../storage/fotos/{!!Auth::user()->persona->foto!!}" class="img-circle" alt="User Image" width="70%"> -->
                                         {{ Auth::user()->name }}
                                         <small>{{ ucfirst(Auth::user()->rol->nombre_rol) }}</small>
@@ -102,10 +166,12 @@
                                     </div>
                                 @else
                                     <div class="pull-left">
-                                        <a href="{{ route("mostrar_datos_usuario") }}" class="btn btn-default btn-flat">Datos de Usuario</a>
+                                        <a href="{{ route("mostrar_datos_usuario") }}"
+                                           class="btn btn-default btn-flat">Datos de Usuario</a>
                                     </div>
                                     <div class="pull-right">
-                                        <a href="{{ url("logout") }}" class="btn btn-default btn-flat">Cerrar Sesion</a>
+                                        <a href="{{ url("logout") }}" class="btn btn-default btn-flat">Cerrar
+                                            Sesion</a>
                                     </div>
                                 @endif
                             </li>
@@ -118,7 +184,7 @@
     </header>
 
     <!--MENU-->
-    @include("layouts.menu")
+@include("layouts.menu")
 
 <!-- MAIN CONTENT-->
     <div class="content-wrapper">

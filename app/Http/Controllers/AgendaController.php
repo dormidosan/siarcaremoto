@@ -14,6 +14,7 @@ use App\Http\Requests\PropuestaRequest;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use Storage;
 use App\Agenda;
 use App\Punto;
@@ -31,6 +32,9 @@ use App\Tiempo;
 use App\Parametro;
 use App\Dieta;
 use App\Cargo;
+use App\Bitacora;
+
+use Auth;
 
 class AgendaController extends Controller
 {
@@ -64,17 +68,26 @@ class AgendaController extends Controller
 
     public function historial_agendas(Request $request,Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agendas = Agenda::where('id','!=','0')->orderBy('created_at', 'ASC')->get();
         $disco = "../storage/documentos/";
         
         return view('Agenda.historial_agendas')
         ->with('disco', $disco)
         ->with('agendas',$agendas);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
 
     public function resolverPunto($id_punto,$id_agenda) //$this->resolverPunto($request->id_punto,$request->id_agenda);
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         // ******* CUERPO DEL METODO
         $punto = Punto::where('id', '=', $id_punto)->first();
         $punto->activo = '0';
@@ -98,11 +111,17 @@ class AgendaController extends Controller
             ->with('actualizado', $actualizado)
             ->with('agenda', $agenda)
             ->with('puntos', $puntos);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function sala_sesion_plenaria(Request $request,Redirector $redirect)
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
     	$agenda = Agenda::where('id', '=', $request->id_agenda)->first();
 
@@ -175,6 +194,11 @@ class AgendaController extends Controller
         ->with('asistentes', $asistentes)
         ->with('asambleistas', $asambleistas)
         ->with('ultimos_ingresos', $ultimos_ingresos);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
 
 
@@ -185,6 +209,8 @@ class AgendaController extends Controller
 
     public function iniciar_sesion_plenaria(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
     	$agenda = Agenda::where('id', '=', $request->id_agenda)->first();
     	$puntos = Punto::where('agenda_id', '=', $agenda->id)->orderBy('numero','ASC')->get();
 
@@ -270,11 +296,17 @@ class AgendaController extends Controller
             ->with('actualizado', $actualizado)
             ->with('agenda', $agenda)
             ->with('puntos', $puntos);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function finalizar_sesion_plenaria(Request $request,Redirector $redirect)
     {
-        
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $puntos = Punto::where('agenda_id', '=', $agenda->id)->orderBy('numero','ASC')->get();
         $puntos_activos = Punto::where('agenda_id', '=', $agenda->id)->where('activo', '=', '1')->count();
@@ -490,11 +522,17 @@ class AgendaController extends Controller
         ->with('actualizado',$actualizado)
         ->with('agenda', $agenda)
         ->with('puntos', $puntos);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function pausar_sesion_plenaria(Request $request,Redirector $redirect)
     {
-        
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $agenda->fin = Carbon::now()->format('Y-m-d H:i:s');
         $agenda->save();
@@ -505,11 +543,17 @@ class AgendaController extends Controller
         return view('Agenda.consultar_agendas_vigentes')
         ->with('cargos',$cargos)
         ->with('agendas',$agendas);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function comision_punto_plenaria(Request $request,Redirector $redirect)
     {
-        
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $punto = Punto::where('id', '=', $request->id_punto)->first();
         $peticion = Peticion::where('id', '=', $punto->peticion_id)->first();
@@ -529,13 +573,19 @@ class AgendaController extends Controller
             ->with('peticion', $peticion)
             ->with('comisiones', $comisiones)
             ->with('seguimientos', $seguimientos);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function asignar_comision_punto(Request $request,Redirector $redirect)
     {
         //dd($request->all());
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $punto = Punto::where('id', '=', $request->id_punto)->first();
 
@@ -605,6 +655,7 @@ class AgendaController extends Controller
 
 
 
+
         }
 
 
@@ -626,6 +677,11 @@ class AgendaController extends Controller
             ->with('peticion', $peticion)          ////
             ->with('comisiones', $comisiones)      ////
             ->with('seguimientos', $seguimientos); ////
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
       
 
     }
@@ -633,7 +689,8 @@ class AgendaController extends Controller
     public function discutir_punto_plenaria(Request $request,Redirector $redirect)
 
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $punto = Punto::where('id', '=', $request->id_punto)->first();
 
@@ -666,11 +723,17 @@ class AgendaController extends Controller
             ->with('punto', $punto)
             ->with('asambleistas_plenaria', $asambleistas_plenaria)
             ->with('propuestas', $propuestas);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function agregar_propuesta(Request $request, Redirector $redirect)
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $punto = Punto::where('id', '=', $request->id_punto)->first();
         //dd($request->all());
@@ -711,11 +774,17 @@ class AgendaController extends Controller
             ->with('punto', $punto)
             ->with('asambleistas_plenaria', $asambleistas_plenaria)
             ->with('propuestas', $propuestas);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function modificar_propuesta(Request $request, Redirector $redirect)
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $punto = Punto::where('id', '=', $request->id_punto)->first();
 
@@ -765,11 +834,17 @@ class AgendaController extends Controller
             ->with('punto', $punto)
             ->with('asambleistas_plenaria', $asambleistas_plenaria)
             ->with('propuestas', $propuestas);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function guardar_votacion(Request $request, Redirector $redirect)
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $punto = Punto::where('id', '=', $request->id_punto)->first();
 
@@ -825,11 +900,17 @@ class AgendaController extends Controller
             ->with('punto', $punto)
             ->with('asambleistas_plenaria', $asambleistas_plenaria)
             ->with('propuestas', $propuestas);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function agregar_intervencion(Request $request, Redirector $redirect)
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $punto = Punto::where('id', '=', $request->id_punto)->first();
 
@@ -866,10 +947,17 @@ class AgendaController extends Controller
             ->with('punto', $punto)
             ->with('asambleistas_plenaria', $asambleistas_plenaria)
             ->with('propuestas', $propuestas);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function seguimiento_peticion_plenaria(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $punto = Punto::where('id', '=', $request->id_punto)->first();
         $regresar = $request->regresar;
@@ -888,13 +976,19 @@ class AgendaController extends Controller
             ->with('punto', $punto)
             ->with('regresar', $regresar)
             ->with('peticion', $peticion);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function retirar_punto_plenaria(Request $request, Redirector $redirect)
     {
 
-        
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         // ******* CUERPO DEL METODO
         $punto = Punto::where('id', '=', $request->id_punto)->first();
         
@@ -929,10 +1023,17 @@ class AgendaController extends Controller
             ->with('actualizado', $actualizado)
             ->with('agenda', $agenda)
             ->with('puntos', $puntos);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function resolver_punto_plenaria(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         // ** CUERPO DEL METODO
         $punto = Punto::where('id', '=', $request->id_punto)->first();
         $peticion = Peticion::where('id', '=', $punto->peticion_id)->first();
@@ -954,12 +1055,19 @@ class AgendaController extends Controller
         $agenda = null ;
         // ** CUERPO DEL METODO
         return $this->resolverPunto($request->id_punto,$request->id_agenda);
+
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
         
     }
 
     public function fijar_puntos(Request $request, Redirector $redirect)
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $puntos = Punto::where('agenda_id', '=', $agenda->id)->orderBy('numero', 'ASC')->get();
 
@@ -973,10 +1081,17 @@ class AgendaController extends Controller
             ->with('actualizado', $actualizado)
             ->with('agenda', $agenda)
             ->with('puntos', $puntos);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function nuevo_orden_plenaria(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd();
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $punto = Punto::where('id', '=', $request->id_punto)->first();
@@ -1015,20 +1130,34 @@ class AgendaController extends Controller
             ->with('actualizado', $actualizado)
             ->with('agenda', $agenda)// a que agenda del viernes agendare este punto
             ->with('puntos', $puntos);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function consultar_agendas_vigentes()
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agendas = Agenda::where('vigente','=','1')->orderBy('created_at', 'ASC')->get();
         //$puntos = Punto::all();
         $cargos = Cargo::where('comision_id','=','1')->where('activo','=','1')->get();
         return view('Agenda.consultar_agendas_vigentes')
         ->with('cargos',$cargos)
         ->with('agendas',$agendas);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function detalles_punto_agenda(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $id_peticion = $request->id_peticion;
         $disco = "../storage/documentos/";
 
@@ -1036,10 +1165,17 @@ class AgendaController extends Controller
         return view('Agenda.detalles_punto_agenda')
             ->with('disco', $disco)
             ->with('peticion', $peticion);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function agregar_asambleistas_sesion(Request $request){
 
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $id_asambleistas = $request->get("asambleistas");
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
 
@@ -1142,11 +1278,18 @@ class AgendaController extends Controller
             ->with('asambleistas', $asambleistas)
             ->with('conteo', $conteo)
             ->with('ultimos_ingresos', $ultimos_ingresos);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     //cambiar entre propietario y suplente para todos los asambleistas
     public function gestionar_asistencia(Request $request,Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $facultad = Facultad::where('id','=',$request->id_facultad)->first();
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
         $periodo = Periodo::where('activo','=','1')->first();
@@ -1194,6 +1337,11 @@ class AgendaController extends Controller
             ->with('facultad', $facultad)
             ->with('asistentes', $asistentes)
             ->with('asambleistas', $asambleistas);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
 
 
@@ -1204,6 +1352,8 @@ class AgendaController extends Controller
 
     public function cambiar_propietaria(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $asistencia = Asistencia::where('id','=',$request->id_asistente)->first();
 
         if ($asistencia->propietaria == 1) {
@@ -1282,11 +1432,18 @@ class AgendaController extends Controller
             ->with('facultad', $facultad)
             ->with('asistentes', $asistentes)
             ->with('asambleistas', $asambleistas);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
      
     }
 
     public function obtener_datos_intervencion(Request $request){
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         if ($request->ajax()){
             $intervencion = Intervencion::find($request->get("idIntervencion"));
             $respuesta = new \stdClass();
@@ -1294,10 +1451,17 @@ class AgendaController extends Controller
             $respuesta->contenido = $intervencion->descripcion;
             return new JsonResponse($respuesta);
         }
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function retiro_temporal(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         switch ($request->tipo) {
             //retiro temporal
             case 1:
@@ -1382,6 +1546,11 @@ class AgendaController extends Controller
             ->with('facultad', $facultad)
             ->with('asistentes', $asistentes)
             ->with('asambleistas', $asambleistas);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function numero_mes($mesnum)
@@ -1438,6 +1607,22 @@ class AgendaController extends Controller
         }
 
         return $mes;
+    }
+
+    public function guardar_bitacora($accion,$evento)
+    {
+        if ( !(Auth::guest()) ) {
+        $bitacora = new Bitacora();
+        $bitacora->user_id = Auth::user()->id;
+        $bitacora->accion = $accion;
+        $bitacora->fecha = Carbon::now();
+        $bitacora->hora = Carbon::now();
+        $bitacora->comentario = $evento;
+
+        $bitacora->save();
+        }
+        return 0;
+
     }
 
 }

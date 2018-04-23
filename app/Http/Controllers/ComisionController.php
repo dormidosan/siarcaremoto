@@ -15,11 +15,13 @@ use App\Reunion;
 use App\Seguimiento;
 use App\TipoCargo;
 use App\TipoDocumento;
+use App\Bitacora;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Route;
 use DateTime;
 use Auth;
 
@@ -29,7 +31,9 @@ class ComisionController extends Controller
 
     //funcion generica para obtener la comision, los integrantes de dicha comision y todos los asambleistas en la app
     public function obtener_datos(Request $request)
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = Comision::find($request->get("comision_id"));
 
         //se obtiene todos los asambleistas que pertenecen a la comision
@@ -55,22 +59,36 @@ class ComisionController extends Controller
             ->get();
 
         return ["comision" => $comision, "integrantes" => $integrantes, "asambleistas" => $asambleistas];
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     /******************** METODOS GET *********************************/
 
     //mostrar las comisiones activas e inactivas
     public function mostrar_comisiones()
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //se obtienen todas las comisiones en orden alfabetico
         $comisiones = Comision::orderBy("nombre", "asc")->get();
         $cargos = Cargo::all();
         return view("Comisiones.CrearComision", ['comisiones' => $comisiones, 'cargos' => $cargos]);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     //mostrar las comisiones activas
     public function administrar_comisiones()
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //obtener las comisiones, omitiendo la JD
         if (Auth::user()->rol_id == 1) {
             $comisiones = Comision::where("activa", 1)
@@ -103,12 +121,19 @@ class ComisionController extends Controller
 
         $cargos = Cargo::all();
         return view("Comisiones.AdministrarComision", ['comisiones' => $comisiones, 'cargos' => $cargos]);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     /******************** METODOS POST *********************************/
 
     public function listado_peticiones_comision(Request $request)
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //obtengo una comision
         $comision = Comision::find($request->get("comision_id"));
         $peticiones = $comision->peticiones()
@@ -117,10 +142,17 @@ class ComisionController extends Controller
 
 
         return view("Comisiones.listado_peticiones_comision", ["comision" => $comision, "peticiones" => $peticiones]);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function retirar_peticion_comision(Request $request)
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $peticion = Peticion::where('id', '=', $request->id_peticion)->first();
         //dd($seguimiento);
         //dd($peticion->comisiones());
@@ -160,18 +192,32 @@ class ComisionController extends Controller
 
 
         return view("Comisiones.listado_peticiones_comision", ["comision" => $comision, "peticiones" => $peticiones]);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     //mostrar listado de las comisiones, con su total de integrantes
     public function gestionar_asambleistas_comision(Request $request)
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $datos = $this->obtener_datos($request);
         return view("Comisiones.AdministrarIntegrantes", ["comision" => $datos["comision"], "integrantes" => $datos["integrantes"], "asambleistas" => $datos["asambleistas"]]);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     //funcion que se encarga de crear una comision
     public function crear_comision(Request $request)
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = new Comision();
         $comision->codigo = $request->get("codigo");
         $comision->nombre = $request->get("nombre");
@@ -182,11 +228,18 @@ class ComisionController extends Controller
 
         $request->session()->flash("success", "Comision " . $comision->nombre . " agregada con exito");
         return redirect()->route("mostrar_comisiones");
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     //funcion para actualizar una comision
     public function actualizar_comision(Request $request)
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         if ($request->ajax()) {
             //se obtiene la comision que coincida con el id enviado
             $comision = Comision::find($request->get("id"));
@@ -207,11 +260,18 @@ class ComisionController extends Controller
             //se genera la respuesta json
             return new JsonResponse($respuesta);
         }
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     //funcion para agregar asambleistas a una comision
     public function agregar_asambleistas_comision(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $asambleistas = $request->get("asambleistas");
         $comision = Comision::find($request->get("comision_id"));
 
@@ -233,11 +293,17 @@ class ComisionController extends Controller
 
         $datos = $this->obtener_datos($request);
         return view("Comisiones.AdministrarIntegrantes", ["comision" => $datos["comision"], "integrantes" => $datos["integrantes"], "asambleistas" => $datos["asambleistas"]]);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function retirar_asambleista_comision(Request $request)
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $asambleista_id = $request->get("asambleista_id");
         $comision_id = $request->get("comision_id");
 
@@ -254,55 +320,96 @@ class ComisionController extends Controller
 
         $datos = $this->obtener_datos($request);
         return view("Comisiones.AdministrarIntegrantes", ["comision" => $datos["comision"], "integrantes" => $datos["integrantes"], "asambleistas" => $datos["asambleistas"]]);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function trabajo_comision(Request $request)
     {
-        $comision = Comision::find($request->get("comision_id"));
+        
 
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
-        $periodo_actual = Periodo::latest()->first()->id;
-        $resueltos = Seguimiento::where('comision_id', '=', $comision->id)->where('estado_seguimiento_id', '=', 2)->where('activo', '=', 0)->count(); //todos los resueltos
-        //$resueltos = Peticion::where('resuelto', '=', '1')->count(); 
-        $no_resueltos = Seguimiento::where('comision_id', '=', $comision->id)->where('estado_seguimiento_id', '=', 2)->where('activo', '=', 1)->count(); //todos los no resueltos
-        //$no_resueltos = Peticion::where('resuelto', '=', '0')->count(); 
-        $reuniones = Reunion::where('comision_id', '=', $comision->id) //YA************
+            $comision = Comision::find($request->get("comision_id"));
+            //dd(Route::currentRouteName()); //"trabajo_comision"
+            //dd(Route::getCurrentRoute()->getPath());//"comisiones/trabajo_comision"
+            //dd(Route::getFacadeRoot()->current()->uri()); //"comisiones/trabajo_comision"
+            //dd(Route::currentRouteName()); //"trabajo_comision"
+            //dd(Route::getCurrentRoute()->getActionName()); // use "App\Http\Controllers\ComisionController@trabajo_comision"
+            //dd($request->path()); //"comisiones/trabajo_comision"
+            //dd($request->url());  //"http://localhost/siarcaf/public/comisiones/trabajo_comision"
+            //dd($request->route()->getName()); //"trabajo_comision"
+            $periodo_actual = Periodo::latest()->first()->id;
+            $resueltos = Seguimiento::where('comision_id', '=', $comision->id)->where('estado_seguimiento_id', '=', 2)->where('activo', '=', 0)->count(); //todos los resueltos
+            //$resueltos = Peticion::where('resuelto', '=', '1')->count();
+            $no_resueltos = Seguimiento::where('comision_id', '=', $comision->id)->where('estado_seguimiento_id', '=', 2)->where('activo', '=', 1)->count(); //todos los no resueltos
+            //$no_resueltos = Peticion::where('resuelto', '=', '0')->count();
+            $reuniones = Reunion::where('comision_id', '=', $comision->id) //YA************
             //->where('periodo_id', '=', $periodo_actual)
             ->where('vigente', '=', '0')
-            ->get();
+                ->get();
 
-        $no_reuniones = $reuniones->count(); //YA************
-        //dd($no_reuniones);
-        $dic_reuniones = 0; //YA************
-        foreach ($reuniones as $reunion) {
-            foreach ($reunion->documentos as $documento) {
-                if ($documento->tipo_documento_id == 3) {
-                    $dic_reuniones++; //YA************
+            $no_reuniones = $reuniones->count(); //YA************
+            //dd($no_reuniones);
+            $dic_reuniones = 0; //YA************
+            foreach ($reuniones as $reunion) {
+                foreach ($reunion->documentos as $documento) {
+                    if ($documento->tipo_documento_id == 3) {
+                        $dic_reuniones++; //YA************
+                    }
                 }
             }
-        }
 
-
-
-        return view('Comisiones.TrabajoComision')
+            return view('Comisiones.TrabajoComision')
             ->with('comision', $comision)
             ->with('resueltos', $resueltos) //todos los  resueltos
             ->with('no_resueltos', $no_resueltos) //todos los no resueltos
             ->with('no_reuniones', $no_reuniones) //YA************
             ->with('dic_reuniones', $dic_reuniones); //YA************
 
+        } 
+        catch(\Exception $e){
+           // catch code
+            //dd("variable"); 
+            //dd(Route::getCurrentRoute()->getPath()); 
+            //dd($e); 
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            //return $e->getMessage();
+            //return 0;
+            return view('errors.catch');
+        }
+
+            
+
+
+
+        
+
     }
 
     public function listado_reuniones_comision(Request $request)
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', $request->comision_id)->orderBy('created_at', 'DESC')->get();
         $comision = Comision::find($request->get("comision_id"));
 
         return view('Comisiones.listado_reuniones_comision', ["reuniones" => $reuniones, "comision" => $comision]);
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function iniciar_reunion_comision(Request $request)
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         // 0987
         $comision = Comision::where('id', '=', $request->id_comision)->firstOrFail();
         //$peticiones = Peticion::where('id', '!=', 0)->orderBy('estado_peticion_id', 'ASC')->orderBy('updated_at', 'ASC')->get(); // Primero ordenar por el estado, despues los estados ordenarlo por fechas
@@ -323,10 +430,17 @@ class ComisionController extends Controller
             ->with('reunion', $reunion)
             ->with('comision', $comision)
             ->with('peticiones', $peticiones);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function asistencia_comision(Request $request)
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $cargos = Cargo::where('comision_id', '=', $request->id_comision)->where('activo', '=', 1)->get();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
         $comision = Comision::where('id', '=', $request->id_comision)->firstOrFail();
@@ -338,12 +452,18 @@ class ComisionController extends Controller
             ->with('reunion', $reunion)
             ->with('comision', $comision)
             ->with('asistencias', $asistencias);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function registrar_asistencia_comision(Request $request)
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $presente = new Presente();
         $presente->cargo_id = $request->get("cargo");
         $presente->reunion_id = $request->get("reunion");
@@ -365,11 +485,18 @@ class ComisionController extends Controller
             ->with('reunion', $reunion)
             ->with('comision', $comision)
             ->with('asistencias', $asistencias);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function seguimiento_peticion_comision(Request $request)
-    {
+    {   
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $disco = "../storage/documentos/";
         $peticion = Peticion::find($request->get("id_peticion"));
         $comision = Comision::find($request->get("id_comision"));
@@ -406,12 +533,18 @@ class ComisionController extends Controller
 
             return view('Comisiones.seguimiento_peticion_comision', array("disco" => $disco, "comision" => $comision, "reunion" => $reunion, "peticion" => $peticion));
         }
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function finalizar_reunion_comision(Request $request, Redirector $redirect)
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //$cargos = Cargo::where('comision_id','=',$request->id_comision)->where('activo', '=', 1)->get();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
         $reunion->activa = '0';
@@ -421,11 +554,18 @@ class ComisionController extends Controller
         $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', $request->id_comision)->orderBy('created_at', 'DESC')->get();
         $comision = Comision::find($request->get("id_comision"));
         return view('Comisiones.listado_reuniones_comision', array("reuniones" => $reuniones, "comision" => $comision));
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function historial_bitacoras(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $id_comision = $request->comision_id;
         $comision = Comision::where('id', '=', $id_comision)->first();
         $periodo = Periodo::latest()->first();
@@ -436,10 +576,17 @@ class ComisionController extends Controller
             ->with('disco', $disco)
             ->with('comision', $comision)
             ->with('reuniones', $reuniones);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function historial_dictamenes(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $id_comision = $request->comision_id;
         $comision = Comision::where('id', '=', $id_comision)->first();
         $periodo = Periodo::latest()->first();
@@ -457,19 +604,33 @@ class ComisionController extends Controller
             ->with('comision', $comision)
             ->with('reuniones', $reuniones)
             ->with('seguimientos', $seguimientos);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function convocatoria_comision(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = Comision::where("id", $request->comision_id)->first();
         $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', $request->comision_id)->orderBy('created_at', 'DESC')->get();
         return view('Comisiones.convocatoria_comision')
             ->with('reuniones', $reuniones)
             ->with('comision', $comision);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function subir_documento_comision(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $id_peticion = $request->id_peticion;
         $peticion = Peticion::where('id', '=', $id_peticion)->firstOrFail();
         $comision = Comision::where('id', '=', $request->id_comision)->first();
@@ -495,10 +656,17 @@ class ComisionController extends Controller
             ->with('is_reunion', $is_reunion)
             ->with('seguimientos', $seguimientos)
             ->with('tipo_documentos', $tipo_documentos);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function guardar_documento_comision(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd($request->all());
         $id_peticion = $request->id_peticion;
         $tipo_documento = $request->tipo_documentos;
@@ -584,10 +752,17 @@ class ComisionController extends Controller
             ->with('is_reunion', $is_reunion)
             ->with('seguimientos', $seguimientos)
             ->with('tipo_documentos', $tipo_documentos);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function crear_reunion_comision(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         if ($request->ajax()) {
 
             $comision = Comision::where('id', '=', $request->id_comision)->first();
@@ -609,10 +784,17 @@ class ComisionController extends Controller
             return new JsonResponse($respuesta);
 
         }
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function eliminar_reunion_comision(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         if ($request->ajax()){
             $comision = Comision::where('id', '=', $request->id_comision)->first();
             $reunion = Reunion::where('id', '=', $request->id_reunion)->first();
@@ -622,13 +804,18 @@ class ComisionController extends Controller
             $respuesta->mensaje = (new Mensaje("Exito", "Reunion eliminada con exito", "error"))->toArray();
             return new JsonResponse($respuesta);
         }
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
-
-
     public function subir_bitacora_comision(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = Comision::where('id', '=', $request->id_comision)->first();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
         $disco = "../storage/documentos/";
@@ -636,10 +823,17 @@ class ComisionController extends Controller
             ->with('disco', $disco)
             ->with('reunion', $reunion)
             ->with('comision', $comision);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function guardar_bitacora_comision(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = Comision::where('id', '=', $request->id_comision)->first();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
 
@@ -653,10 +847,17 @@ class ComisionController extends Controller
             ->with('disco', $disco)
             ->with('reunion', $reunion)
             ->with('comision', $comision);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function guardarDocumento($doc, $tipo, $destino)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $archivo = $doc;
         $documento = new Documento();
         $documento->nombre_documento = $archivo->getClientOriginalName();
@@ -673,18 +874,32 @@ class ComisionController extends Controller
         $documento->path = $ruta;
         $documento->save();
         return $documento;
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function listado_agenda_comision(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agendas = Agenda::where('id', '!=', 0)->orderBy('updated_at', 'DESC')->get();
         return view('jdagu.listado_agenda_plenaria_jd')
             ->with('agendas', $agendas);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function existeSeguimiento($peticion_id, $comision_id, $estado_seguimiento_id)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd($comision_id);
 
         $seguimiento_exist = Seguimiento::where('peticion_id', '=', $peticion_id)
@@ -699,10 +914,17 @@ class ComisionController extends Controller
         } else {
             return '0';
         }
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     private function generar_table_body($comision_id)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = Comision::where("id", $comision_id)->first();
         $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', $comision_id)->orderBy('created_at', 'DESC')->get();
         $contador = 1;
@@ -751,12 +973,33 @@ class ComisionController extends Controller
         }
 
         return $table_body;
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
 
     }
 
 
-}
+    public function guardar_bitacora($accion,$evento)
+    {
+        if ( !(Auth::guest()) ) {
+        $bitacora = new Bitacora();
+        $bitacora->user_id = Auth::user()->id;
+        $bitacora->accion = $accion;
+        $bitacora->fecha = Carbon::now();
+        $bitacora->hora = Carbon::now();
+        $bitacora->comentario = $evento;
 
+        $bitacora->save();
+        }
+        return 0;
+
+    }
+
+
+}
 
 

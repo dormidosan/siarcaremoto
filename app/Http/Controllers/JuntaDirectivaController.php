@@ -22,10 +22,12 @@ use App\Presente;
 use App\Periodo;
 use App\TipoDocumento;
 use App\Documento;
+use App\Bitacora;
+use Auth;
 use DateTime;
 use Mail;
 use Session;
-
+use Illuminate\Support\Facades\Route;
 
 
 class JuntaDirectivaController extends Controller
@@ -33,6 +35,8 @@ class JuntaDirectivaController extends Controller
     //
     public function trabajo_junta_directiva()
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $periodo_actual = Periodo::latest()->first()->id;
         $resueltos = Peticion::where('resuelto', '=', '1')->count(); //--------------------------
         $no_resueltos = Peticion::where('resuelto', '=', '0')->count(); //--------------------------
@@ -57,36 +61,64 @@ class JuntaDirectivaController extends Controller
             ->with('no_resueltos', $no_resueltos)
             ->with('no_reuniones', $no_reuniones)
             ->with('dic_reuniones', $dic_reuniones);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function listado_peticiones_jd()
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //$peticiones = Peticion::where('id','!=',0)->get(); //->paginate(10); para obtener todos los resultados  o null
         $peticiones = Peticion::where('id', '!=', 0)->orderBy('estado_peticion_id', 'ASC')->orderBy('updated_at', 'ASC')->get();
 
         return view('jdagu.listado_peticiones_jd')
             ->with('peticiones', $peticiones);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function listado_reuniones_jd()
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
         //$peticiones = Peticion::where('id','!=',0)->get(); //->paginate(10); para obtener todos los resultados  o null
         $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', '1')->orderBy('created_at', 'DESC')->get();
 
         return view('jdagu.listado_reuniones_jd')
             ->with('reuniones', $reuniones);
+            } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function generar_reuniones_jd()
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', '1')->orderBy('created_at', 'DESC')->get();
         return view('jdagu.generar_reuniones_jd')
-            ->with('reuniones', $reuniones);
+            ->with('reuniones', $reuniones);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function crear_reunion_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = Comision::where('id', '=', $request->id_comision)->first();
         $reunion = new Reunion();
         $reunion->comision_id = $comision->id;
@@ -100,11 +132,18 @@ class JuntaDirectivaController extends Controller
         $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', '1')->orderBy('created_at', 'DESC')->get();
 
         return view('jdagu.generar_reuniones_jd')
-            ->with('reuniones', $reuniones);
+            ->with('reuniones', $reuniones);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function eliminar_reunion_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = Comision::where('id', '=', $request->id_comision)->first();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->first();
         $reunion->delete();
@@ -113,11 +152,18 @@ class JuntaDirectivaController extends Controller
         $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', '1')->orderBy('created_at', 'DESC')->get();
 
         return view('jdagu.generar_reuniones_jd')
-            ->with('reuniones', $reuniones);
+            ->with('reuniones', $reuniones);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function seguimiento_peticion_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
         $id_peticion = $request->id_peticion;
         $es_reunion = $request->es_reunion;
@@ -140,20 +186,34 @@ class JuntaDirectivaController extends Controller
             ->with('reunion', $reunion)
             ->with('comision', $comision)
             ->with('peticion', $peticion)
-            ->with('es_reunion', $es_reunion);
+            ->with('es_reunion', $es_reunion);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function listado_agenda_plenaria_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $agendas = Agenda::where('id', '!=', 0)->orderBy('updated_at', 'DESC')->get();
         return view('jdagu.listado_agenda_plenaria_jd')
-            ->with('agendas', $agendas);
+            ->with('agendas', $agendas);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function generar_agenda_plenaria_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         if ($request->ajax()) {
             $agenda = new Agenda();
             $agenda->codigo = $request->codigo;
@@ -178,11 +238,18 @@ class JuntaDirectivaController extends Controller
             $respuesta->mensaje = (new Mensaje("Exito", "Agenda creada con exito", "success"))->toArray();
             return new JsonResponse($respuesta);
 
+        }       
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
         }
     }
 
     public function eliminar_agenda_creada_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         if ($request->ajax()) {
             $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
             $agenda->delete();
@@ -190,11 +257,18 @@ class JuntaDirectivaController extends Controller
             $respuesta = new \stdClass();
             $respuesta->mensaje = (new Mensaje("Exito", "Agenda eliminada con exito", "error"))->toArray();
             return new JsonResponse($respuesta);
+        }       
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
         }
     }
 
     public function agendar_plenaria(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
     //dd($request->all());    
         //dd(Carbon::now()->format('l jS \\of F Y'));
@@ -261,11 +335,18 @@ class JuntaDirectivaController extends Controller
             ->with('todos_puntos', $todos_puntos)
             ->with('reunion', $reunion)
             ->with('comision', $comision)
-            ->with('peticiones', $peticiones);
+            ->with('peticiones', $peticiones);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function iniciar_reunion_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $peticiones = Peticion::where('id', '!=', 0)->orderBy('estado_peticion_id', 'ASC')->orderBy('updated_at', 'ASC')->get(); // Primero ordenar por el estado, despues los estados ordenarlo por fechas
 
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
@@ -279,11 +360,18 @@ class JuntaDirectivaController extends Controller
             ->with('todos_puntos', $todos_puntos)
             ->with('reunion', $reunion)
             ->with('comision', $comision)
-            ->with('peticiones', $peticiones);
+            ->with('peticiones', $peticiones);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function subir_dictamen_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $peticiones = Peticion::where('id', '!=', 0)->orderBy('estado_peticion_id', 'ASC')->orderBy('updated_at', 'ASC')->get(); // Primero ordenar por el estado, despues los estados ordenarlo por fechas
 
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
@@ -297,11 +385,18 @@ class JuntaDirectivaController extends Controller
             ->with('todos_puntos', $todos_puntos)
             ->with('reunion', $reunion)
             ->with('comision', $comision)
-            ->with('peticiones', $peticiones);
+            ->with('peticiones', $peticiones);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function puntos_agendados(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd();
 
         $peticiones = Peticion::where('agendado', '=', 1)->orderBy('estado_peticion_id', 'ASC')->orderBy('updated_at', 'ASC')->get(); // Primero ordenar por el estado, despues los estados ordenarlo por fechas
@@ -315,11 +410,18 @@ class JuntaDirectivaController extends Controller
             ->with('todos_puntos', $todos_puntos)
             ->with('reunion', $reunion)
             ->with('comision', $comision)
-            ->with('peticiones', $peticiones);
+            ->with('peticiones', $peticiones);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function listado_sesion_plenaria(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
         $agendas = Agenda::where('id', '!=', 0)->orderBy('updated_at', 'DESC')->get(); // Primero ordenar por el estado, despues los estados
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
@@ -331,11 +433,18 @@ class JuntaDirectivaController extends Controller
             ->with('todos_puntos', $todos_puntos)
             ->with('reunion', $reunion)
             ->with('comision', $comision)
-            ->with('agendas', $agendas);
+            ->with('agendas', $agendas);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function agregar_puntos_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
         $agenda = Agenda::where('id', '=', $request->id_agenda)->firstOrFail();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
@@ -361,11 +470,18 @@ class JuntaDirectivaController extends Controller
             ->with('reunion', $reunion)////////////
             ->with('comision', $comision)////////////
             ->with('agenda', $agenda)// a que agenda del viernes agendare este punto
-            ->with('peticiones', $peticiones);
+            ->with('peticiones', $peticiones);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function crear_punto_plenaria(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd();   
         $agenda = Agenda::where('id', '=', $request->id_agenda)->firstOrFail();
         $peticion = Peticion::where('id', '=', $request->id_peticion)->firstOrFail();
@@ -405,8 +521,10 @@ class JuntaDirectivaController extends Controller
                 //$seguimiento->descripcion = Parametro::where('parametro','=','des_nuevo_seguimiento')->get('valor');
                 $seguimiento->descripcion = 'Peticion agendada para Sesion Plenaria'; //COLOCAR FECHA DESPUES
                 $seguimiento->save();
+                $punto_creado = $this->correos_peticion_plenaria($peticion,$agenda,$seguimiento->inicio); 
             }
             // #####################################
+            // correo
 
         } else {
             $punto_eliminado = Punto::where('peticion_id', '=', $peticion->id)->where('agenda_id', '=', $agenda->id)->first();
@@ -461,11 +579,18 @@ class JuntaDirectivaController extends Controller
             ->with('reunion', $reunion)////////////
             ->with('comision', $comision)////////////
             ->with('agenda', $agenda)// a que agenda del viernes agendare este punto
-            ->with('peticiones', $peticiones);
+            ->with('peticiones', $peticiones);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function ordenar_puntos_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd();
         $agenda = Agenda::where('id', '=', $request->id_agenda)->firstOrFail();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
@@ -482,11 +607,18 @@ class JuntaDirectivaController extends Controller
             ->with('comision', $comision)////////////
             ->with('agenda', $agenda)// a que agenda del viernes agendare este punto
             ->with('actualizado', $actualizado)
-            ->with('puntos', $puntos);
+            ->with('puntos', $puntos);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function nuevo_orden(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd();
         $agenda = Agenda::where('id', '=', $request->id_agenda)->firstOrFail();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
@@ -530,8 +662,13 @@ class JuntaDirectivaController extends Controller
             ->with('comision', $comision)////////////
             ->with('agenda', $agenda)// a que agenda del viernes agendare este punto
             ->with('actualizado', $actualizado)
-            ->with('puntos', $puntos);
-    }
+            ->with('puntos', $puntos);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
+    }//
 
     /*
         public function reunion_jd(Request $request,Redirector $redirect){
@@ -550,6 +687,8 @@ class JuntaDirectivaController extends Controller
     */
     public function asistencia_jd(Request $request)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $cargos = Cargo::where('comision_id', '=', $request->id_comision)->where('activo', '=', 1)->get();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
         $comision = Comision::where('id', '=', $request->id_comision)->firstOrFail();
@@ -559,12 +698,19 @@ class JuntaDirectivaController extends Controller
             ->with('cargos', $cargos)
             ->with('reunion', $reunion)
             ->with('comision', $comision)
-            ->with('asistencias', $asistencias);
+            ->with('asistencias', $asistencias);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function registrar_asistencia(Request $request)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
         $presente = new Presente();
         $presente->cargo_id = $request->get("cargo");
@@ -586,12 +732,19 @@ class JuntaDirectivaController extends Controller
             ->with('cargos', $cargos)
             ->with('reunion', $reunion)
             ->with('comision', $comision)
-            ->with('asistencias', $asistencias);
+            ->with('asistencias', $asistencias);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function finalizar_reunion_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
         //$cargos = Cargo::where('comision_id','=',$request->id_comision)->where('activo', '=', 1)->get();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
@@ -604,12 +757,19 @@ class JuntaDirectivaController extends Controller
         $reuniones = Reunion::where('id', '!=', 0)->where('comision_id', '=', $request->id_comision)->orderBy('created_at', 'DESC')->get();
 
         return view('jdagu.listado_reuniones_jd')
-            ->with('reuniones', $reuniones);
+            ->with('reuniones', $reuniones);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function asignar_comision_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $id_peticion = $request->id_peticion;
         $disco = "../storage/documentos/";
 
@@ -624,22 +784,36 @@ class JuntaDirectivaController extends Controller
             ->with('seguimientos', $seguimientos)
             ->with('reunion', $reunion)
             ->with('comision', $comision)
-            ->with('peticion', $peticion);
+            ->with('peticion', $peticion);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function subir_bitacora_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = Comision::where('id', '=', '1')->first();
         $reunion = Reunion::where('id', '=', $request->id_reunion)->firstOrFail();
         $disco = "../storage/documentos/";
         return view('jdagu.subir_bitacora_jd')
             ->with('disco', $disco)
             ->with('reunion', $reunion)
-            ->with('comision', $comision);
+            ->with('comision', $comision);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function guardar_bitacora_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd($request->all());
         //$id_peticion = $request->id_peticion;
         //$tipo_documento = $request->tipo_documentos;
@@ -667,11 +841,18 @@ class JuntaDirectivaController extends Controller
         return view('jdagu.subir_bitacora_jd')
             ->with('disco', $disco)
             ->with('reunion', $reunion)
-            ->with('comision', $comision);
+            ->with('comision', $comision);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function subir_acta_plenaria(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //$id_peticion = $request->id_peticion;
         //$peticion = Peticion::where('id', '=', $id_peticion)->firstOrFail();
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
@@ -685,11 +866,18 @@ class JuntaDirectivaController extends Controller
 
         return view('jdagu.subir_acta_plenaria')
             ->with('disco', $disco)
-            ->with('agenda', $agenda);
+            ->with('agenda', $agenda);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function guardar_acta_plenaria(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
         $agenda = Agenda::where('id', '=', $request->id_agenda)->first();
 
@@ -703,11 +891,18 @@ class JuntaDirectivaController extends Controller
 
         return view('jdagu.subir_acta_plenaria')
             ->with('disco', $disco)
-            ->with('agenda', $agenda);
+            ->with('agenda', $agenda);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function subir_documento_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $id_peticion = $request->id_peticion;
         $peticion = Peticion::where('id', '=', $id_peticion)->firstOrFail();
         $comision = Comision::where('id', '=', '1')->first();
@@ -734,11 +929,18 @@ class JuntaDirectivaController extends Controller
             ->with('peticion', $peticion)
             ->with('is_reunion', $is_reunion)
             ->with('seguimientos', $seguimientos)
-            ->with('tipo_documentos', $tipo_documentos);
+            ->with('tipo_documentos', $tipo_documentos);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function guardar_documento_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd($request->all());
 
         $id_peticion = $request->id_peticion;
@@ -842,11 +1044,18 @@ class JuntaDirectivaController extends Controller
             ->with('peticion', $peticion)
             ->with('is_reunion', $is_reunion)
             ->with('seguimientos', $seguimientos)
-            ->with('tipo_documentos', $tipo_documentos);
+            ->with('tipo_documentos', $tipo_documentos);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function enlazar_comision(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd($request->all());
         $id_peticion = $request->id_peticion;
         $id_reunion = $request->id_reunion;
@@ -944,11 +1153,18 @@ class JuntaDirectivaController extends Controller
             ->with('comisiones', $comisiones)
             ->with('seguimientos', $seguimientos)
             ->with('peticion', $peticion)
-            ->with('reunion', $reunion);
+            ->with('reunion', $reunion);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function historial_bitacoras_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = Comision::where('id', '=', '1')->first();
         $periodo = Periodo::latest()->first();
         $reuniones = Reunion::where('comision_id', '=', $comision->id)->where('periodo_id', '=', $periodo->id)->orderBy('created_at', 'DESC')->get();
@@ -956,11 +1172,18 @@ class JuntaDirectivaController extends Controller
 
         return view('jdagu.historial_bitacoras_jd')
             ->with('disco', $disco)
-            ->with('reuniones', $reuniones);
+            ->with('reuniones', $reuniones);        
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function historial_dictamenes_jd(Request $request, Redirector $redirect)
     {
+try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $comision = Comision::where('id', '=', '1')->first();
         $periodo = Periodo::latest()->first();
         $reuniones = Reunion::where('comision_id', '=', $comision->id)->where('periodo_id', '=', $periodo->id)->orderBy('created_at', 'DESC')->get();
@@ -973,7 +1196,12 @@ class JuntaDirectivaController extends Controller
         return view('jdagu.historial_dictamenes_jd')
             ->with('disco', $disco)
             ->with('reuniones', $reuniones)
-            ->with('seguimientos', $seguimientos);
+            ->with('seguimientos', $seguimientos);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
 
@@ -1136,8 +1364,46 @@ class JuntaDirectivaController extends Controller
         
     }
 
+    public function correos_peticion_plenaria($peticion,$agenda,$fecha_seguimiento)
+    {    
+        $asunto = "Peticion agendada para sesion plenaria";
 
-    
+        $fecha = Carbon::parse($fecha_seguimiento)->format('d-m-Y');
+        $hora = Carbon::parse($fecha_seguimiento)->format('h:i A');
+        $fecha_agenda = Carbon::parse($agenda->fecha)->format('d-m-Y');
+
+            // $contenido = "El contenido del mail enviado desde el controlador a la vistas";
+        $correo_destinatario = $peticion->correo;
+        //dd($fecha);
+        Mail::queue('correos.peticion_plenaria_mail', ['peticion' => $peticion,'fecha_agenda' => $fecha_agenda,'fecha' => $fecha,'hora' => $hora], 
+            function ($mail) use ($asunto,$correo_destinatario) {
+            $mail->from('siarcaf@gmail.com', 'Sistema de acuerdos y actas AGU'); 
+            $mail->to($correo_destinatario);
+            $mail->subject($asunto);
+        }); 
+        
+          
+
+            return 0;
+        
+    }
+
+
+    public function guardar_bitacora($accion,$evento)
+    {
+        if ( !(Auth::guest()) ) {
+        $bitacora = new Bitacora();
+        $bitacora->user_id = Auth::user()->id;
+        $bitacora->accion = $accion;
+        $bitacora->fecha = Carbon::now();
+        $bitacora->hora = Carbon::now();
+        $bitacora->comentario = $evento;
+
+        $bitacora->save();
+        }
+        return 0;
+
+    }
 
 
 

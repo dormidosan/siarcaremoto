@@ -32,7 +32,7 @@
                    
                     <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
-                            <label for="fecha">Fecha inicial</label>
+                            <label for="fecha">Fecha inicial <span class="text-red">*</span></label>
                             <div class="input-group date fecha">
                                 <input required="true" id="fecha1" name="fecha1" type="text" class="form-control"><span class="input-group-addon"><i
                                             class="glyphicon glyphicon-th"></i></span>
@@ -41,7 +41,7 @@
                     </div>
                     <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
-                            <label for="fecha">Fecha final</label>
+                            <label for="fecha">Fecha final <span class="text-red">*</span></label>
                             <div class="input-group date fecha">
                                 <input required="true" id="fecha2" name="fecha2" type="text" class="form-control"><span class="input-group-addon"><i
                                             class="glyphicon glyphicon-th"></i></span>

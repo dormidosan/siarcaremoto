@@ -362,6 +362,31 @@ class ModulosTableSeeder extends Seeder
             'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
         ));
 
+        //29
+        \DB::table('modulos')->insert(array (
+            'nombre_modulo'  => 'Bitacora del Sistema',
+            'url' => 'administracion/bitacora_sistema',
+            'modulo_padre' => '10',
+            'icono'  => 'fa fa-dot-circle-o',
+            'nivel_acceso' => 0,
+            'orden' => 28,
+            'tiene_hijos' => false,
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ));
+
+        \DB::table('modulos')->insert(array (
+            'nombre_modulo'  => 'Graficos',
+            'url' => 'menu_graficos',
+            'icono'  => 'fa-dot-circle-o',
+            'modulo_padre' => '5',
+            'nivel_acceso' => 0,
+            'orden' => 29,
+            'tiene_hijos' => false,
+            'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+            'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+        ));
+
 
         
 

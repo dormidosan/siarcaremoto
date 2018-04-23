@@ -51,14 +51,14 @@
                 <div class="row">
                     <div class="col-lg-6 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label>Codigo</label>
+                            <label>Codigo <span class="text-red">*</span></label>
                             <input name="codigo" type="text" class="form-control" id="codigo"
                                    placeholder="Ingrese un codigo" required>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label for="lugar">Lugar</label>
+                            <label for="lugar">Lugar <span class="text-red">*</span></label>
                             <input name="lugar" type="text" id="lugar" class="form-control"
                                    placeholder="Ingrese el lugar de reunion">
                         </div>
@@ -68,22 +68,22 @@
                 <div class="row">
                     <div class="col-lg-6 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label class="control-label">Fecha</label>
+                            <label class="control-label">Fecha <span class="text-red">*</span></label>
                             <div class="input-group input-append date" id="fechaSesion">
                                 <input type="text" class="form-control" id="fecha" name="fecha"
                                        placeholder="dd-mm-yyyy"/>
-                                <span class="input-group-addon add-on"><span
+                                 <span class="input-group-addon add-on"> <span
                                             class="glyphicon glyphicon-calendar"></span></span>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-12 col-md-12">
-                        <label>Hora</label>
+                        <label>Hora <span class="text-red">*</span></label>
                         <div class="form-group">
                             <div class='input-group date'>
                                 <input name="hora" type='text' id="hora" class="form-control" placeholder="h:i AM"/>
-                                <span class="input-group-addon">
-                        <span class="glyphicon glyphicon-time"></span></span>
+                                 <span class="input-group-addon">
+                         <span class="glyphicon glyphicon-time"></span></span>
                             </div>
                         </div>
                     </div>
@@ -104,6 +104,15 @@
                 <div class="row text-center">
                     <div class="col-lg-12 col-sm-12 col-md-12">
                         <button type="submit" class="btn btn-primary">Aceptar</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -127,7 +136,7 @@
                         <th>Trascendental</th>
                         <th>Vigente</th>
                         <th>Activa</th>
-                        <th>Eliminar</th>
+                        <th>Accion</th>
                         <th>Subir Documento</th>
                     </tr>
                     </thead>
@@ -163,7 +172,7 @@
                                     {!! Form::open(['route'=>['envio_convocatoria'],'method'=> 'POST','id'=>"c".$agenda->id]) !!}
                                     <input type="hidden" name="id_agenda" id="id_agenda" value="{{$agenda->id}}">
                                     <button type="submit" class="btn btn-info btn-xs btn-block">
-                                        <i class="fa fa-eye"></i> Enviar convocatoria
+                                        <i class="fa fa-send"></i> Enviar convocatoria
                                     </button>
                                     {!! Form::close() !!}
                                 @endif

@@ -40,7 +40,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label for="codigo_peticion">Codigo de Peticion</label>
+                            <label for="codigo_peticion">Codigo de Peticion <span class="text-red">*</span></label>
                             <input type="text" id="codigo_peticion" name="codigo_peticion" class="form-control"
                                    placeholder="Ingrese el codigo de su petición" required>
                         </div>
@@ -52,6 +52,14 @@
                         <button type="submit" id="consultarPeticion" name="consultarPeticion" class="btn btn-primary">
                             Consultar Peticion
                         </button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -203,6 +211,7 @@
     @if(Session::has('success'))
         <script>
             notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
         </script>
     @endif
 

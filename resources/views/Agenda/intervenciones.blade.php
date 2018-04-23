@@ -7,7 +7,7 @@
         <div class="row">
             <div class="col-lg-4">
                 <div class="form-group">
-                    {!! Form::label('asambleista_id_intervencion', 'Asambleista'); !!}
+                    {!! Form::label('asambleista_id_intervencion', 'Asambleista'); !!} <span class="text-red">*</span>
                     {!! Form::select('asambleista_id_intervencion',$asambleistas_plenaria,null,['id'=>'asambleista_id_intervencion','class'=>'form-control','placeholder' => 'Seleccione asambleista...']) !!}
                 </div>
             </div>
@@ -17,7 +17,7 @@
 
             <div class="col-lg-8">
                 <div class="form-group">
-                    {!! Form::label('nueva_intervencion','Intervencion') !!}
+                    {!! Form::label('nueva_intervencion','Intervencion') !!} <span class="text-red">*</span>
                     {!! Form::textarea('nueva_intervencion', null, ['id'=>'nueva_intervencion','class' => 'form-control','size' => '30x4','maxlength'=>'1000','required'=>'required','placeholder'=>'Digite nueva intervencion']) !!}
                     <div class="pull-right text-green" id="caja2">
                         <span id="chars2">1000</span> caracteres restantes
@@ -29,6 +29,14 @@
             <div class="col-lg-12">
                 <button type="submit" id="iniciar" name="iniciar" class="btn btn-primary btn-sm">Agregar Intervencion
                 </button>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12 col-sm-12 col-md-12">
+                <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                </div>
             </div>
         </div>
         {!! Form::close() !!}

@@ -13,7 +13,7 @@ class ModuloRolTableSeeder extends Seeder
     public function run()
     {
         //asignacion de acceso a todos los modulos al rol administrador
-        for ($i=1;$i<=28;$i++){
+        for ($i=1;$i<=30;$i++){
             \DB::table('modulo_rol')->insert(array (
                 'rol_id'  => 1,
                 'modulo_id'  => $i,

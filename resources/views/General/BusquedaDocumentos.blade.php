@@ -100,9 +100,22 @@
                             <td>{{ $documento->nombre_documento }}</td>
                             <td>{{ $documento->tipo_documento->tipo }}</td>
                             <td>{{ $documento->fecha_ingreso }}</td>
-                            @if   ((Auth::user()->rol_id != 1) and ($documento->privado == 1))
+                            @if   ($documento->privado == 1)
                             <td>
-                                Solicitar en AGU 
+                                @if(Auth::guest())
+                                    Solicitar en AGU
+                                @else
+                                    @if((Auth::user()->rol_id == 1) or (Auth::user()->rol_id == 2))
+                                        <a class="btn btn-primary btn-xs "
+                                           href="{{ asset($disco.''.$documento->path) }}"
+                                           role="button" target="_blank"><i class="fa fa-eye"></i> Ver</a>
+                                        <a class="btn btn-success btn-xs" href="{{ route('descargar_documento',['id' =>  $documento->id] ) }}" role="button">
+                                        <i class="fa fa-download"></i> Descargar</a>
+                                    @else
+                                        Solicitar en AGU
+                                    @endif
+                                @endif
+                                
                             </td>
                             @else
                             <td>

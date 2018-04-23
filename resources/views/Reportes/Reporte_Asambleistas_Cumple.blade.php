@@ -56,19 +56,16 @@
                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-lg-3 col-sm-12 col-md-3">
-                        <label for="periodo">Periodo AGU</label>
-                        {!! Form::select('periodo',$periodos,$periodo,['id'=>'periodo','name'=>'periodo','class'=>'form-control','requiered'=>'required','placeholder'=>'seleccione periodo']) !!}
+                        <div class="form-group">
+                            <label for="periodo">Periodo AGU <span class="text-red">*</span></label>
+                            {!! Form::select('periodo',$periodos,$periodo,['id'=>'periodo','name'=>'periodo','class'=>'form-control','requiered'=>'required','placeholder'=>'seleccione periodo']) !!}
+                        </div>
                     </div>
 
 
                     <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
-                            <label for="mes">Mes</label>
-
-                            <!-- <div class="input-group date fecha">
-                                  <input required="true" id="fecha1" name="fecha1" type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                              </div>-->
-
+                            <label for="mes">Mes <span class="text-red">*</span></label>
                             <select required="true" class="form-control" id="mes" name="mes">
                                 <option value="">Seleccione un mes</option>
                                 <option value="1">Enero</option>
@@ -90,10 +87,17 @@
 
                 </div>
 
-
                 <div class="row">
                     <div class="col-lg-12 text-center">
                         <button type="submit" id="buscar" name="buscar" class="btn btn-primary">Buscar</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -251,15 +255,18 @@
         });
     </script>
 @endsection
+
 @section("lobibox")
     @if(Session::has('success'))
         <script>
             notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
         </script>
     @endif
     @if(Session::has('warning'))
         <script>
-            notificacion("Exito", "{{ Session::get('warning') }}", "warning");
+            notificacion("Error", "{{ Session::get('warning') }}", "warning");
+            {{ Session::forget('warning') }}
         </script>
     @endif
 @endsection

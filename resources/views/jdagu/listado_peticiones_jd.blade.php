@@ -38,22 +38,27 @@
 
         <div class="box-body">
             <div class="table-responsive">
-                <table id="tabla" class="table text-center table-striped table-bordered table-hover table-condensed">
+                <table id="tabla" class="table text-center table-striped table-bordered table-hover table-condensed display" style="width: 100%">
                     <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Codigo</th>
-                        <th>Descripcion</th>
-                        <th>Fecha de creación</th>
-                        {{-- <th>Fecha actual</th> --}}
-                        <th>Peticionario</th>
-                        <th>Ultima asignacion</th>
-                        <th>Visto anteriormente por</th>
-                        <th>Estado</th>
-                        <th>Acción</th>
+                        <th colspan="8"></th>
+                        <th colspan="2">Accion</th>
+                    </tr>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Codigo</th>
+                        <th class="text-center">Descripcion</th>
+                        <th class="text-center">Fecha de creación</th>
+                        <th class="text-center">Peticionario</th>
+                        <th class="text-center">Ultima asignacion</th>
+                        <th class="text-center">Visto anteriormente por</th>
+                        <th class="text-center">Estado</th>
+                        <th class="text-center">Ver</th>
+                        <th class="text-center">Subir Documentacion</th>
+
                     </tr>
                     </thead>
-                    <tbody id="cuerpoTabla" class="table-hover">
+                    <tbody id="cuerpoTabla" class="table-hover text-center">
                     @php $contador =1 @endphp
                     @forelse($peticiones as $peticion)
                         <tr>
@@ -97,43 +102,40 @@
                                 @endforeach
                                 {!! $i !!}
                             </td>
-                                @if($peticion->resuelto == 1)
-                                    <td class="success">
-                                        Resuelto
+                            @if($peticion->resuelto == 1)
+                                <td class="success">
+                                    Resuelto
+                                </td>
+                            @else
+                                @if($peticion->comision == 1)
+                                    <td class="warning">
+                                        En comision
                                     </td>
                                 @else
-                                    @if($peticion->comision == 1)
-                                        <td class="warning">
-                                        En comision
+                                    @if($peticion->asignado_agenda == 1)
+                                        <td class="info">
+                                            Agendado
                                         </td>
                                     @else
-                                        @if($peticion->asignado_agenda == 1)
-                                            <td class="info">
-                                            Agendado
-                                            </td>
-                                        @else
-                                            <td class="danger">
+                                        <td class="danger">
                                             No revisado
-                                            </td>
-                                        @endif
+                                        </td>
                                     @endif
-                                    
                                 @endif
-                                
 
-                                
-                            
-                            <td class="row">
-                                <div class="col-lg-3 col-md-12 col-sm-12">
+                            @endif
+
+                            <td>
                                     {!! Form::open(['route'=>['seguimiento_peticion_jd'],'method'=> 'POST','id'=>$peticion->id.'1']) !!}
                                     <input type="hidden" name="id_peticion" id="id_peticion" value="{{$peticion->id}}">
                                     <input type="hidden" name="es_reunion" id="es_reunion" value="0">
-                                    <button type="submit" class="btn btn-primary btn-xs">
+                                    <button type="submit" class="btn btn-primary btn-xs btn-block">
                                         <i class="fa fa-eye"></i> Ver
                                     </button>
                                     {!! Form::close() !!}
-                                </div>
-                                <div class="col-lg-3 col-md-12 col-sm-12">
+                            </td>
+                            <td>
+
                                     {!! Form::open(['route'=>['subir_documento_jd'],'method'=> 'POST','id'=>$peticion->id.'2']) !!}
                                     <input type="hidden" name="id_comision" id="id_comision" value="1">
                                     <input type="hidden" name="id_peticion" id="id_peticion" value="{{$peticion->id}}">
@@ -141,7 +143,6 @@
                                         <i class="fa fa-upload"></i> Subir documentacion
                                     </button>
                                     {!! Form::close() !!}
-                                </div>
                             </td>
                         </tr>
 
@@ -193,7 +194,7 @@
                 responsive: true,
                 /*searching: false,
                 paging: false,*/
-                columnDefs: [{orderable: false, targets: [1, 2, 3, 4, 5, 6, 7]}],
+                columnDefs: [{orderable: false, targets: [1, 2, 3, 4, 5, 6, 7,8,9]}],
                 order: [[0, 'asc']]
             });
         });

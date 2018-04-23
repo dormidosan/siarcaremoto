@@ -91,13 +91,13 @@
                 <div class="row">
                     <div class="col-lg-6 col-sm-6 col-md-6">
                         <div class="form-group">
-                            <label>Seleccione Tipo Documento</label>
+                            <label>Seleccione Tipo Documento <span class="text-red">*</span></label>
                             {!! Form::select('tipo_documentos',$tipo_documentos,null,['id'=>'tipo_documentos', 'class'=>'form-control', 'required'=>'required', 'placeholder' => 'Seleccione tipo...']) !!}
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6 col-md-6">
                         <div class="form-group">
-                            <label for="documento">Seleccione documento (1)</label>
+                            <label for="documento">Seleccione documento (1) <span class="text-red">*</span></label>
                             <div class="file-loading">
 
                                 <input id="documento_comision" name="documento_comision" type="file" required="required"
@@ -108,6 +108,14 @@
                     </div>
                     <div class="col-lg-12 col-sm-12 col-md-12 text-center">
                         <input type="submit" class="btn btn-primary" name="Guardar" id="Guardar" value="Guardar">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>

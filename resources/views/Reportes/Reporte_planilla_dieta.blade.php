@@ -57,9 +57,10 @@
                 <div class="row">
                     <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
-                            <label>Tipo </label>
+                            <label>Tipo <span class="text-red">*</span></label>
 
-                            <select required="true" class="form-control" id="tipoDocumento" name="tipoDocumento" onchange="mostrar(this.value)">
+                            <select required="true" class="form-control" id="tipoDocumento" name="tipoDocumento"
+                                    onchange="mostrar(this.value)">
                                 <option value="{{old("tipoDocumento")}}">Seleccione una opcion</option>
                                 <option value="A">Por Asambleista</option>
                                 <option value="E">Consolidados Estudiantil</option>
@@ -69,9 +70,9 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-sm-12 col-md-4">
+                    <div class="col-lg-4 col-sm-12 col-md-4" id="mes_input">
                         <div class="form-group">
-                            <label for="mes">Mes</label>
+                            <label for="mes">Mes <span class="text-red">*</span></label>
 
                             <!-- <div class="input-group date fecha">
                                   <input required="true" id="fecha1" name="fecha1" type="text" class="form-control"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -98,7 +99,7 @@
 
                     <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
-                            <label for="anio">Año</label>
+                            <label for="anio">Año <span class="text-red">*</span></label>
                             <div class="input-group date anio">
                                 <input required="true" id="anio" name="anio" type="text" class="form-control"><span
                                         class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -111,6 +112,14 @@
                 <div class="row">
                     <div class="col-lg-12 text-center">
                         <button type="submit" id="buscar" name="buscar" class="btn btn-primary">Buscar</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -255,9 +264,6 @@
 @section("scripts")
     <script type="text/javascript">
 
-      
-
-
         $(function () {
             var table = $('#listado').DataTable({
                 language: {
@@ -288,7 +294,7 @@
                     {"orderable": false, "targets": [1, 2, 3]}
                 ],
                 "searching": true,
-                "order": [ [1, 'asc'],[2, 'asc']],
+                "order": [[1, 'asc'], [2, 'asc']],
                 "displayLength": 25,
                 "paging": true,
             });
@@ -340,31 +346,14 @@
                 });
         });
 
-            function mostrar(idComision) {
-            $.ajax({
-                //se envia un token, como medida de seguridad ante posibles ataques
-               /* headers: {
-                    'X-CSRF-TOKEN': "{{ csrf_token() }}"
-                },
-                type: 'POST',
-                url: "{{ route('mostrar_asambleistas_comision_post') }}",
-                data: {
-                    "idComision": idComision
-                }*/
-                if(idComision=='A'){
-                
-                   $("#mes").hide();
-                }
-                else{
-
-                    $("#mes").show();
-                }
-            }).done(function (response) {
-               // $("#idComision").val(response.comision);
-                //$("#mes").html(response.mes);
-                //inicializar_dataTable();
-            });
-        };
+        function mostrar(idComision) {
+            if (idComision == 'A') {
+                $("#mes_input").hide();
+            }
+            else {
+                $("#mes_input").show();
+            }
+        }
     </script>
 @endsection
 
@@ -372,11 +361,13 @@
     @if(Session::has('success'))
         <script>
             notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
         </script>
     @endif
     @if(Session::has('warning'))
         <script>
-            notificacion("Exito", "{{ Session::get('warning') }}", "warning");
+            notificacion("Error", "{{ Session::get('warning') }}", "warning");
+            {{ Session::forget('warning') }}
         </script>
     @endif
 @endsection

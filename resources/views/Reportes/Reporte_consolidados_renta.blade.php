@@ -56,7 +56,7 @@
                 <div class="row">
                     <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
-                            <label>Tipo </label>
+                            <label>Tipo <span class="text-red">*</span></label>
 
                             <select required="true" class="form-control" id="tipoDocumento" name="tipoDocumento">
                                 <option value="">Seleccione una opcion</option>
@@ -70,7 +70,7 @@
 
                     <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
-                            <label for="anio">Año</label>
+                            <label for="anio">Año <span class="text-red">*</span></label>
                             <div class="input-group date anio">
                                 <input required="true" id="anio" name="anio" type="text" class="form-control"><span
                                         class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -83,6 +83,15 @@
                 <div class="row">
                     <div class="col-lg-12 text-center">
                         <button type="submit" id="buscar" name="buscar" class="btn btn-primary">Buscar</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -167,18 +176,6 @@
             </table>
         </div><!-- /.box-body -->
     </div><!-- /.box -->
-
-    <script>
-        $('#anio').datepicker({
-            format: "yyyy",
-            startView: 2,
-            minViewMode: 2,
-            maxViewMode: 3,
-            autoclose: true
-        });
-
-
-    </script>
 
 @endsection
 
@@ -286,15 +283,18 @@
 
     </script>
 @endsection
+
 @section("lobibox")
     @if(Session::has('success'))
         <script>
             notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
         </script>
     @endif
     @if(Session::has('warning'))
         <script>
-            notificacion("Exito", "{{ Session::get('warning') }}", "warning");
+            notificacion("Error", "{{ Session::get('warning') }}", "warning");
+            {{ Session::forget('warning') }}
         </script>
     @endif
 @endsection

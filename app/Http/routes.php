@@ -212,13 +212,12 @@ Route::get('/Reporte_permisos_temporales', function () {
 Route::get('/Menu_reportes', function () {
     return view('Reportes.MenuReportes');
 });
-
-/*Route::get('/Menu_plantillas', function () {
-    return view('Plantillas.MenuPlantilla');
-});
-*/
-
 Route::get('/Menu_plantillas', 'PlantillasController@plantillas');
+Route::get('/menu_graficos', 'GraficosController@menu_graficos')->name("menu_graficos");
+Route::get('/graficos/peticiones_por_mes', 'GraficosController@peticiones_por_mes')->name("peticiones_por_mes");
+Route::post('/graficos/peticiones_por_post', 'GraficosController@peticiones_por_post')->name("peticiones_por_post");
+Route::get('/graficos/dictamenes_por_comision', 'GraficosController@dictamenes_por_comision')->name("dictamenes_por_comision");
+Route::post('/graficos/dictamenes_comision_post', 'GraficosController@dictamenes_comision_post')->name("dictamenes_comision_post");
 
 Route::get('/Reporte_Convocatorias_pdf/{tipo}', 'ReportesController@Reporte_Convocatorias');
 Route::get('/Reporte_Convocatorias', function () {
@@ -292,6 +291,7 @@ Route::group(['prefix' => 'administracion'], function () {
 
     Route::group(['middleware' => 'acceso15'], function () {
         Route::get('dietas_asambleista', 'AdministracionController@dietas_asambleista')->name("dietas_asambleista");
+        Route::get('bitacora_sistema', 'AdministracionController@bitacora_sistema')->name("bitacora_sistema");
     });
 
     Route::group(['middleware' => 'acceso16'], function () {
@@ -308,20 +308,6 @@ Route::group(['prefix' => 'administracion'], function () {
     Route::group(['middleware' => 'acceso17'], function () {
         Route::get('gestionar_perfiles', "AdministracionController@gestionar_perfiles")->name("gestionar_perfiles");
     });    
-
-
-
-
-
-    
-    
-    
-    
-    
-    
-    
-    
-
 
     Route::post('guardar_usuario', "AdministracionController@guardar_usuario")->name("guardar_usuario");
     Route::post('actualizar_usuario', "AdministracionController@actualizar_usuario")->name("actualizar_usuario");
@@ -345,6 +331,7 @@ Route::group(['prefix' => 'administracion'], function () {
     Route::post('busqueda_dietas_asambleista', "AdministracionController@busqueda_dietas_asambleista")->name("busqueda_dietas_asambleista");
     Route::post('almacenar_dieta_asambleista', "AdministracionController@almacenar_dieta_asambleista")->name("almacenar_dieta_asambleista");
     Route::post('restaurar_contraseña', "AdministracionController@restaurar_contraseña")->name("restaurar_contraseña");
+    Route::post('consultar_bitacora', "AdministracionController@consultar_bitacora")->name("consultar_bitacora");
 });
 
 /* Asambleistas */
@@ -409,7 +396,14 @@ Route::post('buscar_documentos', 'DocumentoController@buscar_documentos')->name(
 Route::get('descargar_documento/{id}', 'DocumentoController@descargar_documento')->name("descargar_documento");
 
 Route::resource('photo', 'PhotoController');
-Route::auth();
+//Route::auth();
+// ya no se usar Route::auth(); para poder sobreescribir los metodos del controlador
+Route::get('login', array('as' => 'login', 'uses' => 'Auth\AuthController@showLoginForm'));
+Route::post('login', array('as' => 'login', 'uses' => 'Auth\AuthController@login'));
+Route::get('logout', array('as' => 'logout', 'uses' => 'Auth\AuthController@logout'));
+Route::post('register', array('as' => 'register', 'uses' => 'Auth\AuthController@register'));
+Route::get('register', array('as' => 'register', 'uses' => 'Auth\AuthController@showRegistrationForm'));
+
 
 
 Route::get('mostrar_datos_usuario','UsuarioController@mostrar_datos_usuario')->name('mostrar_datos_usuario');

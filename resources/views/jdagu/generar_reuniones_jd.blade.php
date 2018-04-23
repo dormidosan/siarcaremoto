@@ -34,13 +34,13 @@
                 <div class="row">
                     <div class="col-lg-4 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label for="lugar">Lugar</label>
+                            <label for="lugar">Lugar <span class="text-red">*</span></label>
                             <input name="lugar" type="text" id="lugar" class="form-control" required="required">
                         </div>
                     </div>
                     <div class="col-lg-4 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label for="fecha">Fecha</label>
+                            <label for="fecha">Fecha <span class="text-red">*</span></label>
                             <div class="input-group date fecha" id="fechaReunion">
                                 <input name="fecha" id="fecha" type="text" class="form-control"><span
                                         class="input-group-addon"><i class="glyphicon glyphicon-th"
@@ -50,7 +50,7 @@
 
                     </div>
                     <div class="col-lg-4 col-sm-12 col-md-12">
-                        <label>Hora</label>
+                        <label>Hora <span class="text-red">*</span></label>
                         <div class="form-group">
                             <div class='input-group date'>
 
@@ -61,6 +61,14 @@
                         <span class="glyphicon glyphicon-time"></span>
                     </span>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
                         </div>
                     </div>
                 </div>

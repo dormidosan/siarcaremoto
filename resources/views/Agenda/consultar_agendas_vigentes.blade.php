@@ -89,7 +89,7 @@
                                                 @endforelse
 
                                                 <!-- @-i-f-( (Auth::user()->rol_id == 3) and ($jd == 1) ) -->
-                                                @if( (Auth::user()->rol_id == 4)  )
+                                                @if( (Auth::user()->rol_id == 4) or Auth::user()->rol_id == 1 )
                                                 <button type="submit" id="iniciar" name="iniciar"
                                                         class="btn btn-primary btn-block"> Iniciar sesion plenaria
                                                 </button>
@@ -181,7 +181,7 @@
     @if(Session::has('warning_puntos'))
         <script>
             notificacion("Error", "{{ Session::get('warning_puntos') }}", "warning");
-            {{ Session::forget('error') }}
+            {{ Session::forget('warning_puntos') }}
         </script>
     @endif
 

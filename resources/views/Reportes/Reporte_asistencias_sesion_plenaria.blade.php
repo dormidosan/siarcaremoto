@@ -55,7 +55,7 @@
                 <div class="row">
                     <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
-                            <label>Tipo </label>
+                            <label>Tipo <span class="text-red">*</span></label>
 
                             <select required="true" class="form-control" id="tipoDocumento" name="tipoDocumento">
                                 <option value="">Seleccione una opcion</option>
@@ -67,7 +67,7 @@
                     </div>
                     <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
-                            <label for="fecha">Fecha inicial</label>
+                            <label for="fecha">Fecha inicial <span class="text-red">*</span></label>
                             <div class="input-group date fecha">
                                 <input id="fecha1" name="fecha1" type="text" class="form-control" required><span
                                         class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -76,7 +76,7 @@
                     </div>
                     <div class="col-lg-4 col-sm-12 col-md-4">
                         <div class="form-group">
-                            <label for="fecha">Fecha final</label>
+                            <label for="fecha">Fecha final <span class="text-red">*</span></label>
                             <div class="input-group date fecha">
                                 <input id="fecha2" name="fecha2" type="text" class="form-control" required><span
                                         class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
@@ -89,6 +89,14 @@
                 <div class="row">
                     <div class="col-lg-12 text-center">
                         <button type="submit" id="buscar" name="buscar" class="btn btn-primary">Buscar</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -280,11 +288,13 @@
     @if(Session::has('success'))
         <script>
             notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
         </script>
     @endif
     @if(Session::has('warning'))
         <script>
-            notificacion("Exito", "{{ Session::get('warning') }}", "warning");
+            notificacion("Error", "{{ Session::get('warning') }}", "warning");
+            {{ Session::forget('warning') }}
         </script>
     @endif
 @endsection

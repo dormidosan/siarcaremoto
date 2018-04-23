@@ -56,7 +56,7 @@
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label for="asambleista">Asambleista</label>
+                                <label for="asambleista">Asambleista <span class="text-red">*</span></label>
                                 <select id="asambleista" name="asambleista" class="form-control"
                                         onchange="mostrar_delegados(this.value)" disabled>
                                     <option value="">-- Seleccione un asambleista --</option>
@@ -70,7 +70,7 @@
 
                         <div class="col-lg-3 col-md-3 col-sm-12 hidden" id="delegados">
                             <div class="form-group">
-                                <label for="delegado">Delegado</label>
+                                <label for="delegado">Delegado <span class="text-red">*</span></label>
                                 <select id="delegado" name="delegado" class="form-control">
                                 </select>
                             </div>
@@ -78,7 +78,7 @@
 
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label class="control-label">Inicio</label>
+                                <label class="control-label">Inicio <span class="text-red">*</span></label>
                                 <div class="input-group input-append date" id="startDatePicker">
                                     <input type="text" class="form-control" name="startDate" placeholder="d-m-yyyy" disabled/>
                                     <span class="input-group-addon add-on"><span
@@ -89,7 +89,7 @@
 
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label class="control-label">Fin</label>
+                                <label class="control-label">Fin <span class="text-red">*</span></label>
                                 <div class="input-group input-append date" id="endDatePicker">
                                     <input type="text" class="form-control" name="endDate" placeholder="d-m-yyyy" disabled/>
                                     <span class="input-group-addon add-on"><span
@@ -102,7 +102,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="form-group">
-                                <label for="motivo">Razon del Permiso</label>
+                                <label for="motivo">Razon del Permiso <span class="text-red">*</span></label>
                                 <textarea type="text" class="form-control" id="motivo" name="motivo" rows="4"
                                           maxlength="50" disabled></textarea>
                             </div>
@@ -127,7 +127,7 @@
                     <div class="row">
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label for="asambleista">Asambleista</label>
+                                <label for="asambleista">Asambleista <span class="text-red">*</span></label>
                                 <select id="asambleista" name="asambleista" class="form-control"
                                         onchange="mostrar_delegados(this.value)">
                                     <option value="">-- Seleccione un asambleista --</option>
@@ -141,7 +141,7 @@
 
                         <div class="col-lg-3 col-md-3 col-sm-12 hidden" id="delegados">
                             <div class="form-group">
-                                <label for="delegado">Delegado</label>
+                                <label for="delegado">Delegado <span class="text-red">*</span></label>
                                 <select id="delegado" name="delegado" class="form-control">
                                 </select>
                             </div>
@@ -149,7 +149,7 @@
 
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label class="control-label">Inicio</label>
+                                <label class="control-label">Inicio <span class="text-red">*</span></label>
                                 <div class="input-group input-append date" id="startDatePicker">
                                     <input type="text" class="form-control" name="startDate" placeholder="d-m-yyyy"/>
                                     <span class="input-group-addon add-on"><span
@@ -160,7 +160,7 @@
 
                         <div class="col-lg-3 col-md-3 col-sm-12">
                             <div class="form-group">
-                                <label class="control-label">Fin</label>
+                                <label class="control-label">Fin <span class="text-red">*</span></label>
                                 <div class="input-group input-append date" id="endDatePicker">
                                     <input type="text" class="form-control" name="endDate" placeholder="d-m-yyyy"/>
                                     <span class="input-group-addon add-on"><span
@@ -173,7 +173,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-md-12 col-sm-12">
                             <div class="form-group">
-                                <label for="motivo">Razon del Permiso</label>
+                                <label for="motivo">Razon del Permiso <span class="text-red">*</span></label>
                                 <textarea type="text" class="form-control" id="motivo" name="motivo" rows="4"
                                           maxlength="50"></textarea>
                             </div>
@@ -186,6 +186,15 @@
                                     onclick="enviar()">
                                 Aceptar
                             </button>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                            </div>
                         </div>
                     </div>
 

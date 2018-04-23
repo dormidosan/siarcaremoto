@@ -99,7 +99,7 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="primer_nombre_actualizar">Primer Nombre</label>
+                                                    <label for="primer_nombre_actualizar">Primer Nombre <span class="text-red">*</span></label>
                                                     <input type="text" class="form-control"
                                                            id="primer_nombre_actualizar"
                                                            name="primer_nombre_actualizar">
@@ -107,7 +107,7 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group {{ $errors->has('segundo_nombre') ? 'has-error' : '' }}">
-                                                    <label for="segundo_nombre_actualizar">Segundo Nombre</label>
+                                                    <label for="segundo_nombre_actualizar">Segundo Nombre <span class="text-red">*</span></label>
                                                     <input type="text" class="form-control"
                                                            id="segundo_nombre_actualizar"
                                                            name="segundo_nombre_actualizar">
@@ -115,7 +115,7 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="primer_apellido_actualizar">Primer Apellido</label>
+                                                    <label for="primer_apellido_actualizar">Primer Apellido <span class="text-red">*</span></label>
                                                     <input type="text" class="form-control"
                                                            id="primer_apellido_actualizar"
                                                            name="primer_apellido_actualizar">
@@ -123,7 +123,7 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="segundo_apellido_actualizar">Segundo Apellido</label>
+                                                    <label for="segundo_apellido_actualizar">Segundo Apellido <span class="text-red">*</span></label>
                                                     <input type="text" class="form-control"
                                                            id="segundo_apellido_actualizar"
                                                            name="segundo_apellido_actualizar">
@@ -133,28 +133,28 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="correo_actualizar">Correo Electronico</label>
+                                                    <label for="correo_actualizar">Correo Electronico <span class="text-red">*</span></label>
                                                     <input type="email" class="form-control" id="correo_actualizar"
                                                            name="correo_actualizar">
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="dui_actualizar">DUI</label>
+                                                    <label for="dui_actualizar">DUI <span class="text-red">*</span></label>
                                                     <input type="text" class="form-control" id="dui_actualizar"
                                                            name="dui_actualizar">
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="nit_actualizar">NIT</label>
+                                                    <label for="nit_actualizar">NIT <span class="text-red">*</span></label>
                                                     <input type="text" class="form-control" id="nit_actualizar"
                                                            name="nit_actualizar">
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="fecha1_actualizar">Fecha Nacimiento</label>
+                                                    <label for="fecha1_actualizar">Fecha Nacimiento <span class="text-red">*</span></label>
                                                     <div class="input-group date fecha" id="fechaNacimiento_actualizar">
                                                         <input name="fecha1_actualizar" id="fecha1_actualizar"
                                                                type="text" class="form-control"><span
@@ -168,21 +168,21 @@
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="afp_actualizar">AFP</label>
+                                                    <label for="afp_actualizar">AFP <span class="text-red">*</span></label>
                                                     <input type="text" class="form-control" id="afp_actualizar"
                                                            name="afp_actualizar">
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="cuenta_actualizar">Cuenta Bancaria</label>
+                                                    <label for="cuenta_actualizar">Cuenta Bancaria <span class="text-red">*</span></label>
                                                     <input type="text" class="form-control" id="cuenta_actualizar"
                                                            name="cuenta_actualizar">
                                                 </div>
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="tipo_usuario_actualizar">Tipo Usuario</label>
+                                                    <label for="tipo_usuario_actualizar">Tipo Usuario <span class="text-red">*</span></label>
                                                     <select id="tipo_usuario_actualizar" name="tipo_usuario_actualizar"
                                                             class="form-control"
                                                             onchange="mostrar_campos_asambleistas_actualizar(this.value)">
@@ -197,7 +197,7 @@
                                         <div class="row hidden" id="row_campos_asambleistas_actualizar">
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="sector_actualizar">Sector</label>
+                                                    <label for="sector_actualizar">Sector <span class="text-red">*</span></label>
                                                     <select id="sector_actualizar" name="sector_actualizar"
                                                             class="form-control">
                                                         <option value="">Seleccione</option>
@@ -209,7 +209,7 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="facultad_actualizar">Facultad</label>
+                                                    <label for="facultad_actualizar">Facultad <span class="text-red">*</span></label>
                                                     <select id="facultad_actualizar" name="facultad_actualizar"
                                                             class="form-control">
                                                         <option value="">Seleccione</option>
@@ -221,7 +221,7 @@
                                             </div>
                                             <div class="col-lg-3">
                                                 <div class="form-group">
-                                                    <label for="propietario_actualizar">Propietario</label>
+                                                    <label for="propietario_actualizar">Propietario <span class="text-red">*</span></label>
                                                     <select id="propietario_actualizar" name="propietario_actualizar"
                                                             class="form-control" onchange="cambio_propietaria_dd(this.value)">
                                                         <option value="">Seleccione</option>
@@ -234,7 +234,7 @@
                                         <div class="row hidden">
                                             <div class="col-lg-12">
                                                 <div class="form-group">
-                                                    <label for="cambio_propietaria">Cambio Propietaria</label>
+                                                    <label for="cambio_propietaria">Cambio Propietaria <span class="text-red">*</span></label>
                                                     <input type="text" class="form-control" id="cambio_propietaria"
                                                            name="cambio_propietaria" value="0">
                                                 </div>
@@ -246,6 +246,14 @@
                                 <div class="row text-center">
                                     <button type="submit" id="submitButtonUpdate" class="btn btn-primary">Aceptar
                                     </button>
+                                </div>
+                                <div class="row">
+                                    <div class="col-lg-12 col-sm-12 col-md-12">
+                                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -269,28 +277,28 @@
                                     <div class="row">
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="primer_nombre">Primer Nombre</label>
+                                                <label for="primer_nombre">Primer Nombre <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control" id="primer_nombre"
                                                        name="primer_nombre">
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="segundo_nombre">Segundo Nombre</label>
+                                                <label for="segundo_nombre">Segundo Nombre <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control" id="segundo_nombre"
                                                        name="segundo_nombre">
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="primer_apellido">Primer Apellido</label>
+                                                <label for="primer_apellido">Primer Apellido <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control" id="primer_apellido"
                                                        name="primer_apellido">
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="segundo_apellido">Segundo Apellido</label>
+                                                <label for="segundo_apellido">Segundo Apellido <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control" id="segundo_apellido"
                                                        name="segundo_apellido">
                                             </div>
@@ -299,25 +307,25 @@
                                     <div class="row">
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="correo">Correo Electronico</label>
+                                                <label for="correo">Correo Electronico <span class="text-red">*</span></label>
                                                 <input type="email" class="form-control" id="correo" name="correo">
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="dui">DUI</label>
+                                                <label for="dui">DUI <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control" id="dui" name="dui">
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="nit">NIT</label>
+                                                <label for="nit">NIT <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control" id="nit" name="nit">
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="fecha1">Fecha Nacimiento</label>
+                                                <label for="fecha1">Fecha Nacimiento <span class="text-red">*</span></label>
                                                 <div class="input-group date fecha" id="fechaNacimiento">
                                                     <input name="fecha1" id="fecha1" type="text"
                                                            class="form-control"><span
@@ -330,19 +338,19 @@
                                     <div class="row">
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="afp">AFP</label>
+                                                <label for="afp">AFP <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control" id="afp" name="afp">
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="cuenta">Cuenta Bancaria</label>
+                                                <label for="cuenta">Cuenta Bancaria <span class="text-red">*</span></label>
                                                 <input type="text" class="form-control" id="cuenta" name="cuenta">
                                             </div>
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="tipo_usuario">Tipo Usuario</label>
+                                                <label for="tipo_usuario">Tipo Usuario <span class="text-red">*</span></label>
                                                 <select id="tipo_usuario" name="tipo_usuario" class="form-control"
                                                         onchange="mostrar_campos_asambleistas(this.value)">
                                                     <option value="">Seleccione</option>
@@ -356,7 +364,7 @@
                                     <div class="row hidden" id="row_campos_asambleistas">
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="sector">Sector</label>
+                                                <label for="sector">Sector <span class="text-red">*</span></label>
                                                 <select id="sector" name="sector" class="form-control">
                                                     <option value="">Seleccione</option>
                                                     @foreach($sectores as $sector)
@@ -367,7 +375,7 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="facultad">Facultad</label>
+                                                <label for="facultad">Facultad <span class="text-red">*</span></label>
                                                 <select id="facultad" name="facultad" class="form-control">
                                                     <option value="">Seleccione</option>
                                                     @foreach($facultades as $facultad)
@@ -378,7 +386,7 @@
                                         </div>
                                         <div class="col-lg-3">
                                             <div class="form-group">
-                                                <label for="propietario">Propietario</label>
+                                                <label for="propietario">Propietario <span class="text-red">*</span></label>
                                                 <select id="propietario" name="propietario" class="form-control">
                                                     <option value="">Seleccione</option>
                                                     <option value="1">Si</option>
@@ -392,6 +400,14 @@
 
                             <div class="row text-center">
                                 <button type="submit" id="submitButton" class="btn btn-primary">Aceptar</button>
+                            </div>
+                            <div class="row">
+                                <div class="col-lg-12 col-sm-12 col-md-12">
+                                    <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                                    </div>
+                                </div>
                             </div>
                         </form>
                     </div>

@@ -44,7 +44,7 @@
                 <div class="row">
                     <div class="col-lg-4">
                         <div class="form-group {{ $errors->has('nombre_periodo') ? 'has-error' : '' }}">
-                            <label for="nombre_periodo">Periodo</label>
+                            <label for="nombre_periodo">Periodo <span class="text-red">*</span></label>
                             <input type="text" class="form-control" id="nombre_periodo" name="nombre_periodo"
                                    placeholder="Ingrese un nombre">
                             <span class="text-danger">{{ $errors->first('nombre_periodo') }}</span>
@@ -52,7 +52,7 @@
                     </div>
                     <div class="col-lg-4">
                         <div class="form-group {{ $errors->has('inicio') ? 'has-error' : '' }}">
-                            <label for="inicio">Fecha</label>
+                            <label for="inicio">Fecha <span class="text-red">*</span></label>
                             <div class="input-group date fecha" id="fecha_inicio">
                                 <input id="inicio" name="inicio" type="text" class="form-control"
                                        placeholder="dd-mm-yyyy"><span
@@ -76,10 +76,16 @@
                                 Aceptar
                             </button>
                         @else
-                            <button type="button" class="btn btn-success btn-block disabled" disabled>
-                                Aceptar
-                            </button>
+                            <button type="button" class="btn btn-success btn-block disabled" data-toggle="tooltip" data-placement="bottom" title="Finalice periodo actual para habilitar esta opcion" onclick="error()">Aceptar</button>
                         @endif
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -201,7 +207,7 @@
 @section("scripts")
     <script type="text/javascript">
         $(function () {
-            //var today = new Date();
+            $('[data-toggle="tooltip"]').tooltip();
             var nowDate = new Date();
             var today = nowDate.getDate()+'-'+(nowDate.getMonth()+1)+'-'+nowDate.getFullYear();
 
@@ -276,6 +282,9 @@
         });
 
 
+        function error(){
+            notificacion("Informacion","Debe finalizar el periodo actual para agregar uno nuevo","info");
+        }
 
         function mostar_progeso(event) {
             var form = $("#periodo_agu").data('formValidation').validate();

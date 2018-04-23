@@ -33,7 +33,7 @@
                     <div class="row">
                         <div class="col-lg-4 col-sm-12 col-md-12">
                             <div class="form-group">
-                                <label for="correo">Correo</label>
+                                <label for="correo">Correo <span class="text-red">*</span></label>
                                 <input name="correo" type="email" class="form-control" id="correo"
                                        placeholder="Ingrese correo electronico" required>
 
@@ -41,7 +41,7 @@
                         </div>
                         <div class="col-lg-4 col-sm-12 col-md-12">
                             <div class="form-group">
-                                <label for="tel">Telefono</label>
+                                <label for="tel">Telefono <span class="text-red">*</span></label>
 
                                 <input name="telefono" type="tel" class="form-control" id="telefono"
                                        placeholder="Ingrese telefono" required>
@@ -51,7 +51,7 @@
 
                         <div class="col-lg-4 col-sm-12 col-md-12">
                             <div class="form-group">
-                                <label for="mail">Peticionario</label>
+                                <label for="mail">Peticionario <span class="text-red">*</span></label>
 
                                 <input name="peticionario" type="text" class="form-control" id="peticionario"
                                        placeholder="Ingrese el peticionario" required>
@@ -65,7 +65,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-sm-12 col-md-12">
                             <div class="form-group">
-                                <label for="direccion">Direccion</label>
+                                <label for="direccion">Direccion <span class="text-red">*</span></label>
                                 <textarea name="direccion" type="text" class="form-control" id="direccion"
                                           placeholder="Ingrese la direccion" required></textarea>
 
@@ -76,7 +76,7 @@
                     <div class="row">
                         <div class="col-lg-12 col-sm-12 col-md-12">
                             <div class="form-group">
-                                <label for="descripcion">Descripcion</label>
+                                <label for="descripcion">Descripcion <span class="text-red">*</span></label>
 
                                 <textarea name="descripcion" type="text" class="form-control" id="descripcion"
                                           placeholder="Ingrese una breve descripcion" required></textarea>
@@ -89,10 +89,8 @@
                         <div class="col-lg-12">
 
                             <div class="form-group">
-                                <label for="documento">Seleccione peticion (1)</label>
+                                <label for="documento">Seleccione peticion (1) <span class="text-red">*</span></label>
                                 <div class="file-loading">
-                                    <!--<input id="documento_peticion" name="documento_peticion" type="file"
-                                           required="required" accept=".doc, .docx, .pdf, .xls, .xlsx">-->
                                     <input id="documento_peticion" name="documento_peticion" type="file"
                                            required="required" accept=".pdf">
                                 </div>
@@ -107,10 +105,8 @@
 
 
                             <div class="form-group">
-                                <label for="documento">Seleccione atestados (1-3)</label>
+                                <label for="documento">Seleccione atestados (1-3) <span class="text-red">*</span></label>
                                 <div class="file-loading">
-                                    <!--<input id="documento_atestado" name="documento_atestado[]" type="file" multiple
-                                           required="required" accept=".doc, .docx, .pdf, .xls, .xlsx">-->
                                     <input id="documento_atestado" name="documento_atestado[]" type="file" multiple
                                            required="required" accept=".pdf">
                                 </div>
@@ -123,6 +119,15 @@
 
                     <div class="box-footer text-center">
                         <button type="submit" class="btn btn-primary">Registrar Peticion</button>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                            </div>
+                        </div>
                     </div>
                 </form>
 
@@ -201,6 +206,8 @@
                                     </div>
                                 </div>
                             </div>
+
+
                         </form>
                     </div>
 

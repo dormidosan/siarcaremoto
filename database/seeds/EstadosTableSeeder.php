@@ -70,6 +70,12 @@ class EstadosTableSeeder extends Seeder
 		'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
 		));
 
+		\DB::table('estado_seguimientos')->insert(array (
+		'estado'  => 'ac',
+		'nombre_estado'  => 'acuerdo',
+		'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
+		'updated_at' => Carbon::now()->format('Y-m-d H:i:s')
+		));
 
 		
 

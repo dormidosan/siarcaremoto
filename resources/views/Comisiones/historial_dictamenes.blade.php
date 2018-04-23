@@ -52,7 +52,7 @@
                     <th>Codigo reunion</th>
                     <th>Nombre Dictamen</th>
                     <th>Fecha Creacion</th>
-                    <th colspan="2">Accion</th>
+                    <th>Accion</th>
                 </tr>
                 </thead>
 
@@ -85,12 +85,8 @@
                                 </td>
                             </tr>
                         @endif
-                  
-                @empty <!-- $$$$$$$$$$$$$ -->
-                    
-                        <p style="color: red ;">No hay criterios de busqueda</p>
-                    
-                @endforelse <!-- $$$$$$$$$$$$$ -->
+                @empty
+                @endforelse
 
                 </tbody>
 

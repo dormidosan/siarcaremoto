@@ -5,6 +5,9 @@
     <link href="{{ asset('libs/file/themes/explorer/theme.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
+    <link rel="stylesheet" href="{{ asset("libs/pretty-checkbox/pretty-checkbox.min.css") }}">
+    <link href="{{ asset("libs/MaterialDesign/css/materialdesignicons.css") }}" media="all" rel="stylesheet"
+          type="text/css"/>
 @endsection
 
 @section('breadcrumb')
@@ -70,24 +73,45 @@
                 <div class="row">
                     <div class="col-lg-6 col-sm-6 col-md-6">
                         <div class="form-group">
-                            <label>Seleccione Tipo Documento</label>
+                            <label>Seleccione Tipo Documento <span class="text-red">*</span></label>
                             {!! Form::select('tipo_documentos',$tipo_documentos,null,['id'=>'tipo_documentos', 'class'=>'form-control', 'required'=>'required', 'placeholder' => 'Seleccione tipo...']) !!}
-                            <input type="checkbox" name="privado" value="1"> <span style="color:red"> Documento privado<span> <br>
+                            <!--input type="checkbox" name="privado" value="1"> <span style="color:red"> Documento privado</span><br>-->
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6 col-md-6">
                         <div class="form-group">
-                            <label for="documento">Seleccione documento (1)</label>
+                            <label for="documento">Seleccione documento (1) <span class="text-red">*</span></label>
                             <div class="file-loading">
 
                                 <input id="documento_jd" name="documento_jd" type="file" required="required"
-                                       data-show-preview="false"  accept=".doc, .docx, .pdf, .xls, .xlsx">
+                                       data-show-preview="false"  accept=".pdf">
                             </div>
 
                         </div>
                     </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-6 col-sm-12 col-md-12">
+                        <div class="pretty p-icon p-smooth">
+                            <input type="checkbox" name="privado" value="1"/>
+                            <div class="state p-success">
+                                <i class="icon mdi mdi-check"></i>
+                                <label style="font-weight: bold">Documento privado</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-lg-12 col-sm-12 col-md-12 text-center">
                         <input type="submit" class="btn btn-primary" name="Guardar" id="Guardar" value="Guardar">
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>

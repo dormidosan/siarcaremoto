@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Periodo;
 use App\Peticion;
+use App\Bitacora;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Routing\Redirector;
@@ -13,12 +14,16 @@ use App\TipoDocumento;
 use App\Documento;
 use Auth;
 use App\Http\Requests\DocumentoRequest;
+use Illuminate\Support\Facades\Route;
 
 
 class DocumentoController extends Controller
 {
     public function busqueda()
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
+        // ////////////////////
         $nombre_documento = null ;
         $tipo_documento = null ;
         $periodo = null;
@@ -43,12 +48,22 @@ class DocumentoController extends Controller
         ->with('nombre_documento', $nombre_documento)
         //->with('documentos', $documentos)
         ->with('disco', $disco);
+                // ////////////////////
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
+        
 
 
     }
 
     public function buscar_documentos(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
+        // ////////////////////
         //se obtienen los inputs
         //dd($request->all());
         $nombre_documento = $request->get("nombre_documento");
@@ -61,21 +76,6 @@ class DocumentoController extends Controller
         $tipo_documentos = TipoDocumento::where('id', '!=', '0')->pluck('tipo', 'id');
         $periodos = Periodo::where('id', '!=', '0')->pluck('nombre_periodo', 'id');
 
-
-        /*if (empty($periodo)) {
-            $documentos = Documento::leftJoin("seguimientos", "seguimientos.documento_id", "=", "documentos.id")
-                ->join("peticiones", "seguimientos.peticion_id", "=", "peticiones.id")
-                ->where("documentos.tipo_documento_id", $tipo_documento)
-                ->orWhere("documentos.nombre_documento", "LIKE", "%" . $nombre_documento . "%")
-                ->orWhere("peticiones.descripcion", "LIKE", "%" . $descripcion . "%")
-                ->get();
-        } else {
-            $documentos = Documento::leftJoin("seguimientos", "seguimientos.documento_id", "=", "documentos.id")
-                ->join("peticiones", "seguimientos.peticion_id", "=", "peticiones.id")
-                ->where("documentos.tipo_documento_id", $tipo_documento)
-                ->where("documentos.periodo_id", $periodo)
-                ->get();
-        }*/
 
         $documentos = Documento::query();
 
@@ -102,15 +102,49 @@ class DocumentoController extends Controller
         ->with('tipo_documento', $tipo_documento)
         ->with('tipo_documentos', $tipo_documentos)
         ->with('nombre_documento', $nombre_documento);
+                // ////////////////////
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
+        
 
     }
 
 
     public function descargar_documento($id)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
+        // ////////////////////
         //dd();
         $documento = Documento::find($id);
         $ruta_documento = "../storage/documentos/" . $documento->path;
         return response()->download($ruta_documento);
+                // ////////////////////
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
+        
+    }
+
+
+    public function guardar_bitacora($accion,$evento)
+    {
+        if ( !(Auth::guest()) ) {
+        $bitacora = new Bitacora();
+        $bitacora->user_id = Auth::user()->id;
+        $bitacora->accion = $accion;
+        $bitacora->fecha = Carbon::now();
+        $bitacora->hora = Carbon::now();
+        $bitacora->comentario = $evento;
+
+        $bitacora->save();
+        }
+        return 0;
+
     }
 }

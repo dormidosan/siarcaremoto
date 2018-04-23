@@ -51,6 +51,14 @@
                         </button>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
+                    </div>
+                </div>
             </form>
         </div>
     </div>
@@ -187,8 +195,13 @@
         }
     </script>
 
-@endsection @section("lobibox") @if(Session::has('success'))
-    <script>
-        notificacion("Exito", "{{ Session::get('success') }}", "success");
-    </script>
-@endif @endsection
+@endsection
+
+@section("lobibox")
+    @if(Session::has('success'))
+        <script>
+            notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
+        </script>
+    @endif
+@endsection

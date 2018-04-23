@@ -30,6 +30,11 @@ class User extends Authenticatable
         return $this->hasMany('App\Asambleista');
     }
 
+    public function bitacoras()
+    {
+        return $this->hasMany('App\Bitacora');
+    }
+
     //LLAVES FORANEAS
 	public function persona()
     {

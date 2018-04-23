@@ -17,9 +17,12 @@ use App\Peticion;
 use App\Periodo;
 use App\Seguimiento;
 use App\EstadoSeguimiento;
+use App\Bitacora;
+use Auth;
 use App\Http\Requests\PeticionRequest;
 use Mail;
 use Session;
+use Illuminate\Support\Facades\Route;
 
 class PeticionController extends Controller
 {
@@ -28,22 +31,38 @@ class PeticionController extends Controller
 
     public function registrar_peticion(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $peticion = Peticion::where('estado_peticion_id', '=', 0)->first(); // DEVUELVE CERO
         return view('General.registro_peticion')
-            ->with('peticion', $peticion);
+            ->with('peticion', $peticion);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function listado_peticiones()
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $peticiones = Peticion::where('id', '!=', 0)->orderBy('estado_peticion_id', 'ASC')->orderBy('updated_at', 'ASC')->get();
 
         return view('General.listado_peticiones')
-            ->with('peticiones', $peticiones);
+            ->with('peticiones', $peticiones);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
 
     public function registrar_peticion_post(Request $request, Redirector $redirect)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
 
         $disco = "../storage/documentos/";
         $documentos_id = array();
@@ -55,7 +74,7 @@ class PeticionController extends Controller
         $peticion->codigo = hash("crc32", microtime(), false);
         //$peticion->nombre = $request->nombre;
         $peticion->descripcion = $request->descripcion;
-        $peticion->peticionario = $request->peticionario;;
+        $peticion->peticionario = $request->peticionario;
         $peticion->fecha = Carbon::now();
         $peticion->correo = $request->correo;
         $peticion->telefono = $request->telefono;
@@ -146,24 +165,45 @@ class PeticionController extends Controller
 
         return view('General.registro_peticion')
             ->with('disco', $disco)
-            ->with('peticion', $peticion);
+            ->with('peticion', $peticion);      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function monitoreo_peticion()
     {
-        return view("General.monitoreo_peticion", array("peticionBuscada" => ""));
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
+        return view("General.monitoreo_peticion", array("peticionBuscada" => ""));      
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function consultar_estado_peticion(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $peticionBuscada = Peticion::where("codigo", $request->get("codigo_peticion"))->first();
         $disco = "../storage/documentos/";
         return view("General.monitoreo_peticion", array("peticionBuscada" => $peticionBuscada,"disco"=>$disco));
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
 
     public function guardarDocumento($doc, $tipo, $destino)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $archivo = $doc;
         $documento = new Documento();
         $documento->nombre_documento = $archivo->getClientOriginalName();
@@ -180,6 +220,11 @@ class PeticionController extends Controller
         $documento->path = $ruta;
         $documento->save();
         return $documento;
+        } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
 
     }
@@ -201,6 +246,22 @@ class PeticionController extends Controller
 
             return 0;
         
+    }
+
+    public function guardar_bitacora($accion,$evento)
+    {
+        if ( !(Auth::guest()) ) {
+        $bitacora = new Bitacora();
+        $bitacora->user_id = Auth::user()->id;
+        $bitacora->accion = $accion;
+        $bitacora->fecha = Carbon::now();
+        $bitacora->hora = Carbon::now();
+        $bitacora->comentario = $evento;
+
+        $bitacora->save();
+        }
+        return 0;
+
     }
 
 

@@ -44,7 +44,7 @@
                         <div class="row">
                             <div class="col-lg-12 col-sm-12 col-md-12">
                                 <div class="form-group">
-                                    <label for="asambleistas">Asambleista</label>
+                                    <label for="asambleistas">Asambleista <span class="text-red">*</span></label>
                                     <select id="asambleistas" name="asambleistas[]" class="form-control"
                                             multiple="multiple">
                                         @foreach($asambleistas as $asambleista)
@@ -63,8 +63,15 @@
                                 </button>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-md-12">
+                                <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                                </div>
+                            </div>
+                        </div>
                     </form>
-                    <br>
 
                     @if(empty($ultimos_ingresos)!=true)
                         <div class="panel panel-success">

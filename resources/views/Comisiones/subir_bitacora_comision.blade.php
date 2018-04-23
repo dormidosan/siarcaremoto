@@ -5,7 +5,8 @@
     <link href="{{ asset('libs/file/themes/explorer/theme.min.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
-    <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
+    <link rel="stylesheet"
+          href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
 
     <style>
@@ -72,7 +73,7 @@
 
                     <div class="col-lg-12 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label for="documento">Seleccione bitacora (1)</label>
+                            <label for="documento">Seleccione bitacora (1) <span class="text-red">*</span></label>
                             <div class="file-loading">
                                 <input id="documento_comision" name="documento_comision" type="file" required="required"
                                        data-show-preview="false" accept=".doc, .docx, .pdf, .xls, .xlsx">
@@ -82,6 +83,14 @@
                     <div class="col-lg-12 col-sm-12 col-md-12 text-center">
                         <div class="form-group">
                             <input type="submit" class="btn btn-primary" name="guardar" id="guardar" value="Aceptar">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
                         </div>
                     </div>
                 </div>
@@ -170,9 +179,9 @@
                     showDrag: false
                 },
                 hideThumbnailContent: true
-            }).on('change', function(event) {
+            }).on('change', function (event) {
                 $('#guardar_bitacora_comision').formValidation('revalidateField', 'documento_comision');
-            }).on('filecleared', function(event) {
+            }).on('filecleared', function (event) {
                 $('#guardar_bitacora_comision').formValidation('revalidateField', 'documento_comision');
             });
 

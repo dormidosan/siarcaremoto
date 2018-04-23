@@ -54,8 +54,10 @@
                 {{ csrf_field() }}
                 <div class="row">
                     <div class="col-lg-3 col-sm-12 col-md-3">
-                        <label>Periodo AGU</label>
-                        {!! Form::select('periodo',$periodos,$periodo,['id'=>'periodo','name'=>'periodo','class'=>'form-control','requiered'=>'required','placeholder'=>'seleccione periodo']) !!}
+                        <div class="form-group">
+                            <label>Periodo AGU <span class="text-red">*</span></label>
+                            {!! Form::select('periodo',$periodos,$periodo,['id'=>'periodo','name'=>'periodo','class'=>'form-control','requiered'=>'required','placeholder'=>'seleccione periodo']) !!}
+                        </div>
                     </div>
 
 
@@ -64,6 +66,15 @@
                 <div class="row">
                     <div class="col-lg-12 text-center">
                         <button type="submit" id="buscar" name="buscar" class="btn btn-primary">Buscar</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -225,11 +236,13 @@
     @if(Session::has('success'))
         <script>
             notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{ Session::forget('success') }}
         </script>
     @endif
     @if(Session::has('warning'))
         <script>
-            notificacion("Exito", "{{ Session::get('warning') }}", "warning");
+            notificacion("Error", "{{ Session::get('warning') }}", "warning");
+            {{ Session::forget('warning') }}
         </script>
     @endif
 @endsection

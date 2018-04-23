@@ -34,7 +34,7 @@
                 <div class="row">
                     <div class="col-lg-12 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label for="documento">Seleccione acta plenaria (1)</label>
+                            <label for="documento">Seleccione acta plenaria (1) <span class="text-red">*</span></label>
                             <div class="file-loading">
 
                                 <input id="documento_jd" name="documento_jd" type="file" required="required"
@@ -48,8 +48,16 @@
                 <div class="row text-center">
                     <div class="col-lg-12 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label></label>
                             <input type="submit" class="btn btn-success" name="guardar" id="guardar" value="Aceptar">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
                         </div>
                     </div>
                 </div>

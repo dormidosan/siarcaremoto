@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
     <link rel="stylesheet"
           href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
 
     <style>
         .dataTables_wrapper.form-inline.dt-bootstrap.no-footer > .row {
@@ -65,13 +66,13 @@
                 <div class="row">
                     <div class="col-lg-6 col-sm-6 col-md-6">
                         <div class="form-group">
-                            <label>Seleccione comision</label>
+                            <label>Seleccione comision <span class="text-red">*</span></label>
                             {!! Form::select('comisiones',$comisiones,null, ['id'=>'comision>', 'class'=>'form-control', 'required'=>'required', 'placeholder' => 'Seleccione comision...']) !!}
                         </div>
                     </div>
                     <div class="col-lg-6 col-sm-6 col-md-6">
                         <div class="form-group">
-                            <label for="descripcion">Descripcion</label>
+                            <label for="descripcion">Descripcion <span class="text-red">*</span></label>
                             <textarea name="descripcion" type="text" class="form-control" id="descripcion"
                                       placeholder="Ingrese una breve descripcion" required></textarea>
                         </div>
@@ -80,8 +81,15 @@
                 <div class="row text-center">
                     <div class="col-lg-12 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label></label>
                             <input type="submit" class="btn btn-success" name="Guardar" value="Asignar">
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
                         </div>
                     </div>
                 </div>
@@ -140,6 +148,8 @@
 
     <script src="{{ asset('libs/adminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
 @endsection
 
 @section("scripts")
@@ -193,6 +203,31 @@
                 "order": [[0, 'asc'], [2, 'asc']],
                 "displayLength": 25,
                 "paging": true
+            });
+
+            $('#enlazar_comision').formValidation({
+                framework: 'bootstrap',
+                icon: {
+                    valid: 'glyphicon glyphicon-ok',
+                    invalid: 'glyphicon glyphicon-remove',
+                    validating: 'glyphicon glyphicon-refresh'
+                },
+                fields: {
+                    comisiones: {
+                        validators: {
+                            notEmpty: {
+                                message: 'La comision es requerida'
+                            }
+                        }
+                    },
+                    descripcion: {
+                        validators: {
+                            notEmpty: {
+                                message: 'La descripcion es requerido'
+                            }
+                        }
+                    }
+                }
             });
         });
     </script>

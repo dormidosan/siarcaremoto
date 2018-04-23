@@ -114,9 +114,9 @@ class VariablesTableSeeder extends Seeder
 
         \DB::table('comisiones')->insert(array(
             'codigo' => 'clg',
-            'nombre' => 'Comisión de legislación',
+            'nombre' => 'Comision de legislacion',
             'permanente' => '1',
-            'descripcion' => 'comision de estudio de legislación',
+            'descripcion' => 'comision de estudio de legislacion',
             'activa' => '1',
             'especial' => '0',
             'created_at' => Carbon::now()->format('Y-m-d H:i:s'),
@@ -125,7 +125,7 @@ class VariablesTableSeeder extends Seeder
 
         \DB::table('comisiones')->insert(array(
             'codigo' => 'ccn',
-            'nombre' => 'Comisión de convenios',
+            'nombre' => 'Comision de convenios',
             'permanente' => '1',
             'descripcion' => 'comision de trata de convenios',
             'activa' => '1',
@@ -136,7 +136,7 @@ class VariablesTableSeeder extends Seeder
 
         \DB::table('comisiones')->insert(array(
             'codigo' => 'cdc',
-            'nombre' => 'Comisión de comunicaciones',
+            'nombre' => 'Comision de comunicaciones',
             'permanente' => '1',
             'descripcion' => 'comision de fomento de comunicaciones',
             'activa' => '1',
@@ -147,7 +147,7 @@ class VariablesTableSeeder extends Seeder
 
         \DB::table('comisiones')->insert(array(
             'codigo' => 'ccu',
-            'nombre' => 'Comisión de cultura',
+            'nombre' => 'Comision de cultura',
             'permanente' => '1',
             'descripcion' => 'comision de proteccion de cultura',
             'activa' => '1',
@@ -158,7 +158,7 @@ class VariablesTableSeeder extends Seeder
 
         \DB::table('comisiones')->insert(array(
             'codigo' => 'cds',
-            'nombre' => 'Comisión de salud',
+            'nombre' => 'Comision de salud',
             'permanente' => '1',
             'descripcion' => 'comision de cuido de salud estudiantil',
             'activa' => '1',
@@ -169,7 +169,7 @@ class VariablesTableSeeder extends Seeder
 
         \DB::table('comisiones')->insert(array(
             'codigo' => 'cse',
-            'nombre' => 'Comisión de seguimiento de las autoridades electas',
+            'nombre' => 'Comision de seguimiento de las autoridades electas',
             'permanente' => '1',
             'descripcion' => 'comision para control de elecciones',
             'activa' => '1',
@@ -180,7 +180,7 @@ class VariablesTableSeeder extends Seeder
 
         \DB::table('comisiones')->insert(array(
             'codigo' => 'cae',
-            'nombre' => 'Comisión de asociaciones estudiantiles',
+            'nombre' => 'Comision de asociaciones estudiantiles',
             'permanente' => '1',
             'descripcion' => 'comision de estudio de asociaciones',
             'activa' => '1',
@@ -191,7 +191,7 @@ class VariablesTableSeeder extends Seeder
 
         \DB::table('comisiones')->insert(array(
             'codigo' => 'cpr',
-            'nombre' => 'Comisión de presupuesto',
+            'nombre' => 'Comision de presupuesto',
             'permanente' => '1',
             'descripcion' => 'comision de prespuesto y dinero',
             'activa' => '1',
@@ -202,7 +202,7 @@ class VariablesTableSeeder extends Seeder
 
         \DB::table('comisiones')->insert(array(
             'codigo' => 'cma',
-            'nombre' => 'Comisión de medio ambiente',
+            'nombre' => 'Comision de medio ambiente',
             'permanente' => '0',
             'descripcion' => 'comision control de medio ambiente',
             'activa' => '1',

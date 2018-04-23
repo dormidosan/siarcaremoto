@@ -71,19 +71,19 @@
                                                         @endif
                                                         <td style="vertical-align: middle">
                                                             @if($asambleista->hoja_id)
-                                                               <a  class="btn btn-success btn-xs"
-                                                               href="<?= $disco . $asambleista->hoja->path; ?>"
-                                                               role="button" target="_blank">Ver</a>
+                                                                <a class="btn btn-success btn-xs"
+                                                                   href="<?= $disco . $asambleista->hoja->path; ?>"
+                                                                   role="button" target="_blank">Ver</a>
 
                                                             @else
                                                                 <a disabled class="btn btn-info btn-xs"
-                                                               href="#"
-                                                               role="button">Ver</a>
-                                                            @endif
-                                                            
-                                                            
-                                                               
-                                                            <!-- <a class="btn btn-success btn-xs"
+                                                                   href="#"
+                                                                   role="button" data-toggle="tooltip" data-placement="bottom" title="Asambleista no posee hoja de vida">Ver</a>
+                                                        @endif
+
+
+
+                                                        <!-- <a class="btn btn-success btn-xs"
                                                                href="descargar_documento-/-<-?-= $asambleista->ruta; ?>"
                                                                role="button">Descargar</a> -->
                                                         </td>
@@ -113,4 +113,14 @@
             </div>
         </div>
     </div>
+@endsection
+
+
+@section("scripts")
+    <script type="text/javascript">
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip();
+        });
+    </script>
+
 @endsection

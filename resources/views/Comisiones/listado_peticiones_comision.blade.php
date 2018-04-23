@@ -1,7 +1,19 @@
 @extends('layouts.app')
 @section('styles')
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
+    <!-- Datatables-->
+    <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
+    <link rel="stylesheet"
+          href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
 
+    <style>
+        .dataTables_wrapper.form-inline.dt-bootstrap.no-footer > .row {
+            margin-right: 0;
+            margin-left: 0;
+        }
+
+
+    </style>
 @endsection
 
 @section('breadcrumb')
@@ -31,18 +43,23 @@
                 </form>
             </div>
             <div class="table-responsive">
-                <table class="table text-center table-bordered hover">
+                <table id="tabla" class="table text-center table-striped table-bordered table-hover table-condensed display" style="width: 100%">
                     <thead>
+                    <tr>
+                        <th colspan="7"></th>
+                        <th colspan="3">Accion</th>
+                    </tr>
                     <tr>
                         <th>#</th>
                         <th>Codigo</th>
                         <th>Descripcion</th>
                         <th>Fecha de creación</th>
-                        {{-- <th>Fecha actual</th> --}}
                         <th>Peticionario</th>
                         <th>Ultima asignacion</th>
                         <th>Visto anteriormente por</th>
-                        <th colspan="3">Acción</th>
+                        <th>Ver</th>
+                        <th>Subir Documento</th>
+                        <th>Retirar Peticion</th>
                     </tr>
                     </thead>
                     <tbody>
@@ -53,7 +70,6 @@
                             <td>{{ $peticion->codigo }}</td>
                             <td>{{ $peticion->descripcion }}</td>
                             <td>{{ \Carbon\Carbon::parse($peticion->fecha)->format('d-m-Y h:i A') }}</td>
-                            {{-- <td>{{ \Carbon\Carbon::now() }}</td>--}}
                             <td>{{ $peticion->peticionario }}</td>
                             <td>
                                 {{-- Ultima asignacion --}}
@@ -124,6 +140,9 @@
 @section("js")
     <script src="{{ asset('libs/utils/utils.js') }}"></script>
     <script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
+    <!-- Datatables -->
+    <script src="{{ asset('libs/adminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
 @endsection
 
 @section("lobibox")
@@ -134,5 +153,42 @@
             {{ Session::forget('success') }}
         </script>
     @endif
+
+@endsection
+
+@section("scripts")
+    <script type="text/javascript">
+        $(function () {
+            var oTable = $('#tabla').DataTable({
+                language: {
+                    "sProcessing": "Procesando...",
+                    "sLengthMenu": "Mostrar _MENU_ registros",
+                    "sZeroRecords": "No se encontraron resultados",
+                    "sEmptyTable": "Ningún dato disponible en esta tabla",
+                    "sInfo": "Mostrando registros del _START_ al _END_ de un total de _TOTAL_ registros",
+                    "sInfoEmpty": "Mostrando registros del 0 al 0 de un total de 0 registros",
+                    "sInfoFiltered": "(filtrado de un total de _MAX_ registros)",
+                    "sInfoPostFix": "",
+                    "sSearch": "Buscar:",
+                    "sUrl": "",
+                    "sInfoThousands": ",",
+                    "sLoadingRecords": "Cargando...",
+                    "oPaginate": {
+                        "sFirst": "Primero",
+                        "sLast": "Último",
+                        "sNext": "Siguiente",
+                        "sPrevious": "Anterior"
+                    },
+                    "oAria": {
+                        "sSortAscending": ": Activar para ordenar la columna de manera ascendente",
+                        "sSortDescending": ": Activar para ordenar la columna de manera descendente"
+                    }
+                },
+                responsive: true,
+                columnDefs: [{orderable: false, targets: [1, 2, 3, 4, 5, 6, 7,8,9]}],
+                order: [[0, 'asc']]
+            });
+        });
+    </script>
 
 @endsection

@@ -29,7 +29,7 @@
                     <form id="agregar_perfil" name="agregar_perfil" class="form-horizontal">
                         {{ csrf_field() }}
                         <div class="form-group">
-                            <label for="perfil" class="col-sm-2 control-label">Nuevo perfil</label>
+                            <label for="perfil" class="col-sm-2 control-label">Nuevo perfil <span class="text-red"></span></label>
                             <div class="col-sm-10">
                                 <input class="form-control" id="perfil" name="perfil" placeholder="Ingrese nuevo perfil"
                                        required>
@@ -38,6 +38,14 @@
                         <div class="form-group">
                             <div class="text-center">
                                 <button type="button" id="btn_agregar_perfil" class="btn btn-success" onclick="AgregarPerfil()">Agregar Perfil</button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-lg-12 col-sm-12 col-md-12">
+                                <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                                </div>
                             </div>
                         </div>
                     </form>

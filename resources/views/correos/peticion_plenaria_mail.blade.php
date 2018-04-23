@@ -6,10 +6,12 @@
 </head>
 <body>
 <pre style="font-family: Arial, Verdana; font-size: 16px;">
-Peticion de Asamblea General Universitaria con acuerdo disponible 
+Peticion de Asamblea General Universitaria, agendada a plenaria
 Codigo de peticion : <strong>{!!$peticion->codigo!!} </strong>
 
-Se le informa que la peticion se le ha asignado acuerdo   el  <strong>{{ $fecha }} </strong> a las <strong>{{ $hora }} </strong> 
+Se le informa que la peticion se le ha asignado a la siguiente plenaria   el  <strong>{{ $fecha }} </strong> a las <strong>{{ $hora }} </strong> 
+
+La fecha programada para la plenaria es el : <strong>{{ $fecha_agenda }} </strong> 
 
 Se les recuerda que pueden revisar las peticion y llevar el seguimiento 
 en el sitio  <a href="http://138.197.73.192/peticiones/monitoreo_peticion">Enlace a Siarcaf</a>  utilizando el codigo de la peticion proporcionado

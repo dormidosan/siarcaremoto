@@ -1,296 +1,310 @@
 @extends('layouts.app')
 
 @section('styles')
-<link rel="stylesheet" href="{{ asset('libs/animate/animate.css') }}">
-<link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
-<link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
-<link href="{{ asset('libs/file/css/fileinput.min.css') }}" rel="stylesheet">
-<link href="{{ asset('libs/file/themes/explorer/theme.min.css') }}" rel="stylesheet">
-<link rel="stylesheet" href="{{ asset('libs/datepicker/css/bootstrap-datepicker.min.css') }}">
-<link rel="stylesheet" href="{{ asset('libs/datetimepicker/css/bootstrap-datetimepicker.min.css') }}">
-<style>
-.password-progress {
-    margin-top: 10px;
-    margin-bottom: 0;
-}
-</style>
+    <link rel="stylesheet" href="{{ asset('libs/animate/animate.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
+    <link href="{{ asset('libs/file/css/fileinput.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('libs/file/themes/explorer/theme.min.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('libs/datepicker/css/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/datetimepicker/css/bootstrap-datetimepicker.min.css') }}">
+    <style>
+        .password-progress {
+            margin-top: 10px;
+            margin-bottom: 0;
+        }
+    </style>
 @endsection
 
 
 @section('breadcrumb')
-<section>
-    <ol class="breadcrumb">
-        <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
-        <li class="active">Datos de Usuario</li>
-    </ol>
-</section>
+    <section>
+        <ol class="breadcrumb">
+            <li><a href="{{ route("inicio") }}"><i class="fa fa-home"></i> Inicio</a></li>
+            <li class="active">Datos de Usuario</li>
+        </ol>
+    </section>
 @endsection
 
 @section("content")
-<div class="nav-tabs-custom">
-    <ul class="nav nav-tabs pull-right">
-        @if( (Auth::user()->rol_id == 3) or (Auth::user()->rol_id == 4))
-        <li class=""><a href="#tab_3-3" data-toggle="tab" aria-expanded="false">Actualizar hoja de vida</a></li>
-        @endif
-        <li class=""><a href="#tab_1-1" data-toggle="tab" aria-expanded="false">Actualizar Contraseña</a></li>
-        <li class="active"><a href="#tab_2-2" data-toggle="tab" aria-expanded="true">Datos Generales</a></li>
+    <div class="nav-tabs-custom">
+        <ul class="nav nav-tabs pull-right">
+            @if( (Auth::user()->rol_id == 3) or (Auth::user()->rol_id == 4))
+                <li class=""><a href="#tab_3-3" data-toggle="tab" aria-expanded="false">Actualizar hoja de vida</a></li>
+            @endif
+            <li class=""><a href="#tab_1-1" data-toggle="tab" aria-expanded="false">Actualizar Contraseña</a></li>
+            <li class="active"><a href="#tab_2-2" data-toggle="tab" aria-expanded="true">Datos Generales</a></li>
 
-    </ul>
-    <div class="tab-content">
-        <div class="tab-pane" id="tab_1-1">
+        </ul>
+        <div class="tab-content">
+            <div class="tab-pane" id="tab_1-1">
 
-            <div class="alert alert-warning alert-dismissible" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                <h4><i class="icon fa fa-warning"></i> Atencion</h4>
-                Para hacer efectivos los cambios, el sistema cerrara la
-                sesion y debe de loguarse en el sistema nuevamente
-            </div>
-
-            <form id="passwordForm" method="post" class="form-horizontal">
-                <div class="hidden">
-                    <label class="col-xs-3 control-label">Contraseña</label>
-                    <div class="col-xs-6">
-                        <input type="text" class="form-control" name="id_user" value="{{ Auth::user()->id }}"/>
-
-                    </div>
+                <div class="alert alert-warning alert-dismissible" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                    <h4><i class="icon fa fa-warning"></i> Atencion</h4>
+                    Para hacer efectivos los cambios, el sistema cerrara la
+                    sesion y debe de loguarse en el sistema nuevamente
                 </div>
-                <div class="form-group">
-                    <label class="col-xs-3 control-label">Contraseña</label>
-                    <div class="col-xs-6">
-                        <input type="password" class="form-control" name="password"/>
 
-                        <div class="progress password-progress">
-                            <div id="strengthBar" class="progress-bar" role="progressbar" style="width: 0;"></div>
+                <form id="passwordForm" method="post" class="form-horizontal">
+                    <div class="hidden">
+                        <label class="col-xs-3 control-label">Contraseña</label>
+                        <div class="col-xs-6">
+                            <input type="text" class="form-control" name="id_user" value="{{ Auth::user()->id }}"/>
+
                         </div>
                     </div>
-                </div>
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">Contraseña</label>
+                        <div class="col-xs-6">
+                            <input type="password" class="form-control" name="password"/>
 
-                <div class="form-group">
-                    <label class="col-xs-3 control-label">Repetir Contraseña</label>
-                    <div class="col-xs-6">
-                        <input type="password" class="form-control" name="repeated_password"/>
+                            <div class="progress password-progress">
+                                <div id="strengthBar" class="progress-bar" role="progressbar" style="width: 0;"></div>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-                <div class="form-group text-center">
-                    <div class="col-xs-5 col-xs-offset-3">
-                        <button type="submit" class="btn btn-primary">Aceptar</button>
+                    <div class="form-group">
+                        <label class="col-xs-3 control-label">Repetir Contraseña</label>
+                        <div class="col-xs-6">
+                            <input type="password" class="form-control" name="repeated_password"/>
+                        </div>
                     </div>
-                </div>
 
-            </form>
-        </div>
-        <div class="tab-pane active" id="tab_2-2">
+                    <div class="form-group text-center">
+                        <div class="col-xs-5 col-xs-offset-3">
+                            <button type="submit" class="btn btn-primary">Aceptar</button>
+                        </div>
+                    </div>
 
-            <div class="row">
-                <div class="col-lg-12 col-md-12">
-                    @if(Auth::user()->persona->foto == "")
-                    <img src="{{ asset('images/default-user.png')  }}" class="img-responsive center-block"
-                    style="height: 130px !important;"
-                    onclick="mostrarImagen('{{ Auth::user()->persona->foto }}')">
-                    @else
-                    <img src="{{ asset('../storage/fotos/'.Auth::user()->persona->foto) }}"
-                    class="img-responsive img-circle center-block"
-                    style="height: 130px !important;"
-                    alt="User Image" onclick="mostrarImagen('{{ Auth::user()->persona->foto }}')">
-                    @endif
-                </div>
+                </form>
             </div>
+            <div class="tab-pane active" id="tab_2-2">
 
-            <form class="form" id="actualizar_datos" method="post" action="{{ route("actualizar_datos") }}">
-                {{ csrf_field() }}
-                <br>
                 <div class="row">
-                    <div class="col-lg-12">
-                        <div class="row hidden">
-                            <div class="col-lg-12">
-                                <div class="form-group">
-                                    <label for="user_id_actualizar">User ID</label>
-                                    <input type="text" class="form-control"
-                                    id="user_id_actualizar"
-                                    name="user_id_actualizar" value="{{ $usuario->id }}">
+                    <div class="col-lg-12 col-md-12">
+                        @if(Auth::user()->persona->foto == "")
+                            <img src="{{ asset('images/default-user.png')  }}" class="img-responsive center-block"
+                                 style="height: 130px !important;"
+                                 onclick="mostrarImagen('{{ Auth::user()->persona->foto }}')">
+                        @else
+                            <img src="{{ asset('../storage/fotos/'.Auth::user()->persona->foto) }}"
+                                 class="img-responsive img-circle center-block"
+                                 style="height: 130px !important;"
+                                 alt="User Image" onclick="mostrarImagen('{{ Auth::user()->persona->foto }}')">
+                        @endif
+                    </div>
+                </div>
+
+                <form class="form" id="actualizar_datos" method="post" action="{{ route("actualizar_datos") }}">
+                    {{ csrf_field() }}
+                    <br>
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="row hidden">
+                                <div class="col-lg-12">
+                                    <div class="form-group">
+                                        <label for="user_id_actualizar">User ID</label>
+                                        <input type="text" class="form-control"
+                                               id="user_id_actualizar"
+                                               name="user_id_actualizar" value="{{ $usuario->id }}">
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label for="primer_nombre_actualizar">Primer Nombre</label>
-                                    <input type="text" class="form-control"
-                                    id="primer_nombre_actualizar"
-                                    name="primer_nombre_actualizar" value="{{ $usuario->persona->primer_nombre }}">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="primer_nombre_actualizar">Primer Nombre</label>
+                                        <input type="text" class="form-control"
+                                               id="primer_nombre_actualizar"
+                                               name="primer_nombre_actualizar"
+                                               value="{{ $usuario->persona->primer_nombre }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group {{ $errors->has('segundo_nombre') ? 'has-error' : '' }}">
+                                        <label for="segundo_nombre_actualizar">Segundo Nombre</label>
+                                        <input type="text" class="form-control"
+                                               id="segundo_nombre_actualizar"
+                                               name="segundo_nombre_actualizar"
+                                               value="{{ $usuario->persona->segundo_nombre }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="primer_apellido_actualizar">Primer Apellido</label>
+                                        <input type="text" class="form-control"
+                                               id="primer_apellido_actualizar"
+                                               name="primer_apellido_actualizar"
+                                               value="{{ $usuario->persona->primer_apellido }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="segundo_apellido_actualizar">Segundo Apellido</label>
+                                        <input type="text" class="form-control"
+                                               id="segundo_apellido_actualizar"
+                                               name="segundo_apellido_actualizar"
+                                               value="{{ $usuario->persona->segundo_apellido }}">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3">
-                                <div class="form-group {{ $errors->has('segundo_nombre') ? 'has-error' : '' }}">
-                                    <label for="segundo_nombre_actualizar">Segundo Nombre</label>
-                                    <input type="text" class="form-control"
-                                    id="segundo_nombre_actualizar"
-                                    name="segundo_nombre_actualizar" value="{{ $usuario->persona->segundo_nombre }}">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="correo_actualizar">Correo Electronico</label>
+                                        <input type="email" class="form-control" id="correo_actualizar"
+                                               name="correo_actualizar" value=" {{ $usuario->email }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="dui_actualizar">DUI</label>
+                                        <input type="text" class="form-control" id="dui_actualizar"
+                                               name="dui_actualizar" value="{{ $usuario->persona->dui }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="nit_actualizar">NIT</label>
+                                        <input type="text" class="form-control" id="nit_actualizar"
+                                               name="nit_actualizar" value="{{ $usuario->persona->nit }}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="fecha1_actualizar">Fecha Nacimiento</label>
+                                        <div class="input-group date fecha" id="fechaNacimiento_actualizar">
+                                            <input name="fecha1_actualizar" id="fecha1_actualizar"
+                                                   type="text" class="form-control"
+                                                   value="{{ date("d-m-Y",strtotime($usuario->persona->nacimiento)) }}"><span
+                                                    class="input-group-addon"><i
+                                                        class="glyphicon glyphicon-th"
+                                                        required="required"></i></span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label for="primer_apellido_actualizar">Primer Apellido</label>
-                                    <input type="text" class="form-control"
-                                    id="primer_apellido_actualizar"
-                                    name="primer_apellido_actualizar" value="{{ $usuario->persona->primer_apellido }}">
+                            <div class="row">
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="afp_actualizar">AFP</label>
+                                        <input type="text" class="form-control" id="afp_actualizar"
+                                               name="afp_actualizar" value="{{ $usuario->persona->afp }}">
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label for="segundo_apellido_actualizar">Segundo Apellido</label>
-                                    <input type="text" class="form-control"
-                                    id="segundo_apellido_actualizar"
-                                    name="segundo_apellido_actualizar" value="{{ $usuario->persona->segundo_apellido }}">
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label for="correo_actualizar">Correo Electronico</label>
-                                    <input type="email" class="form-control" id="correo_actualizar"
-                                    name="correo_actualizar" value=" {{ $usuario->email }}">
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label for="dui_actualizar">DUI</label>
-                                    <input type="text" class="form-control" id="dui_actualizar"
-                                    name="dui_actualizar" value="{{ $usuario->persona->dui }}">
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label for="nit_actualizar">NIT</label>
-                                    <input type="text" class="form-control" id="nit_actualizar"
-                                    name="nit_actualizar" value="{{ $usuario->persona->nit }}">
-                                </div>
-                            </div>
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label for="fecha1_actualizar">Fecha Nacimiento</label>
-                                    <div class="input-group date fecha" id="fechaNacimiento_actualizar">
-                                        <input name="fecha1_actualizar" id="fecha1_actualizar"
-                                        type="text" class="form-control" value="{{ date("d-m-Y",strtotime($usuario->persona->nacimiento)) }}"><span
-                                        class="input-group-addon"><i
-                                        class="glyphicon glyphicon-th"
-                                        required="required"></i></span>
+                                <div class="col-lg-3">
+                                    <div class="form-group">
+                                        <label for="cuenta_actualizar">Cuenta Bancaria</label>
+                                        <input type="text" class="form-control" id="cuenta_actualizar"
+                                               name="cuenta_actualizar" value="{{ $usuario->persona->cuenta }}">
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="row">
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label for="afp_actualizar">AFP</label>
-                                    <input type="text" class="form-control" id="afp_actualizar"
-                                    name="afp_actualizar" value="{{ $usuario->persona->afp }}">
+                    </div>
+                    <div class="row text-center">
+                        <button type="submit" id="submitButtonUpdate" class="btn btn-primary">Actualizar Datos
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="tab-pane" id="tab_3-3">
+
+                <table id="parametros"
+                       class="table table-striped table-bordered table-condensed table-hover text-center">
+                    <thead class="text-center">
+                    <tr>
+                        <td class="text-center">Asambleista</td>
+                        <td class="text-center">Nombre del documento</td>
+                        <td class="text-center">Accion</td>
+                    </tr>
+                    </thead>
+                    <tbody id="cuerpoTabla">
+                    <tr>
+                        <td>{{ $asambleista->user->persona->primer_nombre . " " . $asambleista->user->persona->segundo_nombre . " " . $asambleista->user->persona->primer_apellido . " " . $asambleista->user->persona->segundo_apellido }}</td>
+                        @if($asambleista->hoja_id)
+                            <td width="10%">{{ $asambleista->hoja->nombre }}</td>
+                        @else
+                            <td width="10%">N/A</td>
+                        @endif
+                        <td>
+                            @if($asambleista->hoja_id)
+                                <a class="btn btn-success btn-xs"
+                                   href="<?= $disco . $asambleista->hoja->path; ?>"
+                                   role="button" target="_blank">Ver</a>
+                            @else
+                                <a disabled class="btn btn-info btn-xs"
+                                   href="#"
+                                   role="button" data-toggle="tooltip" data-placement="bottom" title="Asambleista no posee hoja de vida">Ver</a>
+                            @endif
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <form class="form" id="actualizar_hoja_vida" method="post" action="{{ route('actualizar_hoja') }}"
+                      enctype="multipart/form-data">
+                    {{ csrf_field() }}
+                    <br>
+                    <input type="hidden" name="id_asambleista" id="id_asambleista" value="{{$asambleista->id}}">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label for="documento">Seleccione documento (1) PDF <span
+                                            class="text-red">*</span></label>
+                                <div class="file-loading">
+                                    <input id="hoja_vida" name="hoja_vida" type="file" required="required"
+                                           data-show-preview="false" accept=".pdf">
                                 </div>
+
                             </div>
-                            <div class="col-lg-3">
-                                <div class="form-group">
-                                    <label for="cuenta_actualizar">Cuenta Bancaria</label>
-                                    <input type="text" class="form-control" id="cuenta_actualizar"
-                                    name="cuenta_actualizar" value="{{ $usuario->persona->cuenta }}">
-                                </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="row text-center">
+                                <button type="submit" id="submitButtonUpdate" class="btn btn-primary">Actualizar
+                                    documento
+                                </button>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="row text-center">
-                    <button type="submit" id="submitButtonUpdate" class="btn btn-primary">Actualizar Datos
-                    </button>
-                </div>
-            </form>
-        </div>
-        <div class="tab-pane" id="tab_3-3">
-
-            <form class="form" id="actualizar_datos" method="post" action="{{ route('actualizar_hoja') }}" enctype="multipart/form-data">
-             {{ csrf_field() }}
-             <br>
-             <input type="hidden" name="id_asambleista" id="id_asambleista" value="{{$asambleista->id}}">
-             <div class="row">
-                <div class="col-lg-12">
-                    <table id="parametros"
-                    class="table table-striped table-bordered table-condensed table-hover text-center">
-                    <thead>
-                        <tr>
-                        </tr>
-                    </thead>
-                    <tbody id="cuerpoTabla">
-                        <tr>
-                            @if($asambleista->hoja_id)
-                                <td width="10%">{{ $asambleista->hoja->nombre }}</td>
-                            @else
-                                <td width="10%">N/A</td>
-                            @endif
-                            <td>{{ $asambleista->user->persona->primer_nombre . " " . $asambleista->user->persona->segundo_nombre . " " . $asambleista->user->persona->primer_apellido . " " . $asambleista->user->persona->segundo_apellido }}</td>
-                            <td>
-                                @if($asambleista->hoja_id)
-                                <a  class="btn btn-success btn-xs"
-                                href="<?= $disco . $asambleista->hoja->path; ?>"
-                                role="button">Ver</a>
-                                @else
-                                <a disabled class="btn btn-info btn-xs"
-                                href="#"
-                                role="button">Ver</a>
-                                @endif
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+                    <div class="row">
+                        <div class="col-lg-12 col-sm-12 col-md-12">
+                            <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
         </div>
-        <div class="row">
-          <div class="col-lg-8">    
-            <div class="form-group">
-                <label for="documento">Seleccione documento (1) PDF</label>
-                <div class="file-loading">
-
-                    <input id="hoja_vida" name="hoja_vida" type="file" required="required"
-                    data-show-preview="false"  accept=".pdf">
-                </div>
-
-            </div>
-        </div>
-        <div class="col-lg-4">
-           <div class="row text-center">
-            <button type="submit" id="submitButtonUpdate" class="btn btn-primary">Actualizar documento
-            </button>
-        </div>
+        <!-- /.tab-content -->
     </div>
-</div>
 
-</form>
-</div>
-</div>
-<!-- /.tab-content -->
-</div>
-
-@include("Modal.MostrarImagenModal")
+    @include("Modal.MostrarImagenModal")
 @endsection
 
 @section("js")
-<script src="{{ asset('libs/utils/utils.js') }}"></script>
-<script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
-<script src="{{ asset('libs/zxcvbn/zxcvbn.js') }}"></script>
-<script src="{{ asset('libs/adminLTE/plugins/mask/jquery.mask.min.js') }}"></script>
-<script src="{{ asset('libs/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
-<script src="{{ asset('libs/datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
-<script src="{{ asset('libs/datetimepicker/js/moment.min.js') }}"></script>
-<script src="{{ asset('libs/datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
-<script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
-<script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
-<script src="{{ asset('libs/file/js/fileinput.min.js') }}"></script>
-<script src="{{ asset('libs/file/themes/explorer/theme.min.js') }}"></script>
-<script src="{{ asset('libs/file/js/locales/es.js') }}"></script>
+    <script src="{{ asset('libs/utils/utils.js') }}"></script>
+    <script src="{{ asset('libs/lolibox/js/lobibox.min.js') }}"></script>
+    <script src="{{ asset('libs/zxcvbn/zxcvbn.js') }}"></script>
+    <script src="{{ asset('libs/adminLTE/plugins/mask/jquery.mask.min.js') }}"></script>
+    <script src="{{ asset('libs/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('libs/datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
+    <script src="{{ asset('libs/datetimepicker/js/moment.min.js') }}"></script>
+    <script src="{{ asset('libs/datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
+    <script src="{{ asset('libs/file/js/fileinput.min.js') }}"></script>
+    <script src="{{ asset('libs/file/themes/explorer/theme.min.js') }}"></script>
+    <script src="{{ asset('libs/file/js/locales/es.js') }}"></script>
 @endsection
 
 
 @section("scripts")
-<script type="text/javascript">
+    <script type="text/javascript">
 
         //es el metodo usado para extender el objeto jquery prototipe o $.fn lo q hace es q se le añade un metodo
         //a este objeto q hace posible q sea accedido de cualquier parte del DOM
@@ -328,7 +342,7 @@
         $(function () {
 
             var nowDate = new Date();
-            var today = nowDate.getDate()+'-'+(nowDate.getMonth()+1)+'-'+nowDate.getFullYear();
+            var today = nowDate.getDate() + '-' + (nowDate.getMonth() + 1) + '-' + nowDate.getFullYear();
 
             $('#dui').mask("00000000-0", {placeholder: "99999999-9"});
             $('#dui_actualizar').mask("00000000-0", {placeholder: "99999999-9"});
@@ -354,14 +368,14 @@
             $('#fecha1_actualizar').mask("99-99-9999", {placeholder: "dd-mm-yyyy"});
 
             $('#fechaNacimiento_actualizar')
-            .datepicker({
-                format: 'dd-mm-yyyy',
-                clearBtn: true,
-                language: "es",
-                autoclose: true,
-                todayHighlight: true,
-                toggleActive: true
-            }).on('changeDate', function (e) {
+                .datepicker({
+                    format: 'dd-mm-yyyy',
+                    clearBtn: true,
+                    language: "es",
+                    autoclose: true,
+                    todayHighlight: true,
+                    toggleActive: true
+                }).on('changeDate', function (e) {
                 // Revalidate the start date field
                 $('#actualizar_datos').formValidation('revalidateField', 'fecha1_actualizar');
             });
@@ -395,32 +409,32 @@
                                     }
 
                                     var result = zxcvbn(password),
-                                    score = result.score,
-                                    message = traducir_mensajes_contraseñas(result.feedback.warning) || 'La contraseña es debil';
+                                        score = result.score,
+                                        message = traducir_mensajes_contraseñas(result.feedback.warning) || 'La contraseña es debil';
 
                                     // Update the progress bar width and add alert class
                                     var $bar = $('#strengthBar');
                                     switch (score) {
                                         case 0:
-                                        $bar.attr('class', 'progress-bar progress-bar-danger')
-                                        .css('width', '1%');
-                                        break;
+                                            $bar.attr('class', 'progress-bar progress-bar-danger')
+                                                .css('width', '1%');
+                                            break;
                                         case 1:
-                                        $bar.attr('class', 'progress-bar progress-bar-danger')
-                                        .css('width', '25%');
-                                        break;
+                                            $bar.attr('class', 'progress-bar progress-bar-danger')
+                                                .css('width', '25%');
+                                            break;
                                         case 2:
-                                        $bar.attr('class', 'progress-bar progress-bar-danger')
-                                        .css('width', '50%');
-                                        break;
+                                            $bar.attr('class', 'progress-bar progress-bar-danger')
+                                                .css('width', '50%');
+                                            break;
                                         case 3:
-                                        $bar.attr('class', 'progress-bar progress-bar-warning')
-                                        .css('width', '75%');
-                                        break;
+                                            $bar.attr('class', 'progress-bar progress-bar-warning')
+                                                .css('width', '75%');
+                                            break;
                                         case 4:
-                                        $bar.attr('class', 'progress-bar progress-bar-success')
-                                        .css('width', '100%');
-                                        break;
+                                            $bar.attr('class', 'progress-bar progress-bar-success')
+                                                .css('width', '100%');
+                                            break;
                                     }
 
                                     // We will treat the password as an invalid one if the score is less than 3
@@ -552,7 +566,7 @@
                             date: {
                                 format: 'DD-MM-YYYY',
                                 max: today,
-                                message: 'Fecha de inicio no puede ser mayor que '+today
+                                message: 'Fecha de inicio no puede ser mayor que ' + today
                             }
                         }
                     },
@@ -596,23 +610,23 @@
             });
         });
 
-$('#actualizar_imagen').formValidation({
-    framework: 'bootstrap',
-    icon: {
-        valid: 'glyphicon glyphicon-ok',
-        invalid: 'glyphicon glyphicon-remove',
-        validating: 'glyphicon glyphicon-refresh'
-    },
-    fields: {
-        img: {
-            validators: {
-                notEmpty: {
-                    message: 'Seleccione la nueva imagen de perfil'
+        $('#actualizar_imagen').formValidation({
+            framework: 'bootstrap',
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                img: {
+                    validators: {
+                        notEmpty: {
+                            message: 'Seleccione la nueva imagen de perfil'
+                        }
+                    }
                 }
             }
-        }
-    }
-}).on('success.form.fv', function (e) {
+        }).on('success.form.fv', function (e) {
             // Prevent form submission
             e.preventDefault();
 
@@ -638,8 +652,47 @@ $('#actualizar_imagen').formValidation({
             });
         });
 
-$("#img").fileinput({
-    theme: "explorer",
+        $("#hoja_vida").fileinput({
+            theme: "explorer",
+            previewFileType: "pdf",
+            language: "es",
+            //minFileCount: 1,
+            maxFileCount: 1,
+            allowedFileExtensions: ['pdf'],
+            showUpload: false,
+            fileActionSettings: {
+                showRemove: true,
+                showUpload: false,
+                showZoom: true,
+                showDrag: false
+            },
+            hideThumbnailContent: true
+        }).on('change', function (event) {
+            $('#actualizar_hoja_vida').formValidation('revalidateField', 'hoja_vida');
+        }).on('filecleared', function (event) {
+            $('#actualizar_hoja_vida').formValidation('revalidateField', 'hoja_vida');
+        });
+
+        $('#actualizar_hoja_vida').formValidation({
+            framework: 'bootstrap',
+            icon: {
+                valid: 'glyphicon glyphicon-ok',
+                invalid: 'glyphicon glyphicon-remove',
+                validating: 'glyphicon glyphicon-refresh'
+            },
+            fields: {
+                hoja_vida: {
+                    validators: {
+                        notEmpty: {
+                            message: 'El documento es requerido'
+                        }
+                    }
+                }
+            }
+        });
+
+        $("#img").fileinput({
+            theme: "explorer",
             uploadAsync: false, //para enviar todos los archivos como uno solo
             language: "es",
             //minFileCount: 1,
@@ -675,62 +728,14 @@ $("#img").fileinput({
             $('#imagenModal').modal('show');
         }
 
-        $(function () {
-            $("#hoja_vida").fileinput({
-                theme: "explorer",
-                previewFileType: "pdf, xls, xlsx, doc, docx",
-                language: "es",
-                //minFileCount: 1,
-                maxFileCount: 1,
-                allowedFileExtensions: ['docx', 'doc', 'pdf', 'xls', 'xlsx'],
-                showUpload: false,
-                fileActionSettings: {
-                    showRemove: true,
-                    showUpload: false,
-                    showZoom: true,
-                    showDrag: false
-                },
-                hideThumbnailContent: true
-            }).on('change', function(event) {
-                $('#guardar_hoja_vida').formValidation('revalidateField', 'hoja_vida');
-            }).on('filecleared', function(event) {
-                $('#guardar_hoja_vida').formValidation('revalidateField', 'hoja_vida');
-            });
+            </script>
+@endsection
 
-            $('#guardar_hoja_vida').formValidation({
-                framework: 'bootstrap',
-                icon: {
-                    valid: 'glyphicon glyphicon-ok',
-                    invalid: 'glyphicon glyphicon-remove',
-                    validating: 'glyphicon glyphicon-refresh'
-                },
-                fields: {
-                    tipo_documentos: {
-                        validators: {
-                            notEmpty: {
-                                message: 'El tipo de documento es requerido'
-                            }
-                        }
-                    },
-                    hoja_vida: {
-                        validators: {
-                            notEmpty: {
-                                message: 'El documento es requerido'
-                            }
-                        }
-                    }
-                }
-            });
-
-        });
-    </script>
-    @endsection
-
-@section("lobibox") 
-@if(Session::has('success'))
-    <script>
-        notificacion("Exito", "{{ Session::get('success') }}", "success");
-        {{Session::forget('success')}}
-    </script>
-@endif 
+@section("lobibox")
+    @if(Session::has('success'))
+        <script>
+            notificacion("Exito", "{{ Session::get('success') }}", "success");
+            {{Session::forget('success')}}
+        </script>
+    @endif
 @endsection

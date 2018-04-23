@@ -139,14 +139,23 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-12 col-sm-12 col-md-12">
-                        <label for="mensaje">Cuerpo del Mensaje</label>
-                        <textarea name="mensaje" id="mensaje" class="form-control"></textarea>
+                        <div class="form-group">
+                            <label for="mensaje">Cuerpo del Mensaje <span class="text-red">*</span></label>
+                            <textarea name="mensaje" id="mensaje" class="form-control" required></textarea>
+                        </div>
                     </div>
                 </div>
-                <br>
                 <div class="row text-center">
                     <div class="col-lg-12 col-sm-12 col-md-12">
                         <button type="submit" class="btn btn-success">Enviar Convocatoria</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -233,7 +242,14 @@
                                 message: 'La hora de la sesion es requerida'
                             }
                         }
-                    }
+                    },
+                    mensaje: {
+                        validators: {
+                            notEmpty: {
+                                message: 'El contenido de la convocatoria es requerido'
+                            }
+                        }
+                    },
                 }
             });
         });

@@ -7,26 +7,38 @@ use App\Persona;
 use App\User;
 use App\Asambleista;
 use App\Hoja;
+use App\Bitacora;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use DateTime;
-
+use Carbon\Carbon;
 use App\Http\Requests;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Route;
 
 class UsuarioController extends Controller
 {
-    public function mostrar_datos_usuario()
+    public function mostrar_datos_usuario(Request $request)
     {
+        
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $user = User::find(Auth::user()->id);
         $asambleista = Asambleista::where('user_id','=',$user->id)->first();
         $disco = "../storage/hojas_vida/";
-        return view("Usuario.administrar_datos_usuario", ['usuario' => $user,"asambleista" => $asambleista,"disco"=>$disco]);
+        return view("Usuario.administrar_datos_usuario", ['usuario' => $user,"asambleista" => $asambleista,"disco"=>$disco]);       
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function actualizar_contraseña(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         if ($request->ajax()) {
             $user = User::find($request->id_user);
             $user->password = bcrypt($request->password);
@@ -34,11 +46,18 @@ class UsuarioController extends Controller
             $respuesta = new \stdClass();
             $respuesta->mensaje = (new Mensaje("Exito", "Contraseña actualizada con exito", "success"))->toArray();
             return new JsonResponse($respuesta);
+        }       
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
         }
     }
 
     public function actualizar_imagen(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         if ($request->ajax()) {
             $user = User::find(Auth::user()->id);
             $persona = Persona::find($user->persona_id);
@@ -58,12 +77,18 @@ class UsuarioController extends Controller
             $respuesta = new \stdClass();
             $respuesta->mensaje = (new Mensaje("Exito", "Imagen actualizada con exito", "success"))->toArray();
             return new JsonResponse($respuesta);
+        }       
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
         }
     }
 
     public function actualizar_datos(Request $request)
     {
-
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         if ($request->ajax()) {
             $respuesta = new \stdClass();
 
@@ -91,11 +116,18 @@ class UsuarioController extends Controller
             $respuesta->mensaje = (new Mensaje("Exito", "Usuario actualizado con exito", "success"))->toArray();
             return new JsonResponse($respuesta);
 
+        }       
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
         }
     }
 
     public function actualizar_hoja(Request $request)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         //dd($request->all());
         $asambleista = $request->id_asambleista;
         //$asambleista = Asambleista::where('id','=',$request->id_asambleista)->first();
@@ -105,13 +137,20 @@ class UsuarioController extends Controller
         $user = User::find(Auth::user()->id);
         $asambleista = Asambleista::where('user_id','=',$user->id)->where('activo','=',1)->first();
         $disco = "../storage/hojas_vida/";
-        return view("Usuario.administrar_datos_usuario", ['usuario' => $user,"asambleista" => $asambleista,"disco"=>$disco]);
+        return view("Usuario.administrar_datos_usuario", ['usuario' => $user,"asambleista" => $asambleista,"disco"=>$disco]);       
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
 
     public function guardarhoja($doc, $asambleista_id, $destino)
     {
+        try{
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),"ingreso");
         $archivo = $doc;
         $asambleista = Asambleista::where('id','=',$asambleista_id)->first();
         //$vieja_plantilla->nombre = $archivo->getClientOriginalName();
@@ -130,7 +169,28 @@ class UsuarioController extends Controller
         $asambleista->hoja_id = $hoja->id;
         $asambleista->save();
 
-        return $hoja->id;
+        return $hoja->id;       
+} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
+    }
+
+    public function guardar_bitacora($accion,$evento)
+    {
+        if ( !(Auth::guest()) ) {
+        $bitacora = new Bitacora();
+        $bitacora->user_id = Auth::user()->id;
+        $bitacora->accion = $accion;
+        $bitacora->fecha = Carbon::now();
+        $bitacora->hora = Carbon::now();
+        $bitacora->comentario = $evento;
+
+        $bitacora->save();
+        }
+        return 0;
+
     }
 
 }

@@ -22,13 +22,14 @@ use App\Documento;
 use Auth;
 use Dompdf\Dompdf;
 use Dompdf\Options;
+use Illuminate\Support\Facades\Route;
 
 class MailController extends Controller
 {
     //
     public function envio_convocatoria(Request $request)
     {
-
+try{
         if ($request->id_reunion) {
             $reunion = Reunion::where('id', '=', $request->id_reunion)->first();
             $comision = Comision::where('id', '=', $request->id_comision)->first();
@@ -49,11 +50,17 @@ class MailController extends Controller
                 ->with('agenda', $agenda)
                 ->with('jd', true);
         }
+    } 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
 
     }
 
     public function enviar_correo(Request $request)
     {
+        try{
         //dd($request->all());
         $mensaje = $request->mensaje;
         $usuario = Auth::user()->persona->primer_nombre .
@@ -112,7 +119,11 @@ class MailController extends Controller
         //dd('mail enviado');
         $request->session()->flash("Exito", 'Correos enviado con exito');
 
-        return view('correos.envio_convocatoria');
+        return view('correos.envio_convocatoria');} 
+        catch(\Exception $e){
+            $this->guardar_bitacora(Route::getCurrentRoute()->getPath(),$e->getMessage());
+            return view('errors.catch');
+        }
     }
 
     public function correos_reunion_junta_directiva($reunion, $comision, $lugar, $fecha, $hora, $mensaje, $usuario)
@@ -314,6 +325,19 @@ class MailController extends Controller
         $agenda->documentos()->attach($documento);
         return $documento->path;
 
+    }
+
+    public function guardar_bitacora($accion,$evento)
+    {
+        $bitacora = new Bitacora();
+        $bitacora->user_id = Auth::user()->id;
+        $bitacora->accion = $accion;
+        $bitacora->fecha = Carbon::now();
+        $bitacora->hora = Carbon::now();
+        $bitacora->comentario = $evento;
+
+        $bitacora->save();
+        return 0;
     }
 
 

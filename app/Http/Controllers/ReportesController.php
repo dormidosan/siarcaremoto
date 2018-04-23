@@ -220,8 +220,6 @@ class ReportesController extends Controller
 
     public function Reporte_permisos_temporales($tipo)
     {
-
-
         $parametros = explode('.', $tipo);
         $tipodes = $parametros[0];
         $idagenda = $parametros[1];
@@ -270,8 +268,6 @@ class ReportesController extends Controller
 
     public function Reporte_permisos_permanentes($tipo)
     {
-
-        //dd($tipo);
         $parametros = explode('.', $tipo);
         $tipodes = $parametros[0];
         $fechainicial = $parametros[1];
@@ -661,24 +657,8 @@ class ReportesController extends Controller
     public function buscar_permisos_temporales(ReportesPermisosTemporalesRequest $request)
     {
 
-
-        //  dd($request->all());
-
-
         $fechainicial = $request->fecha1;
         $fechafinal = $request->fecha2;
-
-        //dd(explode('/', $fechainicial)[0]);
-
-        //$date1 = Carbon::create(explode('/', $fechainicial)[2], explode('/', $fechainicial)[1], explode('/', $fechainicial)[0]);
-        //$date2 = Carbon::create(explode('/', $fechafinal)[2], explode('/', $fechafinal)[1], explode('/', $fechafinal)[0]);
-
-
-        /*  if($date1->gt($date2)){
-          $request->session()->flash("warning", "Fecha inicial no puede ser mayor a la fecha final");
-          return view("Reportes.Reporte_permisos_temporales")
-          ->with('resultados',NULL);
-          }*/
 
         $resultados = DB::table('agendas')
             ->join('asistencias', 'asistencias.agenda_id', '=', 'agendas.id')

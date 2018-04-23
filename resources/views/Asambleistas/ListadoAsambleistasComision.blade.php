@@ -72,7 +72,7 @@
                                                             @else
                                                                 <a disabled class="btn btn-info btn-xs"
                                                                href="#"
-                                                               role="button">Ver</a>
+                                                               role="button" data-toggle="tooltip" data-placement="bottom" title="Asambleista no posee hoja de vida">Ver</a>
                                                             @endif
                                                             
                                                             

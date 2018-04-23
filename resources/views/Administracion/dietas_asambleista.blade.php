@@ -1,11 +1,15 @@
 @extends('layouts.app')
 
 @section('styles')
+
+    <link rel="stylesheet" href="{{ asset('libs/datepicker/css/bootstrap-datepicker.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/datetimepicker/css/bootstrap-datetimepicker.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/select2/css/select2.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/lolibox/css/Lobibox.min.css') }}">
     <link rel="stylesheet" href="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.css') }}">
     <link rel="stylesheet"
           href="{{ asset('libs/adminLTE/plugins/datatables/responsive/css/responsive.bootstrap.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('libs/formvalidation/css/formValidation.min.css') }}">
 
     <style>
         .dataTables_wrapper.form-inline.dt-bootstrap.no-footer > .row {
@@ -52,14 +56,17 @@
                 <div class="row">
                     <div class="col-lg-4 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label for="lugar">Mes</label>
+                            <label for="mes">Mes <span class="text-red">*</span></label>
                             {!! Form::select('meses',$meses,null,['id'=>'mes', 'class'=>'form-control', 'required'=>'required', 'placeholder' => 'Seleccione mes...']) !!}
                         </div>
                     </div>
                     <div class="col-lg-4 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label for="lugar">Año</label>
-                            {!! Form::select('getRangeYear',$getRangeYear,null,['id'=>'mes', 'class'=>'form-control', 'required'=>'required', 'placeholder' => 'Seleccione año...']) !!}
+                            <label for="anio">Año <span class="text-red">*</span></span></label>
+                            <div class="input-group date anio">
+                                <input required="true" id="anio" name="getRangeYear" type="text" class="form-control"><span
+                                        class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                            </div>
                         </div>
                     </div>
 
@@ -75,6 +82,15 @@
                 <div class="row text-center">
                     <div class="col-lg-12 col-sm-12 col-md-12">
                         <button type="submit" class="btn btn-primary">Consultar</button>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-lg-12 col-sm-12 col-md-12">
+                        <div class="form-group">
+                            <span class="text-muted"><em><span
+                                            class="text-red">*</span> Indica campo obligatorio</em></span>
+                        </div>
                     </div>
                 </div>
             </form>
@@ -128,6 +144,13 @@
     <!-- Datatables -->
     <script src="{{ asset('libs/adminLTE/plugins/datatables/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('libs/adminLTE/plugins/datatables/dataTables.bootstrap.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/formValidation.min.js') }}"></script>
+    <script src="{{ asset('libs/formvalidation/js/framework/bootstrap.min.js') }}"></script>
+
+    <script src="{{ asset('libs/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
+    <script src="{{ asset('libs/datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
+    <script src="{{ asset('libs/datetimepicker/js/moment.min.js') }}"></script>
+    <script src="{{ asset('libs/datetimepicker/js/bootstrap-datetimepicker.min.js') }}"></script>
 @endsection
 
 
@@ -194,6 +217,42 @@
                     table.order([2, 'asc']).draw();
                 }
             });
+
+            $('#convocatoria')
+                .formValidation({
+                    framework: 'bootstrap',
+                    icon: {
+                        valid: 'glyphicon glyphicon-ok',
+                        invalid: 'glyphicon glyphicon-remove',
+                        validating: 'glyphicon glyphicon-refresh'
+                    },
+                    fields: {
+
+                        meses: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Seleccione un mes'
+                                }
+                            }
+                        },
+                        getRangeYear: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Seleccione un año'
+                                }
+                            }
+                        },
+                        asambleista_id: {
+                            validators: {
+                                notEmpty: {
+                                    message: 'Seleccione un asambleista'
+                                }
+                            }
+                        }
+
+
+                    }
+                });
         });
 
         $('#asambleista_id').select2({
@@ -202,9 +261,18 @@
             width: '100%'
         });
 
+        $('#anio').datepicker({
+            format: "yyyy",
+            startView: 2,
+            minViewMode: 2,
+            maxViewMode: 3,
+            autoclose: true
+        }).on('changeDate', function (e) {
+            $('#convocatoria').formValidation('revalidateField', 'getRangeYear');
+        });
+
         function modificar_estado(id, accion) {
 
-            console.log("A");
             $.ajax({
                 //se envia un token, como medida de seguridad ante posibles ataques
                 headers: {
