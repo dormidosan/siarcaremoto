@@ -74,7 +74,7 @@
 @endsection
 
 @section("js")
-    <script src="{{ asset('libs/charts/Chart.js') }}"></script>
+    <script src="{{ asset('libs/charts/chart.js') }}"></script>
     <script src="{{ asset('libs/datepicker/js/bootstrap-datepicker.min.js') }}"></script>
     <script src="{{ asset('libs/datepicker/locales/bootstrap-datepicker.es.min.js') }}"></script>
     <script src="{{ asset('libs/datetimepicker/js/moment.min.js') }}"></script>
