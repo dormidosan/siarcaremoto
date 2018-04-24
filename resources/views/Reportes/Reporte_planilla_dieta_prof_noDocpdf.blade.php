@@ -123,6 +123,7 @@
                                                                         
                                                
   <div id="p" style=" text-align: center;right: 25%;text-transform: uppercase;">
+    UNIVERSIDAD DE EL SALVADOR<br/>
     ASAMBLEA GENERAL UNIVERSITARIA<br/>
     DETALLE DE DIETA  DE ASAMBLEISTAS DEL MES {{$mes}} {{$anio}}<br/>
     SECTOR PROFESIONAL NO DOCENTE<br/>

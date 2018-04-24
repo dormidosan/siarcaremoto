@@ -23,6 +23,7 @@ use Illuminate\Http\JsonResponse;
 use App\Clases\Mensaje;
 use App\Periodo;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Comision;
 
 class ReportesController extends Controller
 {
@@ -31,6 +32,22 @@ class ReportesController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+    public function buscar_comisiones()
+    {
+
+        $periodo = null;
+        $resultados = NULL;
+        $periodos = Comision::where('id', '!=', '1')->pluck('nombre', 'id');
+
+        return view('Reportes.Reporte_asistencias_comisiones')
+            ->with('periodo', $periodo)
+            ->with('periodos', $periodos)
+            ->with('resultados', $resultados);
+
+
+    }
 
     public function buscar_periodo()
     {
@@ -46,6 +63,8 @@ class ReportesController extends Controller
 
 
     }
+
+
 
     public function buscar_cumple()
     {
@@ -230,8 +249,12 @@ class ReportesController extends Controller
             ->where('periodos.id', '=', $idperiodo)
             ->select('periodos.nombre_periodo')
             ->get();
+          $nombreperiodo =""; 
 
-        $nombreperiodo = $nombreperiodo1[0]->nombre_periodo;
+            foreach ($nombreperiodo1 as $nompre) {
+             $nombreperiodo = $nompre->nombre_periodo;
+            }
+        
         //dd($nombreperiodo);
 
 
@@ -317,7 +340,7 @@ class ReportesController extends Controller
         $view = \View::make('Reportes/Reporte_permisos_permanentes_pdf', compact('resultados', 'fechainicial', 'fechafinal'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
-        $pdf->loadHTML($view)->setPaper('letter', 'portrait')->setWarnings(false);
+        $pdf->loadHTML($view)->setPaper('letter', 'landscape')->setWarnings(false);
 
         $hoy = Carbon::now()->format('Y-m-d');
         if ($tipodes == 1) {
@@ -413,7 +436,7 @@ class ReportesController extends Controller
         }
 
 
-        $view = \View::make('Reportes/Reporte_asistencias_sesion_plenaria_pdf', compact('resultados', 'sector', 'nombreperiodo'))->render();
+        $view = \View::make('Reportes/Reporte_asistencias_sesion_plenaria_pdf', compact('resultados', 'sector', 'nombreperiodo','nombre_agenda'))->render();
         $pdf = \App::make('dompdf.wrapper');
         $pdf->getDomPDF()->set_option("enable_php", true);
         $pdf->loadHTML($view)->setPaper('letter', 'landscape')->setWarnings(false);
@@ -424,6 +447,59 @@ class ReportesController extends Controller
         }
         if ($tipodes == 2) {
             return $pdf->download('Asistencias_' . $nombre_agenda->codigo . '_' . $nombre_agenda->fecha . '_' . $hoy . '.pdf');
+        }
+
+        //return $pdf->stream('invoice.pdf'); //mostrar pdf en pagina
+        //return $pdf->download('invoice.pdf'); // descargar el archivo pdf
+
+
+    }
+
+
+    public function Reporte_asistencias_comisiones($tipo)
+    {
+
+        //dd($tipo);
+
+        $parametros = explode('.', $tipo);
+        $tipodes = $parametros[0];
+        $comision_id = $parametros[1];
+       
+
+        $reuniones = DB::table('reuniones')    
+            ->where('reuniones.id', '=',$comision_id)
+            ->first();
+        //dd($reuniones);
+    
+        $comision=DB::table('comisiones')    
+            ->where('comisiones.id', '=',$reuniones->comision_id)
+            ->first();
+
+        $resultados=DB::table('presentes')    
+            ->join('cargos', 'cargos.id', '=', 'presentes.cargo_id') 
+            ->join('asambleistas', 'cargos.asambleista_id', '=', 'asambleistas.id')
+            ->join('users', 'asambleistas.user_id', '=', 'users.id')
+            ->join('personas', 'users.persona_id', '=', 'personas.id')
+            ->join('facultades', 'asambleistas.facultad_id', '=', 'facultades.id')
+            ->select('personas.primer_apellido', 'personas.primer_nombre', 'personas.segundo_apellido',
+            'personas.segundo_nombre','facultades.nombre','asambleistas.propietario')
+            ->orderBy('facultades.nombre', 'desc')
+            ->where('presentes.reunion_id', '=',$reuniones->id)
+            ->get();
+
+            //dd($resultados);
+
+        $view = \View::make('Reportes/Reporte_asistencias_comisiones_pdf', compact('resultados','comision','reuniones'))->render();
+        $pdf = \App::make('dompdf.wrapper');
+        $pdf->getDomPDF()->set_option("enable_php", true);
+        $pdf->loadHTML($view)->setPaper('letter', 'portrait')->setWarnings(false);
+
+        $hoy = Carbon::now()->format('Y-m-d');
+        if ($tipodes == 1) {
+            return $pdf->stream('Asistencias_comision_'.$comision->nombre.'_'.$comision->codigo.'.pdf');
+        }
+        if ($tipodes == 2) {
+            return $pdf->download('Asistencias_comision_'.$comision->nombre.'_'.$comision->codigo.'.pdf');
         }
 
         //return $pdf->stream('invoice.pdf'); //mostrar pdf en pagina
@@ -825,8 +901,57 @@ class ReportesController extends Controller
             ->with('sector', $sector)
             ->with('tipo', $tipo);
 
+    }
 
-        return view("Reportes.Reporte_asistencias_sesion_plenaria", ['resultados' => NULL]);
+
+ public function buscar_asistencias_comisiones(ReportesAsistenciasRequest $request)
+    {
+
+
+        //dd($request->all());
+
+
+        $fechainicial = $request->fecha1;
+        $fechafinal = $request->fecha2;
+
+        $comision = $request->periodo;
+     
+
+        $resultados = DB::table('reuniones')
+            
+            ->where('reuniones.comision_id', '=', 
+            $comision)//1 por ser permisos temporales
+            ->where
+            ([
+                ['reuniones.inicio', '>=', $this->convertirfecha($fechainicial)],
+                ['reuniones.fin', '<=', $this->convertirfecha($fechafinal)]
+            ])
+            ->select('reuniones.id','reuniones.codigo', 'reuniones.lugar', 'reuniones.convocatoria')
+           
+            ->get();
+
+
+        if ($resultados == NULL) {
+
+            $request->session()->flash("warning", "No se encontraron registros");
+
+        } else {
+            $request->session()->flash("success", "Busqueda terminada con exito");
+        }
+
+        //dd($resultados);
+
+        $periodo = null;
+        
+        $periodos = Comision::where('id', '!=', '1')->pluck('nombre', 'id');
+
+        return view("Reportes.Reporte_asistencias_comisiones")
+            ->with('periodo', $periodo)
+            ->with('periodos', $periodos)
+            ->with('resultados', $resultados);
+
+
+    
     }
 
 
@@ -875,8 +1000,6 @@ class ReportesController extends Controller
             ->with('resultados', $resultados);
 
 
-        return view('Reportes.Reporte_bitacora_correspondencia', ['resultados' => NULL]);
-
 
     }
 
@@ -920,6 +1043,7 @@ class ReportesController extends Controller
         }
 
         $cuenta = 0;
+
         foreach ($busqueda as $busq) {
 
             $dietas = DB::table('dietas')

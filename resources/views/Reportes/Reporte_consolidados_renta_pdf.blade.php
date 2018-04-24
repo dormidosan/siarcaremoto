@@ -121,6 +121,7 @@
 </div>                                                                
                                                           
  <div id="p" style="text-align: center;position: absolute;right: 25%;top: 3%; text-transform: uppercase;">
+    UNIVERSIDAD DE EL SALVADOR<br/>
     ASAMBLEA GENERAL UNIVERSITARIA<br/>
     CUADRO DE RETENCION DE RENTA <br/>POR EL PAGO DE DIETAS DEL SECTOR PROFESIONAL {{$sector}}<br/>
     REPORTE CORRESPONDIENTE DEL AÑO {{$anio}}

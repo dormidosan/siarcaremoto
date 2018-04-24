@@ -317,7 +317,6 @@ $textrun3 = $section->addTextRun('arial12');
 //dd($id_agenda);
  $puntos=DB::table('puntos')
         ->where('puntos.agenda_id','=',$id_agenda)
-        
          ->orderBy('puntos.romano','asc')
         ->get();
 //dd($puntos);
@@ -416,16 +415,19 @@ else{
      
       
 foreach ($intervenciones as $intervencion ) {
-      $asambleista=DB::table('asambleistas')
+  
+      $asambleistas=DB::table('asambleistas')
       ->join('users','users.id','=','asambleistas.user_id')
       ->join('personas','personas.id','=','users.persona_id')
-      ->where('Asambleistas.id','=',$intervencion->asambleista_id)
+      ->where('asambleistas.id','=',$intervencion->asambleista_id)
       ->select('personas.primer_nombre','personas.segundo_nombre','personas.primer_apellido','personas.segundo_apellido')
-      ->first();
+      ->get();
       
-      $section->addListItem('El Asambleista '.$asambleista->primer_nombre.' '.$asambleista->segundo_nombre
+      foreach ($asambleistas as $asambleista) {
+         $section->addListItem('El Asambleista '.$asambleista->primer_nombre.' '.$asambleista->segundo_nombre
     .' '.$asambleista->primer_apellido.' '.$asambleista->segundo_apellido.' Realizo la siguiente intervención: '.' '.$intervencion->descripcion, 1, null, 'multilevel');
-
+      }
+     
     }
 
 

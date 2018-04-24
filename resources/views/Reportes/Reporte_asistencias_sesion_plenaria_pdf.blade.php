@@ -126,7 +126,7 @@
     UNIVERSIDAD DE EL SALVADOR<br/> 
     ASAMBLEA GENERAL UNIVERSITARIA<br/>
   ASISTENCIAS PARA ASAMBLEISTAS EN SESIONES PLENARIAS PERIODO {{$nombreperiodo}} <br/>
-  SECTOR {{$sector}}
+  SECTOR {{$sector}} AGENDA Nº {{$nombre_agenda->codigo}} 
   </div>
                             
 

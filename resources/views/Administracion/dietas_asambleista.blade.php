@@ -45,6 +45,8 @@
 @endsection
 
 @section("content")
+    @php $cadena = "Años validos desde " . $getRangeYear[0] . " hasta " . $getRangeYear[sizeof($getRangeYear)-1] @endphp
+
     <div class="box box-danger ">
         <div class="box-header with-border">
             <h3 class="box-title">Dietas de Asambleistas</h3>
@@ -62,8 +64,8 @@
                     </div>
                     <div class="col-lg-4 col-sm-12 col-md-12">
                         <div class="form-group">
-                            <label for="anio">Año <span class="text-red">*</span></span></label>
-                            <div class="input-group date anio">
+                            <label for="anio">Año <span class="text-red">*</span></label>
+                            <div class="input-group date anio" data-toggle="tooltip" data-placement="bottom" title="{{ $cadena }}">
                                 <input required="true" id="anio" name="getRangeYear" type="text" class="form-control"><span
                                         class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
                             </div>
@@ -106,6 +108,7 @@
                         <th class="text-center">Año</th>
                         <th class="text-center">Plenaria</th>
                         <th class="text-center">Junta Directiva</th>
+                        <th class="text-center">Accion</th>
                     </tr>
                     </thead>
                     <tbody class="text-center">
@@ -122,7 +125,7 @@
                             <td>{{ $dieta->anio }}</td>
                             <td><input type="number" class="form-control input-sm" id="asistencia" name="asistencia" value="{{$dieta->asistencia}}" max="4" min="0"></td>
                             <td><input type="number" class="form-control input-sm" id="junta_directiva" name="junta_directiva" value="{{ $dieta->junta_directiva }}" max="4" min="0"></td>
-                            <td><button type="submit" class="btn btn-primary">Guardar</button></td>
+                            <td><button type="submit" class="btn btn-primary btn-xs btn-block">Guardar</button></td>
                             
                         </tr>
                     {!! Form::close() !!}
@@ -189,22 +192,7 @@
                 "searching": true,
                 "order": [[0, 'asc'], [2, 'asc']],
                 "displayLength": 25,
-                "paging": true,
-                "drawCallback": function (settings) {
-                    var api = this.api();
-                    var rows = api.rows({page: 'current'}).nodes();
-                    var last = null;
-
-                    api.column(2, {page: 'current'}).data().each(function (group, i) {
-                        if (last !== group) {
-                            $(rows).eq(i).before(
-                                '<tr class="group"><td colspan="5">' + group + '</td></tr>'
-                            );
-
-                            last = group;
-                        }
-                    });
-                }
+                "paging": true
             });
 
             // Order by the grouping
@@ -263,6 +251,8 @@
 
         $('#anio').datepicker({
             format: "yyyy",
+            startDate: "{{ $getRangeYear[0] }}",
+            endDate: "{{ $getRangeYear[sizeof($getRangeYear)-1] }}",
             startView: 2,
             minViewMode: 2,
             maxViewMode: 3,

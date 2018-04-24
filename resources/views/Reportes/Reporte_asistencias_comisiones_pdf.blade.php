@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-    <title>Reporte Dieta</title>
+    <title>Nombre del reporte</title>
   <style type="text/css" media="print">  
   #watermark {
     position: fixed;
@@ -23,7 +23,7 @@
      text-align: center;
   }
 
-  #p {
+ #p {
   font-family: "ARIAL", serif;
   font-size: 12pt;
   font: bold;
@@ -51,8 +51,9 @@
   position: fixed;
   font-family: "ARIAL", serif;
   font-size: 10pt;
-  top: 20%;
+  top: 30%;
 }
+
 #cp1 {
   position: fixed;
   font-family: "ARIAL", serif;
@@ -109,82 +110,95 @@
   top: 88%;
 }
 
+    #g-table tbody tr > td{
+                    border: 1px solid rgb(220,220,220);
+                    height: 30px;
+                    padding-left: 3px;
+                }
+                #g-table{
+                    padding-left: 40px;
+                    margin-top: 20px;
+
+                }
+                .espacio{
+          height:10px;
+        }
 
 </style>
+                                         
 
-     <IMG align="left" SRC="{{ asset('images/Logo_UES.jpg') }}" width="13%" height="10%">
-                         
+  <IMG align="left" SRC="{{ asset('images/Logo_UES.jpg') }}" width="13%" height="10%"/>
 
-  <IMG align="right" SRC="{{ asset('images/agu_web.jpg') }}" width="15%" height="15%" >
-                                                                        
-                                               
-  <div id="p" style=" text-align: center;right: 25%;text-transform: uppercase;">
+
+  <IMG align="right" SRC="{{ asset('images/agu_web.jpg') }}" width="15%" height="15%" />
+
+
+ <div id="p" style=" text-align: center;right: 25%;text-transform: uppercase;">
     UNIVERSIDAD DE EL SALVADOR<br/>
     ASAMBLEA GENERAL UNIVERSITARIA<br/>
-    MANDAMIENTO DE PAGOS DE DIETAS SECTOR DOCENTE<br/>
-    CORRESPONDIENTE AL MES DE {{$mes}} {{$anio}}<br/><br/><br/><br/>
-     
-  </div>   
-    
-                   
+    CIUDAD UNIVERSITARIA, SAN SALVADOR, EL SALVADOR, C.A.<br/>
+    ASISTENCIAS {{$reuniones->lugar}} CONVOCADO EL {{$reuniones->convocatoria}}<br/>
+    {{$comision->nombre}} <br/><br/><br/>
+  </div>
+
 </head>
   <body>
-              
-               
-               
- <table style="text-align: center; position: center;" align="center" border="1" cellpadding="0" cellspacing="0" >              
+ 
+ <div id="cp1"  >
+  <table id="g-table" name="g-table" style="text-align: left; position: center; width: 200px;  padding: 5px;" align="center" border="1" cellpadding="10" cellspacing="0">                 
                   <thead>  <!-- ENCABEZADO TABLA-->
                     <tr>                     
                     <th>No. </th>                     
-                    <th>SECTOR</th>                     
+                    <th>PROPIETARIO Ó <br/>SUPLENTE</th>                     
                     <th>NOMBRES</th>
                     <th>FACULTAD</th>
-                    
-                    <th>TOTAL</th>
+                   
+                  
+                   
+                   
                     </tr>
                   </thead>
                     <tbody>  <!-- CUERPO DE LA TABLA-->
-                    @php $i=1;$total=0 @endphp
-                    
+                    @php $i=1 @endphp
                      @foreach($resultados as $result)
-                       
                        <tr>                                     
                       <td>
                        {{$i}}
                       </td>
+                      @if($result->propietario==1)
                       <td>
-                         PROF. DOCENTE
+                         PROPIETARIO
                       </td>
-                      <td>{{$result->primer_nombre}} {{$result->segundo_apellido}}</td>                   
-                      <td>{{$result->nom_fact}} </td>
-                      
-                      <td>$ {{$result->asistencia*$monto_dieta->valor}}</td>                      
+                      @else
+                      <td>
+                         SUPLENTE
+                      </td>                      
+                      @endif
+                      <td>{{$result->primer_nombre}} {{$result->primer_apellido}}</td>                   
+                      <td>{{$result->nombre}}</td>
+                     
+                           
+                     
+                                   
                     </tr>                 
-                       @php $i=$i+1;
-                       $total=$total+$result->asistencia*$monto_dieta->valor
-                       @endphp
+                       @php $i=$i+1 @endphp
    @endforeach          
-    <tr>                                     
-                      <td>                       
-                      </td>
-                      <td>                      
-                      </td>
-                      <td></td>                  
-                      <td>TOTAL:</td>
-                         
-                      <td>$ {{$total}} </td>                
-                    </tr>
-
+ 
                    </tbody>
 
-                 </table>
-   
+                </table>       
+ 
 
+ </div> 
+
+
+
+  
   </body>
    <script type="text/php">
     if ( isset($pdf) ) {
         $font = $fontMetrics->getFont("arial", "bold");
-        $pdf->page_text(510,15, "Pagina: {PAGE_NUM}/{PAGE_COUNT}", $font, 15, array(0,0,0));
+        $pdf->page_text(500,15, "Pagina: {PAGE_NUM}/{PAGE_COUNT}", $font, 15, array(0,0,0));
     }
 </script>
 </html>

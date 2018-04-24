@@ -6,7 +6,7 @@ use Closure;
 use Auth;
 use App\Modulo;
 
-class Acceso1
+class Acceso17
 {
     /**
      * Handle an incoming request.
@@ -18,7 +18,7 @@ class Acceso1
     public function handle($request, Closure $next)
     {
         $permiso = 0;
-        $nivel_acceso = '1';
+        $nivel_acceso = '18';
         $modulo_id = Modulo::where('nivel_acceso', '=', $nivel_acceso)->first()->id;
         $modulos = Auth::user()->rol->modulos;
         
@@ -27,7 +27,7 @@ class Acceso1
                 $permiso = 1;
             }
         }
-        //if (($permiso == 1) and (Auth::user()->activo == 1)) {
+
         if ($permiso == 1) {
 
             return $next($request);

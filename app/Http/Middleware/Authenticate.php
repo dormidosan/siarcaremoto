@@ -24,6 +24,12 @@ class Authenticate
                 return redirect()->guest('login');
             }
         }
+        /*
+        if ( Auth::user()->activo == 0) {
+            Auth::logout();
+            return redirect('login');
+        }
+        */
 
         return $next($request);
     }

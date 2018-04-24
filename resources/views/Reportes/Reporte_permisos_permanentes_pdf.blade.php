@@ -120,8 +120,10 @@
                                                                         
                                                
   <div id="p" style=" text-align: center;right: 25%;text-transform: uppercase;">
-    Sesión Plenaria de Asamblea General Universitaria {{$fechainicial}} AL {{$fechafinal}}<br/>
-    Solicitudes de PERMISOS DEFINITIVOS<br/><br/><br/><br/>
+    UNIVERSIDAD DE EL SALVADOR<br/>
+    ASAMBLEA GENERAL UNIVERSITARIA<br/>
+    SESION PLENARIA DEL {{$fechainicial}} AL {{$fechafinal}}<br/>
+    SOLICITUDES DE PERMISOS DEFINITIVOS<br/><br/><br/><br/>
      
   </div>   
                    

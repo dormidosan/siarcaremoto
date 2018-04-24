@@ -119,6 +119,7 @@
                                                                         
                                                
   <div id="p" style=" text-align: center;right: 25%;text-transform: uppercase;">
+    UNIVERSIDAD DE EL SALVADOR<br/>
     ASAMBLEA GENERAL UNIVERSITARIA<br/>
     MANDAMIENTO DE PAGOS DE DIETAS SECTOR ESTUDIANTIL<br/>
     CORRESPONDIENTE AL MES DE {{$mes}} {{$anio}}<br/><br/><br/><br/>

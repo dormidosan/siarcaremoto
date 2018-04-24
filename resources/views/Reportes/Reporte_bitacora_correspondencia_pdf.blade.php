@@ -120,8 +120,10 @@
 </div>                                     
                                                
  <div id="p" style="text-align: center;position: absolute;right: 25%;top: 3%">
-    CORRESPONDENCIA RECIBIDA SESIÓN ORDINARIA<br/>DE JUNTA DIRECTIVA DE LA
+     UNIVERSIDAD DE EL SALVADOR<br/>
     ASAMBLEA GENERAL UNIVERSITARIA<br/>
+    CORRESPONDENCIA RECIBIDA SESIÓN ORDINARIA<br/>
+    DE JUNTA DIRECTIVA 
     DEL {{$fechainicial}} AL {{$fechafinal}}   
   </div>   
     

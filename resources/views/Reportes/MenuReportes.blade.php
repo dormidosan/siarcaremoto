@@ -142,5 +142,24 @@
             </div>
 
 
+            
+
+
+             <div class="row">
+                <div class="col-lg-4 col-md-4 col-sm-12 col-lg-offset-1">
+                    <div class="box" style="border-top-color: #D81B60">
+                        <div class="box-body">
+                            <div class="text-center">
+                                <i class="fa fa-check fa-4x text-maroon"></i>
+                            </div>
+                            <h3 class="profile-username text-center">Asistencias a Comisiones</h3>
+                            <a href="{{url('buscar_comisiones')}}"
+                               class="btn bg-maroon btn-block btn-sm"><b>Acceder</b></a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
         </div>
 @endsection

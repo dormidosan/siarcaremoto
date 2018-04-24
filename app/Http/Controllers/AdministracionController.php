@@ -37,7 +37,7 @@ class AdministracionController extends Controller
     {
         try {
             $this->guardar_bitacora(Route::getCurrentRoute()->getPath(), "ingreso");
-            $usuarios = User::all();
+            $usuarios = User::where("activo",1)->get();
             $facultades = Facultad::all();
             $sectores = Sector::all();
             $tipos_usuario = Rol::all();
@@ -1184,7 +1184,7 @@ class AdministracionController extends Controller
         try {
             $this->guardar_bitacora(Route::getCurrentRoute()->getPath(), "ingreso");
             $todos = 0;
-            $dietas = collect();//Dieta::join("asambleistas","dietas.asambleista_id", "=","asambleistas.id")->get();
+            $dietas = collect();
 
             $asambleistas_activos = Asambleista::where('id', '!=', '0')->where('activo', '=', '1')->get();
             $asambleistas_plenaria[] = array();
@@ -1197,24 +1197,13 @@ class AdministracionController extends Controller
             unset($asambleistas_plenaria[0]);
 
             $meses = $this->getMeses();
-            //dd($asambleistas_plenaria);
+
             $periodo = Periodo::latest()->first();
             $start = $periodo->inicio;//'2010-12-02';
             $end = $periodo->fin;//'2016-05-06';
 
-
             $getRangeYear = range(gmdate('Y', strtotime($start)), gmdate('Y', strtotime($end)));
 
-            /*
-                $integrantes = Cargo::join("asambleistas", "cargos.asambleista_id", "=", "asambleistas.id")
-                        ->join("periodos", "asambleistas.periodo_id", "=", "periodos.id")
-                        ->where("cargos.comision_id", $request->get("idComision"))
-                        ->where("asambleistas.activo", 1)
-                        ->where("periodos.activo", 1)
-                        ->where("cargos.activo", 1)
-                        ->get();
-            */
-            //$todos = 0;
             return view('Administracion.dietas_asambleista')
                 ->with('todos', $todos)
                 ->with('meses', $meses)
@@ -1231,17 +1220,16 @@ class AdministracionController extends Controller
     {
         try {
             $this->guardar_bitacora(Route::getCurrentRoute()->getPath(), "ingreso");
-            dd($request->all());
+
             $todos = 0;
             $periodo = Periodo::latest()->first();
             $start = $periodo->inicio;//'2010-12-02';
             $end = $periodo->fin;//'2016-05-06';
 
             $getRangeYear = range(gmdate('Y', strtotime($start)), gmdate('Y', strtotime($end)));
-
-
             $mes = $request->meses;
-            $year = $getRangeYear[$request->getRangeYear];
+            //$year = $getRangeYear[$request->getRangeYear];
+            $year = $getRangeYear[array_search($request->getRangeYear,$getRangeYear)];
             $asambleista_id = $request->asambleista_id;
             //dd($year);
 

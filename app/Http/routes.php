@@ -93,6 +93,7 @@ Route::post('buscar_permisos_temporales', 'ReportesController@buscar_permisos_te
 Route::post('buscar_bitacora_correspondencia', 'ReportesController@buscar_bitacora_correspondencia')->name("buscar_bitacora_correspondencia");
 Route::post('buscar_permisos_permanentes', 'ReportesController@buscar_permisos_permanentes')->name("buscar_permisos_permanentes");
 Route::post('buscar_asistencias', 'ReportesController@buscar_asistencias')->name("buscar_asistencias");
+Route::post('buscar_asistencias_comisiones', 'ReportesController@buscar_asistencias_comisiones')->name("buscar_asistencias_comisiones");
 Route::post('buscar_consolidados_renta', 'ReportesController@buscar_consolidados_renta')->name("buscar_consolidados_renta");
 Route::post('buscar_asambleistas_periodo', 'ReportesController@buscar_asambleistas_periodo')->name("buscar_asambleistas_periodo");
 Route::post('buscar_asambleistas_cumple', 'ReportesController@buscar_asambleistas_cumple')->name("buscar_asambleistas_cumple");
@@ -101,6 +102,9 @@ Route::post('buscar_acuerdos', 'PlantillasController@buscar_acuerdos')->name("bu
 Route::post('buscar_dictamenes', 'PlantillasController@buscar_dictamenes')->name("buscar_dictamenes");
 Route::post('buscar_actas_JD', 'PlantillasController@buscar_actas_JD')->name("buscar_actas_JD");
 Route::post('Mensaje', 'ReportesController@Mensaje')->name("Mensaje");
+
+
+
 
 
 /* Peticiones */
@@ -131,6 +135,7 @@ Route::get('/Reporte_asistencias_sesion_plenaria', function () {
     return view('Reportes.Reporte_asistencias_sesion_plenaria', ['resultados' => NULL]);
 });
 Route::get('/Reporte_asistencias_sesion_plenaria/{tipo}', 'ReportesController@Reporte_asistencias_sesion_plenaria');
+Route::get('/Reporte_asistencias_comisiones/{tipo}', 'ReportesController@Reporte_asistencias_comisiones');
 Route::get('/Reporte_inasistencias_sesion_plenaria_pdf/{tipo}', 'ReportesController@Reporte_inasistencias_sesion_plenaria_pdf');
 Route::get('/Reporte_bitacora_correspondencia', function () {
     return view('Reportes.Reporte_bitacora_correspondencia', ['resultados' => NULL]);
@@ -142,7 +147,7 @@ Route::get('/Reporte_planilla_dieta', function () {
 
 
 Route::get('buscar_periodo', 'ReportesController@buscar_periodo')->name('buscar_periodo');
-
+Route::get('buscar_comisiones', 'ReportesController@buscar_comisiones')->name('buscar_comisiones');
 Route::get('buscar_cumple', 'ReportesController@buscar_cumple')->name('buscar_cumple');
 
 
@@ -212,12 +217,17 @@ Route::get('/Reporte_permisos_temporales', function () {
 Route::get('/Menu_reportes', function () {
     return view('Reportes.MenuReportes');
 });
-Route::get('/Menu_plantillas', 'PlantillasController@plantillas');
-Route::get('/menu_graficos', 'GraficosController@menu_graficos')->name("menu_graficos");
-Route::get('/graficos/peticiones_por_mes', 'GraficosController@peticiones_por_mes')->name("peticiones_por_mes");
+
+
+Route::group(['middleware' => 'acceso19'], function () {
+    Route::get('/Menu_plantillas', 'PlantillasController@plantillas');
+    Route::get('/menu_graficos', 'GraficosController@menu_graficos')->name("menu_graficos");
+    Route::get('/graficos/peticiones_por_mes', 'GraficosController@peticiones_por_mes')->name("peticiones_por_mes");
+    Route::get('/graficos/dictamenes_por_comision', 'GraficosController@dictamenes_por_comision')->name("dictamenes_por_comision");
+    });
 Route::post('/graficos/peticiones_por_post', 'GraficosController@peticiones_por_post')->name("peticiones_por_post");
-Route::get('/graficos/dictamenes_por_comision', 'GraficosController@dictamenes_por_comision')->name("dictamenes_por_comision");
 Route::post('/graficos/dictamenes_comision_post', 'GraficosController@dictamenes_comision_post')->name("dictamenes_comision_post");
+
 
 Route::get('/Reporte_Convocatorias_pdf/{tipo}', 'ReportesController@Reporte_Convocatorias');
 Route::get('/Reporte_Convocatorias', function () {
@@ -291,7 +301,7 @@ Route::group(['prefix' => 'administracion'], function () {
 
     Route::group(['middleware' => 'acceso15'], function () {
         Route::get('dietas_asambleista', 'AdministracionController@dietas_asambleista')->name("dietas_asambleista");
-        Route::get('bitacora_sistema', 'AdministracionController@bitacora_sistema')->name("bitacora_sistema");
+        
     });
 
     Route::group(['middleware' => 'acceso16'], function () {
@@ -307,7 +317,11 @@ Route::group(['prefix' => 'administracion'], function () {
 
     Route::group(['middleware' => 'acceso17'], function () {
         Route::get('gestionar_perfiles', "AdministracionController@gestionar_perfiles")->name("gestionar_perfiles");
-    });    
+    });   
+
+    Route::group(['middleware' => 'acceso18'], function () {
+        Route::get('bitacora_sistema', 'AdministracionController@bitacora_sistema')->name("bitacora_sistema");
+    });   
 
     Route::post('guardar_usuario', "AdministracionController@guardar_usuario")->name("guardar_usuario");
     Route::post('actualizar_usuario', "AdministracionController@actualizar_usuario")->name("actualizar_usuario");
