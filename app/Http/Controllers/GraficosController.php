@@ -88,6 +88,15 @@ class GraficosController extends Controller
         }//fin foreach
 
         array_push($peticiones_total, $peticiones_enero, $peticiones_febrero, $peticiones_marzo, $peticiones_abril, $peticiones_mayo, $peticiones_junio, $peticiones_julio, $peticiones_agosto, $peticiones_sept, $peticiones_oct, $peticiones_nov, $peticiones_dic);
+
+        $contador = 0;
+        foreach ($peticiones_total as $var){
+            if ($var == 0)
+                $contador++;
+        }
+        if ($contador == 12){
+            $request->session()->flash("error", "No se encontraron resultados");
+        }
         return view("Graficos.peticiones_por_mes", ["year" => $request->anio, "peticiones" => $peticiones_total]);
     }
 

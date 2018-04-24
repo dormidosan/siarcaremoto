@@ -1,9 +1,5 @@
 @extends('layouts.app')
 
-@section('styles')
-<link rel="stylesheet" href="{{ asset('') }}">
-@endsection
-
 @section('content')
     <div class="box box-danger">
         <div class="box-header with-border">
@@ -46,28 +42,3 @@
 
 @endsection
 
-@section("js")
-    <script src="{{ asset('libs/charts/charts.js') }}"></script>
-@endsection
-
-
-@section("scripts")
-    <script type="text/javascript">
-        $(function () {});
-    </script>
-@endsection
-
-
-@section("lobibox")
-    @if(Session::has('error'))
-        <script>
-            notificacion("Error", "{{ Session::get('error') }}", "error");
-            {{ Session::forget('error') }}
-        </script>
-    @elseif(Session::has('success'))
-        <script>
-            notificacion("Exito", "{{ Session::get('success') }}", "success");
-            {{ Session::forget('success') }}
-        </script>
-    @endif
-@endsection

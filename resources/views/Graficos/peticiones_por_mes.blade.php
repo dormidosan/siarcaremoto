@@ -178,11 +178,10 @@
     </script>
 @endsection
 
-
 @section("lobibox")
     @if(Session::has('error'))
         <script>
-            notificacion("Error", "{{ Session::get('error') }}", "error");
+            notificacion("No info", "{{ Session::get('error') }}", "error");
             {{ Session::forget('error') }}
         </script>
     @elseif(Session::has('success'))
