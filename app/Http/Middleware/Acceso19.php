@@ -6,7 +6,7 @@ use Closure;
 use Auth;
 use App\Modulo;
 
-class Acceso17
+class Acceso19
 {
     /**
      * Handle an incoming request.
