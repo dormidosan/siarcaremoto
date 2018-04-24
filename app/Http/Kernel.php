@@ -66,5 +66,7 @@ class Kernel extends HttpKernel
         'acceso15' => \App\Http\Middleware\Acceso15::class,
         'acceso16' => \App\Http\Middleware\Acceso16::class,
         'acceso17' => \App\Http\Middleware\Acceso17::class,
+        'acceso18' => \App\Http\Middleware\Acceso18::class,
+        'acceso19' => \App\Http\Middleware\Acceso19::class,
     ];
 }
